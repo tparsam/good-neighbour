@@ -35,6 +35,13 @@ export function useWebRTCStream({ videoRef, deviceId }: UseWebRTCStreamOptions):
       })
       pcRef.current = pc
 
+      pc.onconnectionstatechange = () => {
+        if (pc.connectionState === 'failed' || pc.connectionState === 'disconnected') {
+          setStreamActive(false)
+          setStreamError('The camera stream ended.')
+        }
+      }
+
       pc.addTransceiver('audio', { direction: 'sendrecv' })
       pc.addTransceiver('video', { direction: 'recvonly' })
 
