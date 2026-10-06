@@ -17,13 +17,16 @@ export function cleanRegion(region: unknown): string | undefined {
   return /^[A-Za-z][A-Za-z ,'-]{0,59}$/.test(region) ? region : undefined
 }
 
-export async function identifyBirds(jpegBase64: string, region?: string): Promise<Observation | null> {
+/** Sends one JPEG and a question to the model on Amazon Bedrock and returns its text reply.
+ *  Throws if the call fails or times out. */
+export async function askAboutImage(opts: {
+  system: string
+  question: string
+  jpegBase64: string
+  maxTokens: number
+}): Promise<string | null> {
   const model = process.env.BEDROCK_MODEL_ID ?? 'us.amazon.nova-lite-v1:0'
   const awsRegion = process.env.AWS_REGION ?? 'us-east-1'
-  const place = cleanRegion(region)
-  const question = place
-    ? `This camera is in ${place}. Which birds are in this picture?`
-    : 'Which birds are in this picture?'
 
   const res = await fetch(
     `https://bedrock-runtime.${awsRegion}.amazonaws.com/model/${encodeURIComponent(model)}/converse`,
@@ -36,17 +39,17 @@ export async function identifyBirds(jpegBase64: string, region?: string): Promis
         Authorization: `Bearer ${process.env.AWS_BEARER_TOKEN_BEDROCK}`,
       },
       body: JSON.stringify({
-        system: [{ text: SYSTEM }],
+        system: [{ text: opts.system }],
         messages: [
           {
             role: 'user',
             content: [
-              { image: { format: 'jpeg', source: { bytes: jpegBase64 } } },
-              { text: question },
+              { image: { format: 'jpeg', source: { bytes: opts.jpegBase64 } } },
+              { text: opts.question },
             ],
           },
         ],
-        inferenceConfig: { maxTokens: 200, temperature: 0 },
+        inferenceConfig: { maxTokens: opts.maxTokens, temperature: 0 },
       }),
     }
   )
@@ -57,5 +60,14 @@ export async function identifyBirds(jpegBase64: string, region?: string): Promis
 
   const data = await res.json()
   const text = data?.output?.message?.content?.[0]?.text
-  return typeof text === 'string' ? parseObservation(text) : null
+  return typeof text === 'string' ? text : null
+}
+
+export async function identifyBirds(jpegBase64: string, region?: string): Promise<Observation | null> {
+  const place = cleanRegion(region)
+  const question = place
+    ? `This camera is in ${place}. Which birds are in this picture?`
+    : 'Which birds are in this picture?'
+  const text = await askAboutImage({ system: SYSTEM, question, jpegBase64, maxTokens: 200 })
+  return text === null ? null : parseObservation(text)
 }
