@@ -188,14 +188,27 @@ h3 {
   text-align: center;
 }
 
-.live .section-head,
-.bird {
+.live .section-head {
   position: absolute;
   width: 1px;
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* On phones the curved line is hidden, so the bird at the feeder is set in plain type here. */
+.bird {
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+}
+
+.bird-name {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  line-height: 1;
 }
 
 .live-stage {
@@ -430,9 +443,10 @@ h3 {
 }
 
 @media (min-width: 768px) {
-  /* On wide screens the arc carries the state, so the plain copy is kept for screen readers only. */
+  /* On wide screens the arc carries the state and the bird, so the plain copies are kept for screen readers only. */
   .state-line,
-  .state-reason.in-arc {
+  .state-reason.in-arc,
+  .bird {
     position: absolute;
     width: 1px;
     height: 1px;

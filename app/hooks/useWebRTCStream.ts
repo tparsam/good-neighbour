@@ -24,7 +24,25 @@ export function useWebRTCStream({ videoRef, deviceId }: UseWebRTCStreamOptions):
   const pcRef = useRef<RTCPeerConnection | null>(null)
   const sessionUrlRef = useRef<string | null>(null)
 
+  // Closes the connection and the Ring session and clears the picture.
+  const teardown = useCallback(async () => {
+    pcRef.current?.close()
+    pcRef.current = null
+    if (sessionUrlRef.current) {
+      const sessionUrl = sessionUrlRef.current
+      sessionUrlRef.current = null
+      await fetch('/api/ring/stream', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionUrl }),
+      }).catch(() => {})
+    }
+    if (videoRef.current) videoRef.current.srcObject = null
+    setStreamActive(false)
+  }, [videoRef])
+
   const startStream = useCallback(async () => {
+    if (pcRef.current) return // Already starting or running: a second press must not open a second session.
     setStreamError(null)
     try {
       const pc = new RTCPeerConnection({
@@ -36,9 +54,8 @@ export function useWebRTCStream({ videoRef, deviceId }: UseWebRTCStreamOptions):
       pcRef.current = pc
 
       pc.onconnectionstatechange = () => {
-        if (pc.connectionState === 'failed' || pc.connectionState === 'disconnected') {
-          setStreamActive(false)
-          setStreamError('The camera stream ended.')
+        if (pcRef.current === pc && (pc.connectionState === 'failed' || pc.connectionState === 'disconnected')) {
+          void teardown().then(() => setStreamError('The camera stream ended.'))
         }
       }
 
@@ -84,26 +101,15 @@ export function useWebRTCStream({ videoRef, deviceId }: UseWebRTCStreamOptions):
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Stream failed'
       console.error('Stream error:', err)
+      await teardown()
       setStreamError(message)
-      setStreamActive(false)
     }
-  }, [videoRef, deviceId])
+  }, [videoRef, deviceId, teardown])
 
   const stopStream = useCallback(async () => {
-    pcRef.current?.close()
-    pcRef.current = null
-    if (sessionUrlRef.current) {
-      await fetch('/api/ring/stream', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionUrl: sessionUrlRef.current }),
-      }).catch(() => {})
-      sessionUrlRef.current = null
-    }
-    if (videoRef.current) videoRef.current.srcObject = null
-    setStreamActive(false)
+    await teardown()
     setStreamError(null)
-  }, [videoRef])
+  }, [teardown])
 
   return { streamActive, streamError, startStream, stopStream }
 }

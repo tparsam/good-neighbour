@@ -29,6 +29,8 @@ export async function identifyBirds(jpegBase64: string, region?: string): Promis
     `https://bedrock-runtime.${awsRegion}.amazonaws.com/model/${encodeURIComponent(model)}/converse`,
     {
       method: 'POST',
+      // Without a limit a hung call would leave the watcher stalled while it still says "Watching".
+      signal: AbortSignal.timeout(15_000),
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.AWS_BEARER_TOKEN_BEDROCK}`,

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { identifyBirds } from '@/lib/journal/bedrock'
+import { frameCap } from '@/lib/journal/limits'
 
-const MAX_FRAMES = Number(process.env.MAX_FRAMES_PER_RUN ?? 2000)
+const MAX_FRAMES = frameCap(process.env.MAX_FRAMES_PER_RUN)
 const MAX_IMAGE_CHARS = 2_000_000
 
 // Counts frames sent to Bedrock since the server started. This is the hard cost stop.

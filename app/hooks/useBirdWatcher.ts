@@ -44,7 +44,11 @@ export function useBirdWatcher({ video, enabled, region, onVisitSaved }: Options
     let lastThumb: number[] | null = null
     let lastObs: Observation | null = null
     let busy = false
+    let stopped = false
     let saveError: string | null = null
+
+    const report = () =>
+      setStatus({ watching: true, reason: saveError, current: state.tracked.filter(t => t.open).map(t => t.name) })
 
     const save = async (ended: EndedVisit[]) => {
       for (const visit of ended) {
@@ -66,7 +70,7 @@ export function useBirdWatcher({ video, enabled, region, onVisitSaved }: Options
     }
 
     const tick = async () => {
-      if (busy || video.readyState < 2 || !video.videoWidth) return
+      if (busy || stopped || video.readyState < 2 || !video.videoWidth) return
       busy = true
       try {
         canvas.width = FRAME_WIDTH
@@ -85,12 +89,18 @@ export function useBirdWatcher({ video, enabled, region, onVisitSaved }: Options
             body: JSON.stringify({ image: jpeg, region: regionRef.current }),
           })
           const data = await res.json()
+          if (stopped) return // The stream stopped while this was in flight.
           if (!res.ok) {
             setStatus({ watching: false, reason: data.error ?? 'Bird identification failed.', current: [] })
             return
           }
+          if (!data.observation) {
+            // An unreadable reply is no observation, not "no birds". The frame is not marked as seen,
+            // so the next tick asks again and the previous answer is never reused for this picture.
+            report()
+            return
+          }
           lastThumb = thumb
-          if (!data.observation) return // An unreadable reply is no observation, not "no birds".
           obs = data.observation as Observation
           lastObs = obs
           fresh = true
@@ -101,13 +111,10 @@ export function useBirdWatcher({ video, enabled, region, onVisitSaved }: Options
         state = result.state
         for (const name of result.started) snapshots[name] = jpeg
         await save(result.ended)
-        setStatus({
-          watching: true,
-          reason: saveError,
-          current: state.tracked.filter(t => t.open).map(t => t.name),
-        })
+        if (stopped) return
+        report()
       } catch {
-        setStatus({ watching: false, reason: 'Bird identification failed.', current: [] })
+        if (!stopped) setStatus({ watching: false, reason: 'Bird identification failed.', current: [] })
       } finally {
         busy = false
       }
@@ -116,8 +123,13 @@ export function useBirdWatcher({ video, enabled, region, onVisitSaved }: Options
     setStatus({ watching: true, reason: null, current: [] })
     const timer = setInterval(tick, SAMPLE_MS)
     return () => {
+      stopped = true
       clearInterval(timer)
-      void save(flush(state)) // The stream ended: close and save any open visit.
+      // The stream ended: close and save any open visit, once. Clearing the state means a
+      // tick still in flight cannot save the same visit again.
+      const open = flush(state)
+      state = emptyState
+      void save(open)
     }
   }, [enabled, video])
 
