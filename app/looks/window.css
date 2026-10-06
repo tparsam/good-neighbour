@@ -1,0 +1,294 @@
+/* Sample 3: Window.
+   A soft consumer look for a tablet left open by the window. The camera is the hero,
+   full width, resting in a tray. Under it sits a sill that carries the state, the bird
+   and the button. Cool slate neutrals with one terracotta accent, soft diffuse shadows.
+   Radius: 1.75rem on containers, 1.25rem on media inside them, a full pill on the button. */
+
+.look-window {
+  --bg: #eceef0;
+  --surface: #f9fafb;
+  --tray: rgb(27 34 40 / 0.06);
+  --ink: #1b2228;
+  --muted: #55606a;
+  --accent: #b4482a;
+  --shadow: 0 24px 60px -28px rgb(27 34 40 / 0.28);
+  --font-body: var(--f-soft), system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  .look-window {
+    --bg: #12161a;
+    --surface: #1b2127;
+    --tray: rgb(255 255 255 / 0.06);
+    --ink: #e6eaed;
+    --muted: #9aa5ae;
+    --accent: #f0906e;
+    --shadow: 0 24px 60px -28px rgb(0 0 0 / 0.7);
+  }
+}
+
+.look-window .page {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 0 1rem 7rem;
+}
+
+.look-window .masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 2rem;
+  padding: 1.75rem 0.5rem 1.25rem;
+}
+
+.look-window .masthead-title {
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.look-window .masthead-title em {
+  font-style: normal;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.look-window .masthead-date,
+.look-window .count,
+.look-window .meta,
+.look-window .state-reason,
+.look-window .bird,
+.look-window .live-idle,
+.look-window .shot-empty {
+  color: var(--muted);
+}
+
+.look-window .masthead-date,
+.look-window .meta,
+.look-window .shot-empty {
+  font-size: 0.9375rem;
+}
+
+/* Live */
+
+.look-window .live {
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* The heading stays for screen readers; the frame itself says "live" to the eye. */
+.look-window .live .section-head {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.look-window .live-frame {
+  margin: 0.5rem;
+  border-radius: 1.25rem;
+  background: var(--surface);
+  box-shadow: 0 0 0 0.5rem var(--tray), var(--shadow);
+}
+
+.look-window .live-panel {
+  display: grid;
+  align-items: center;
+  gap: 0.25rem 2rem;
+  border-radius: 1.75rem;
+  background: var(--surface);
+  padding: 1.5rem 1.75rem;
+  box-shadow: var(--shadow);
+}
+
+.look-window .state-line {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: clamp(2rem, 3.6vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.look-window .state-mark {
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+}
+
+.look-window .state-mark[data-on='true'] {
+  background: var(--accent);
+}
+
+.look-window .state-reason {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1rem;
+}
+
+.look-window .bird-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.look-window .btn {
+  width: 100%;
+  min-height: 3rem;
+  margin-top: 1rem;
+  border-radius: 999px;
+  background: var(--ink);
+  padding: 0 1.5rem;
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.look-window .btn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.look-window .btn:disabled {
+  background: var(--tray);
+  color: var(--muted);
+}
+
+.look-window .note {
+  max-width: 72ch;
+  border-radius: 1.25rem;
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+  padding: 1rem 1.25rem;
+  font-size: 0.9375rem;
+}
+
+.look-window .live-panel .note {
+  margin-top: 0.75rem;
+}
+
+/* Today and Life list */
+
+.look-window .today,
+.look-window .lifelist {
+  margin-top: 3.5rem;
+}
+
+.look-window .today .section-head,
+.look-window .lifelist .section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+.look-window .section-head h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+/* One line of figures in one container, read left to right like a sentence. */
+.look-window .figures,
+.look-window .empty {
+  border-radius: 1.75rem;
+  background: var(--surface);
+  padding: 1.5rem 1.75rem;
+  box-shadow: var(--shadow);
+}
+
+.look-window .figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 3.5rem;
+}
+
+.look-window .figure {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.look-window .figure dd {
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.look-window .figure dt {
+  color: var(--muted);
+  text-transform: lowercase;
+}
+
+.look-window .empty {
+  font-size: 1.125rem;
+  color: var(--muted);
+}
+
+.look-window .species {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.look-window .specimen {
+  border-radius: 1.75rem;
+  background: var(--surface);
+  padding: 0.5rem 0.5rem 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.look-window .shot {
+  border-radius: 1.25rem;
+}
+
+.look-window .shot-empty {
+  background: var(--tray);
+}
+
+.look-window .specimen h3 {
+  padding: 0.9rem 0.75rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.look-window .meta {
+  padding: 0.15rem 0.75rem 0;
+}
+
+@media (min-width: 640px) {
+  .look-window .species {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .look-window .live-panel {
+    grid-template-columns: 1fr auto;
+  }
+  .look-window .live-panel > * {
+    grid-column: 1;
+  }
+  .look-window .live-panel .btn {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: auto;
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .look-window .page {
+    padding-inline: 2rem;
+  }
+  .look-window .species {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

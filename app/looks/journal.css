@@ -1,0 +1,280 @@
+/* Sample 1: Journal.
+   A calm editorial field journal. Words sit in a narrow margin column, the evidence
+   (camera, figures, snapshots) in a wide body beside it. Serif display, one moss accent,
+   hairlines, no cards. Radius: 4px on everything with a corner. */
+
+.look-journal {
+  --bg: #f8f8f4;
+  --surface: #efefe8;
+  --ink: #1c211d;
+  --muted: #5a625b;
+  --line: #d9dbd1;
+  --accent: #2c5e3f;
+  --font-body: var(--f-sans), system-ui, sans-serif;
+  --font-display: var(--f-serif), Georgia, serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  .look-journal {
+    --bg: #131513;
+    --surface: #1b1e1b;
+    --ink: #e7e9e2;
+    --muted: #9fa69d;
+    --line: #2c302c;
+    --accent: #a3cda9;
+  }
+}
+
+.look-journal .page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 7rem;
+}
+
+.look-journal .masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  padding: 2.5rem 0;
+}
+
+.look-journal .masthead-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 6vw, 3.75rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.look-journal .masthead-title em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.look-journal .masthead-date,
+.look-journal .count,
+.look-journal .meta,
+.look-journal .figure dt,
+.look-journal .bird-label,
+.look-journal .live-idle,
+.look-journal .shot-empty {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.look-journal .section {
+  display: grid;
+  gap: 1.5rem 2.5rem;
+  border-top: 1px solid var(--line);
+  padding: 3rem 0;
+}
+
+.look-journal .section-head h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.look-journal .count {
+  margin-top: 0.25rem;
+}
+
+/* Live */
+
+.look-journal .live-frame {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.look-journal .state {
+  font-family: var(--font-display);
+}
+
+.look-journal .state-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  white-space: nowrap;
+  font-size: 2.5rem;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.look-journal .state-mark {
+  flex: none;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+}
+
+.look-journal .state-mark[data-on='true'] {
+  background: var(--accent);
+}
+
+.look-journal .state-reason {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.look-journal .bird {
+  margin-top: 1.25rem;
+  color: var(--muted);
+}
+
+.look-journal .bird-label {
+  display: block;
+}
+
+.look-journal .bird-name {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-style: italic;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.look-journal .btn {
+  margin-top: 1.5rem;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  background: var(--ink);
+  padding: 0 1.25rem;
+  color: var(--bg);
+  font-weight: 500;
+}
+
+.look-journal .btn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.look-journal .btn:disabled {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--muted);
+}
+
+.look-journal .note {
+  max-width: 68ch;
+  border-radius: 4px;
+  background: var(--surface);
+  padding: 1rem 1.25rem;
+  font-size: 0.9375rem;
+}
+
+.look-journal .live-panel .note {
+  margin-top: 1rem;
+}
+
+/* Today */
+
+.look-journal .figures {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem 2.5rem;
+}
+
+.look-journal .figure dd {
+  margin-top: 0.25rem;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.look-journal .empty {
+  max-width: 36ch;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+/* Life list */
+
+.look-journal .species {
+  display: grid;
+  gap: 3rem 2.5rem;
+}
+
+.look-journal .shot {
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.look-journal .specimen h3 {
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.look-journal .meta {
+  margin-top: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .look-journal .page {
+    padding-inline: 2rem;
+  }
+  .look-journal .figures {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .look-journal .species {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .look-journal .page {
+    padding-inline: 3rem;
+  }
+  .look-journal .section {
+    grid-template-columns: 3fr 9fr;
+    padding: 4rem 0;
+  }
+  .look-journal .section-body {
+    grid-column: 2;
+  }
+  .look-journal .lifelist .section-head {
+    position: sticky;
+    top: 2.5rem;
+    align-self: start;
+  }
+  /* Live: heading and words in the margin, frame and any message in the body. */
+  .look-journal .live {
+    grid-template-rows: auto 1fr auto;
+  }
+  .look-journal .live .section-head {
+    grid-area: 1 / 1;
+  }
+  .look-journal .live-panel {
+    grid-area: 2 / 1;
+  }
+  .look-journal .live-frame {
+    grid-area: 1 / 2 / 3 / 3;
+  }
+  .look-journal .live-note {
+    grid-area: 3 / 2;
+  }
+  /* Sized to stay on one line in the margin column. */
+  .look-journal .state-line {
+    font-size: 1.875rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .look-journal .state-line {
+    font-size: 2.125rem;
+  }
+}

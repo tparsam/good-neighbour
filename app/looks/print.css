@@ -1,0 +1,314 @@
+/* Sample 2: Print.
+   Swiss industrial print: one sheet of a specimen ledger. Heavy uppercase grotesque,
+   a strict 12-column grid, ruled bands, mono for dates and counts. The picture sits left
+   and the words right. Red is used only for the nameplate rule and the watching mark,
+   never for text. Radius: none. Dark mode is the same sheet printed in negative. */
+
+.look-print {
+  --bg: #f4f4f0;
+  --surface: #e8e8e2;
+  --ink: #0f0f0f;
+  --muted: #4d4d48;
+  --accent: #e61919;
+  --font-body: var(--f-grot), 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: var(--f-mono), ui-monospace, Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  .look-print {
+    --bg: #0f0f10;
+    --surface: #1b1b1c;
+    --ink: #ededE8;
+    --muted: #aaaaa4;
+    --accent: #ff3b30;
+  }
+}
+
+.look-print .page {
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 6rem;
+}
+
+.look-print .masthead {
+  display: grid;
+  gap: 0.5rem 2rem;
+  border-bottom: 6px solid var(--accent);
+  padding: 1.5rem 0 0.75rem;
+}
+
+.look-print .masthead-title {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.look-print .masthead-title em {
+  font-style: normal;
+}
+
+.look-print .masthead-date,
+.look-print .count,
+.look-print .meta,
+.look-print .figure dt,
+.look-print .bird-label,
+.look-print .live-idle,
+.look-print .shot-empty {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.look-print .section {
+  display: grid;
+  gap: 1.25rem 2rem;
+  border-bottom: 2px solid var(--ink);
+  padding: 1.5rem 0 2rem;
+}
+
+.look-print .section-head h2 {
+  font-size: 1.75rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.look-print .count {
+  margin-top: 0.5rem;
+}
+
+/* Live */
+
+.look-print .live-frame {
+  border: 2px solid var(--ink);
+  background: var(--surface);
+}
+
+.look-print .state-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: clamp(2.25rem, 4.2vw, 3.75rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+
+.look-print .state-mark {
+  flex: none;
+  width: 0.38em;
+  height: 0.38em;
+  margin-top: 0.28em;
+  border: 3px solid var(--ink);
+}
+
+.look-print .state-mark[data-on='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.look-print .state-reason {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.look-print .bird {
+  margin-top: 1rem;
+  border-top: 2px solid var(--ink);
+  padding-top: 0.75rem;
+}
+
+.look-print .bird-label {
+  display: block;
+}
+
+.look-print .bird-name {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.look-print .btn {
+  width: 100%;
+  margin-top: 1.25rem;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  padding: 0 1rem;
+  color: var(--bg);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.look-print .btn:hover:not(:disabled) {
+  background: transparent;
+  color: var(--ink);
+}
+
+.look-print .btn:disabled {
+  border: 2px dashed var(--muted);
+  background: transparent;
+  color: var(--muted);
+}
+
+.look-print .note {
+  border: 2px solid var(--ink);
+  padding: 0.9rem 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.look-print .live-panel .note {
+  margin-top: 1rem;
+}
+
+/* Today */
+
+.look-print .figure {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--ink);
+  padding: 0.6rem 0;
+}
+
+.look-print .figure:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.look-print .figure dd {
+  font-size: clamp(2.75rem, 6vw, 5rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.look-print .empty {
+  max-width: 30ch;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+/* Life list: ledger rows */
+
+.look-print .specimen {
+  display: grid;
+  gap: 0.75rem;
+  border-top: 1px solid var(--ink);
+  padding: 1rem 0;
+}
+
+.look-print .specimen:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.look-print .shot {
+  border: 1px solid var(--ink);
+  background: var(--surface);
+}
+
+.look-print .specimen h3 {
+  font-size: clamp(1.4rem, 2.6vw, 2.25rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.look-print .meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.look-print :focus-visible {
+  outline-width: 3px;
+}
+
+@media (min-width: 640px) {
+  .look-print .masthead {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+  .look-print .masthead-date {
+    padding-bottom: 0.4rem;
+  }
+  .look-print .figures {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .look-print .figure,
+  .look-print .figure:first-child {
+    display: block;
+    border-top: 0;
+    border-left: 2px solid var(--ink);
+    padding: 0 0 0 1.25rem;
+  }
+  .look-print .figure dd {
+    margin-top: 0.5rem;
+  }
+  .look-print .specimen {
+    grid-template-columns: 5fr 7fr;
+    grid-template-rows: 1fr auto;
+    gap: 0 1.5rem;
+  }
+  .look-print .shot {
+    grid-row: 1 / span 2;
+  }
+  .look-print .meta {
+    align-self: end;
+  }
+}
+
+@media (min-width: 1024px) {
+  .look-print .page {
+    padding-inline: 2.5rem;
+  }
+  .look-print .section {
+    grid-template-columns: repeat(12, 1fr);
+  }
+  .look-print .section-head {
+    grid-column: 1 / span 3;
+  }
+  .look-print .section-body {
+    grid-column: 4 / span 9;
+  }
+  /* Live: picture left, words right. */
+  .look-print .live {
+    grid-template-rows: auto 1fr auto;
+  }
+  .look-print .live-frame {
+    grid-area: 1 / 1 / 4 / 9;
+    align-self: start;
+  }
+  .look-print .live .section-head {
+    grid-area: 1 / 9 / 2 / 13;
+  }
+  .look-print .live-panel {
+    grid-area: 2 / 9 / 3 / 13;
+    align-self: start;
+    margin-top: 0.5rem;
+  }
+  .look-print .live-note {
+    grid-area: 3 / 9 / 4 / 13;
+  }
+}
