@@ -56,13 +56,11 @@ Next.js 15, React 18, Tailwind). It already provides:
 
 - `app/api/ring/stream/route.ts` and `app/hooks/useWebRTCStream.ts`: live
   stream playback.
-- `lib/video-processors/`: a plug-in interface, `VideoProcessor`, whose
-  `process(frame, canvas, video)` is called on video frames.
 - `lib/auth.ts`: reads `RING_ACCESS_TOKEN` from `.env.local`.
 
 The project is a copy of this starter with its licence and attribution kept.
-Parts that are not used (the MediaPipe hand game, the heatmap and brightness
-examples, webhook routes) are removed.
+Parts that are not used (the video-processor plug-in system and its examples,
+the MediaPipe hand game, webhook routes) are removed.
 
 ## Architecture
 
@@ -70,10 +68,13 @@ Five small units, each testable on its own.
 
 ### 1. Frame sampler (browser)
 
-A `VideoProcessor` plug-in. About every 2 seconds it takes the current frame,
+A small React hook. The starter's plug-in system was read and found to be
+built around an overlay panel this app does not have, so a plain timer is
+simpler. About every 2 seconds it takes the current frame,
 downsizes it to 768px wide, and compares it with the last frame it sent using
-a cheap pixel difference. If the picture has not changed enough, it sends
-nothing. Otherwise it posts the frame as a JPEG to `/api/analyze`.
+a cheap pixel difference. If the picture has not changed, it reuses the last
+answer without calling the AI. Otherwise it posts the frame as a JPEG to
+`/api/analyze`.
 
 ### 2. Analyze route (server)
 
@@ -99,7 +100,11 @@ returns an observation:
 
 ### 3. Visit logic (pure function)
 
-`nextState(state, observation, now) -> { state, visit | null }`
+`nextState(state, observation, now, fresh) -> { state, started, ended }`
+
+Several birds can be present at once, so it returns lists. `fresh` is false
+when a reused answer is passed in: that keeps an open visit alive but never
+counts towards confirming a new one.
 
 - A bird must be named on 2 consecutive frames before a visit starts, so one
   wrong answer cannot create a sighting.
@@ -180,7 +185,6 @@ These are checked first during the build, before code depends on them.
 5. Whether a new AWS free-plan account can call Nova Lite straight away.
 6. Whether the device location API returns a usable country and state for the
    sandbox camera.
-7. How the starter's video-processor pipeline schedules frames.
 
 ## Costs
 
