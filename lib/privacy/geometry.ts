@@ -66,11 +66,15 @@ export interface Suggestion {
   zone: Zone
 }
 
-/** One suggested privacy zone per region that is big enough to matter and not already hidden. */
+/** One suggested privacy zone per region that is big enough to matter and not already hidden.
+ *  Larger regions are taken first, and a zone already suggested counts as hiding what lies
+ *  under it, so a car parked on the road does not get a second zone inside the road's. */
 export function suggestZones(regions: Region[], zones: Zone[]): Suggestion[] {
+  const area = (r: Region) => (r.box.x2 - r.box.x1) * (r.box.y2 - r.box.y1)
   const suggestions: Suggestion[] = []
-  for (const region of regions) {
-    const { total, hidden } = sample(p => inBox(p, region.box), zones)
+  for (const region of [...regions].sort((a, b) => area(b) - area(a))) {
+    const covering = [...zones, ...suggestions.map(s => s.zone)]
+    const { total, hidden } = sample(p => inBox(p, region.box), covering)
     if (total / (GRID * GRID) < TOO_SMALL) continue
     if (hidden / total >= HIDDEN_ENOUGH) continue
     suggestions.push({ kind: region.kind, zone: boxToZone(region.box) })

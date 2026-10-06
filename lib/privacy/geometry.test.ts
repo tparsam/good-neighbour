@@ -83,3 +83,9 @@ test('a speck too small to matter is not suggested', () => {
   const speck: Region = { kind: 'vehicle', box: { x1: 0.5, y1: 0.5, x2: 0.55, y2: 0.55 } }
   assert.deepEqual(suggestZones([speck], []), [])
 })
+
+test('a region inside a bigger suggested one is not suggested separately', () => {
+  const road: Region = { kind: 'road', box: { x1: 0, y1: 0.5, x2: 1, y2: 0.7 } }
+  const parkedCar: Region = { kind: 'vehicle', box: { x1: 0.2, y1: 0.52, x2: 0.4, y2: 0.66 } }
+  assert.deepEqual(suggestZones([parkedCar, road], []), [{ kind: 'road', zone: boxToZone(road.box) }])
+})
