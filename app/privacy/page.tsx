@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { explain, useRingDevice } from '../hooks/useRingDevice'
+import { useWebRTCStream } from '../hooks/useWebRTCStream'
 import { coverage, suggestZones } from '@/lib/privacy/geometry'
-import type { RegionKind, Zone } from '@/lib/privacy/types'
+import type { Region, RegionKind, Zone } from '@/lib/privacy/types'
 import { SampleScene } from './SampleScene'
 import { SAMPLE_REGIONS, SAMPLE_ZONES } from './sample'
 
@@ -12,29 +14,97 @@ const KIND: Record<RegionKind, { label: string; title: string }> = {
   vehicle: { label: 'Vehicle', title: 'A vehicle on the road' },
 }
 
+interface Result {
+  regions: Region[]
+  /** The camera's existing privacy zones, or null if they could not be read. */
+  zones: Zone[] | null
+  /** The frame that was checked, as a data URL. */
+  image: string
+  time: string
+}
+
 const percent = (share: number) => `${Math.round(share * 100)}%`
 const points = (zone: Zone) => zone.map(p => `${p.x * 1600},${p.y * 900}`).join(' ')
 const corners = (zone: Zone) => zone.map(p => `(${p.x.toFixed(2)}, ${p.y.toFixed(2)})`).join('  ')
 const share = (zone: Zone) => (zone[1].x - zone[0].x) * (zone[2].y - zone[1].y)
 
 export default function PrivacyCheck() {
-  // The sample stands in for the vision model's answer; everything below it is the real logic.
-  const regions = SAMPLE_REGIONS
-  const zones = SAMPLE_ZONES
-  const found = coverage(regions, zones)
-  const suggestions = suggestZones(regions, zones)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const { deviceId, error: setupError } = useRingDevice()
+  const { streamActive, streamError, startStream, stopStream } = useWebRTCStream({ videoRef, deviceId })
+  const [result, setResult] = useState<Result | null>(null)
+  const [checking, setChecking] = useState(false)
+  const [checkError, setCheckError] = useState<string | null>(null)
   const [asRecorded, setAsRecorded] = useState(false)
 
+  // Takes the frame on screen, asks which parts are not the owner's, and reads the camera's own zones.
+  async function check() {
+    const video = videoRef.current
+    if (!video || !video.videoWidth || checking) return
+    setChecking(true)
+    setCheckError(null)
+    try {
+      const canvas = document.createElement('canvas')
+      canvas.width = 1024
+      canvas.height = Math.round((1024 * video.videoHeight) / video.videoWidth)
+      canvas.getContext('2d')!.drawImage(video, 0, 0, canvas.width, canvas.height)
+      const image = canvas.toDataURL('image/jpeg', 0.85)
+
+      const [found, existing] = await Promise.all([
+        fetch('/api/privacy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: image.split(',')[1] }),
+        }).then(async res => ({ ok: res.ok, data: await res.json() })),
+        fetch(`/api/ring/zones?deviceId=${encodeURIComponent(deviceId ?? '')}`)
+          .then(res => res.json())
+          .catch(() => ({ zones: null })),
+      ])
+      if (!found.ok) throw new Error(found.data.error ?? 'The check failed.')
+      // No usable answer is not the same as "nothing found", so it is reported, never shown as a clean result.
+      if (!Array.isArray(found.data.regions)) throw new Error('No usable answer came back for this picture. Try again.')
+
+      setResult({
+        regions: found.data.regions,
+        zones: Array.isArray(existing.zones) ? existing.zones : null,
+        image,
+        time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+      })
+      setAsRecorded(false)
+    } catch (error) {
+      setCheckError(error instanceof Error ? error.message : 'The check failed.')
+    } finally {
+      setChecking(false)
+    }
+  }
+
+  // Until a real check has run, a drawn sample stands in for the camera and the model's answer.
+  const isSample = result === null
+  const regions = result ? result.regions : SAMPLE_REGIONS
+  const zones = result ? result.zones ?? [] : SAMPLE_ZONES
+  const zonesUnknown = result !== null && result.zones === null
+  const found = coverage(regions, zones)
+  const suggestions = suggestZones(regions, zones)
+
+  const summary = checking
+    ? 'Checking this view'
+    : `${percent(found.exposed)} of this view is not yours and is still recorded`
   const findings =
     `${percent(found.outside)} not yours, ${percent(found.hidden)} already hidden, ` +
     `${suggestions.length} ${suggestions.length === 1 ? 'zone' : 'zones'} suggested`
-  const summary = `${percent(found.exposed)} of this view is not yours and is still recorded`
+  const problem = setupError || (streamError && explain(streamError)) || checkError
+  const picture = result ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img className="scene" src={result.image} alt="The camera view that was checked" />
+  ) : (
+    <SampleScene />
+  )
 
   return (
     <main className="page">
       <header className="masthead">
         <h1 className="masthead-title">Good Neighbour</h1>
-        <p className="masthead-date">Sample result</p>
+        <p className="masthead-date">{isSample ? 'Sample result' : `Checked at ${result.time}`}</p>
       </header>
 
       <nav className="section-nav" aria-label="Sections">
@@ -50,10 +120,11 @@ export default function PrivacyCheck() {
 
         <div className="live-stage">
           <div className="live-frame">
-            <SampleScene />
+            <video ref={videoRef} autoPlay playsInline muted aria-label="Live camera view" />
+            {!streamActive && <div className="cover">{picture}</div>}
           </div>
           {/* The title arches over the oval and the finding runs under it. Decorative copies only;
-              the real heading is the h1 and the real finding is the paragraph below. */}
+              the real heading is the h1 and the real finding is the status paragraph below. */}
           <svg className="arc" viewBox="0 0 1600 900" aria-hidden="true">
             <path id="arc-top" d="M -44 450 A 844 494 0 0 1 1644 450" fill="none" />
             <path id="arc-bottom" d="M -64 450 A 864 514 0 0 0 1664 450" fill="none" />
@@ -71,16 +142,37 @@ export default function PrivacyCheck() {
         </div>
 
         <div className="live-panel">
-          <p className="state">
+          <p role="status" className="state">
             <span className="state-line">{summary}</span>
           </p>
+          <div className="actions">
+            <button className="btn" onClick={streamActive ? stopStream : startStream} disabled={!deviceId}>
+              {streamActive ? 'Stop' : 'Start live stream'}
+            </button>
+            <button className="btn" onClick={check} disabled={!streamActive || checking}>
+              {checking ? 'Checking' : 'Check this view'}
+            </button>
+          </div>
         </div>
 
-        <p className="note live-note">
-          This is a sample result on a drawn scene, not a real camera. The areas marked as not yours are made up; the
-          percentages and the suggested zones are worked out from them by the app. Checking a real camera needs a
-          Ring token and an Amazon Bedrock key.
-        </p>
+        {problem && (
+          <p role="alert" className="note live-note">
+            {problem}
+          </p>
+        )}
+        {isSample && (
+          <p className="note live-note">
+            This is a sample result on a drawn scene, not a real camera. The areas marked as not yours are made up; the
+            percentages and the suggested zones are worked out from them by the app. To check your own camera, start
+            the live stream and press Check this view.
+          </p>
+        )}
+        {zonesUnknown && (
+          <p className="note live-note">
+            The camera’s existing privacy zones could not be read, so none are shown. Some of the suggested zones may
+            already be in place.
+          </p>
+        )}
 
         <a className="chevron" href="#findings" aria-label="Go to Findings">
           <svg viewBox="0 0 84 26" aria-hidden="true">
@@ -112,14 +204,14 @@ export default function PrivacyCheck() {
         <div className="section-head">
           <h2 id="zones-heading">Zones</h2>
           <p className="count">
-            {suggestions.length} suggested, {zones.length} already set
+            {suggestions.length} suggested, {zonesUnknown ? 'existing zones unknown' : `${zones.length} already set`}
           </p>
         </div>
 
         <div className="section-body">
           <figure className="survey">
             <div className="survey-frame">
-              <SampleScene />
+              {picture}
               <svg className="survey-marks" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
                 <defs>
                   <pattern id="hatch" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
@@ -173,7 +265,11 @@ export default function PrivacyCheck() {
           </figure>
 
           {suggestions.length === 0 ? (
-            <p className="empty">Nothing to suggest. Everything outside your property is already hidden.</p>
+            <p className="empty">
+              {regions.length === 0
+                ? 'Nothing outside your property was found in this view.'
+                : 'Nothing to suggest. Everything outside your property is already hidden.'}
+            </p>
           ) : (
             <ul className="species">
               {suggestions.map((s, i) => (

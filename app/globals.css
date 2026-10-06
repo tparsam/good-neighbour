@@ -511,6 +511,20 @@ h3 {
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+}
+
+/* Shown over the video while no stream is playing: the sample scene or the last checked frame. */
+.live-frame .cover {
+  position: absolute;
+  inset: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 1.25rem;
 }
 
 .survey-frame {

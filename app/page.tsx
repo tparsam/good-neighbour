@@ -3,23 +3,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useWebRTCStream } from './hooks/useWebRTCStream'
 import { useBirdWatcher } from './hooks/useBirdWatcher'
+import { explain, useRingDevice } from './hooks/useRingDevice'
 import { LifeList } from './components/LifeList'
 import { TodaySummary } from './components/TodaySummary'
 import { lifeList, todaySummary } from '@/lib/journal/summary'
 import type { Visit } from '@/lib/journal/types'
 
-const TOKEN_HELP =
-  'Your Ring token is missing or has run out. Tokens last 30 minutes. Open the Ring Developer Playground, ' +
-  'press Generate token, paste it into .env.local as RING_ACCESS_TOKEN, then restart the app.'
-
-const explain = (error: string) => (/\b40[13]\b|not configured/i.test(error) ? TOKEN_HELP : error)
-
 export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [video, setVideo] = useState<HTMLVideoElement | null>(null)
-  const [deviceId, setDeviceId] = useState<string>()
+  const { deviceId, error: setupError } = useRingDevice()
   const [region, setRegion] = useState<string>()
-  const [setupError, setSetupError] = useState<string | null>(null)
   const [visits, setVisits] = useState<Visit[]>([])
   const [journalError, setJournalError] = useState<string | null>(null)
 
@@ -40,16 +34,6 @@ export default function Home() {
   useEffect(() => {
     void loadVisits()
   }, [loadVisits])
-
-  useEffect(() => {
-    fetch('/api/ring/devices')
-      .then(res => res.json())
-      .then(data => {
-        if (data.devices?.length) setDeviceId(data.devices[0].id)
-        else setSetupError(explain(data.error || 'No Ring camera was found on this account.'))
-      })
-      .catch(error => setSetupError(error.message))
-  }, [])
 
   useEffect(() => {
     if (!deviceId) return
