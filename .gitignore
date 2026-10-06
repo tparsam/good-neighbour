@@ -38,3 +38,7 @@ data/
 
 # Build workspace
 .superpowers/
+
+# Screenshot tool output
+.playwright-cli/
+.impeccable/
