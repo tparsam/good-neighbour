@@ -58,6 +58,11 @@ Open http://localhost:3000 and press "Start live stream".
 Based on [ring-api-helloworld](https://github.com/AmazonAppDev/ring-api-helloworld)
 by Amazon, used under the MIT licence. The live-stream code is theirs.
 
+The visual design is modelled on the Thyssen-Bornemisza museum's
+[Return to Nature](https://www.museothyssen.org/webdocs/conectathyssen/volver-naturaleza/en/)
+webdoc. Only its layout and style were followed; none of its images, text or
+font files are used. See `DESIGN.md`.
+
 ## Licence
 
 MIT. See `LICENSE`.
