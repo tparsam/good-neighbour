@@ -261,7 +261,7 @@
   .look-journal .live-panel {
     grid-area: 2 / 1;
   }
-  .look-journal .live-frame {
+  .look-journal .live-stage {
     grid-area: 1 / 2 / 3 / 3;
   }
   .look-journal .live-note {

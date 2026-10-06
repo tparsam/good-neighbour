@@ -10,7 +10,7 @@ export function TodaySummary({ today }: { today: Today }) {
     ['Busiest hour', today.busiestHour === null ? 'None yet' : hourLabel(today.busiestHour)],
   ]
   return (
-    <section aria-labelledby="today-heading" className="section today">
+    <section id="today" aria-labelledby="today-heading" className="section today">
       <div className="section-head">
         <h2 id="today-heading">Today</h2>
       </div>

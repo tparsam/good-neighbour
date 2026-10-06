@@ -17,6 +17,7 @@ const LOOKS = [
   ['journal', 'Sample 1: Journal'],
   ['print', 'Sample 2: Print'],
   ['window', 'Sample 3: Window'],
+  ['museum', 'Sample 4: Museum'],
 ] as const
 
 const explain = (error: string) => (/\b40[13]\b|not configured/i.test(error) ? TOKEN_HELP : error)
@@ -86,6 +87,9 @@ export default function Home() {
 
   const problem = setupError || (streamError && explain(streamError)) || journalError
   const birdPresent = status.current.length > 0
+  const reason = status.reason ?? 'Camera offline'
+  // Museum sample: a short reason fits on the curved caption; a long one stays in plain type below it.
+  const arcReason = reason.length <= 70
 
   return (
     <main className="page">
@@ -96,18 +100,49 @@ export default function Home() {
         <p className="masthead-date">{dateText}</p>
       </header>
 
-      <section aria-labelledby="live-heading" className="section live">
+      {/* Museum sample: a row of links to the three parts of the page. */}
+      <nav className="museum-only section-nav" aria-label="Sections">
+        <a href="#live">Live</a>
+        <a href="#today">Today</a>
+        <a href="#life-list">Life list</a>
+      </nav>
+
+      <section id="live" aria-labelledby="live-heading" className="section live" data-live={live}>
         <div className="section-head">
           <h2 id="live-heading">Live</h2>
         </div>
 
-        <div className="live-frame">
-          <video ref={videoRef} autoPlay playsInline muted aria-label="Live camera view" />
-          {demo && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img className="demo-shot" src="https://picsum.photos/seed/feeder-live/1280/720.jpg" alt="" />
-          )}
-          {!live && <p className="live-idle">The camera view appears here once the live stream starts.</p>}
+        <div className="live-stage">
+          <div className="live-frame">
+            <video ref={videoRef} autoPlay playsInline muted aria-label="Live camera view" />
+            {demo && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="demo-shot" src="https://picsum.photos/seed/feeder-live/1280/720.jpg" alt="" />
+            )}
+            {!live && <p className="live-idle">The camera view appears here once the live stream starts.</p>}
+          </div>
+          {/* Museum sample: the title arches over the oval frame and the state runs under it.
+              Decorative copies only; the real heading and status are the h1 and role="status" elements. */}
+          <svg className="museum-only arc" viewBox="0 0 1600 900" aria-hidden="true">
+            <path id="arc-top" d="M -44 450 A 844 494 0 0 1 1644 450" fill="none" />
+            <path id="arc-bottom" d="M -64 450 A 864 514 0 0 0 1664 450" fill="none" />
+            <text className="arc-title">
+              <textPath href="#arc-top" startOffset="50%" textAnchor="middle">
+                Ring Bird Journal
+              </textPath>
+            </text>
+            <text className="arc-caption">
+              <textPath href="#arc-bottom" startOffset="50%" textAnchor="middle">
+                {status.watching
+                  ? birdPresent
+                    ? `Watching. At the feeder now: ${status.current.join(', ')}`
+                    : 'Watching. No bird at the feeder.'
+                  : arcReason
+                    ? `Not watching: ${reason}`
+                    : 'Not watching'}
+              </textPath>
+            </text>
+          </svg>
         </div>
 
         <div className="live-panel">
@@ -119,9 +154,9 @@ export default function Home() {
               {status.watching ? 'Watching' : 'Not watching'}
             </span>
             {!status.watching && (
-              <span className="state-reason">
+              <span className={arcReason ? 'state-reason in-arc' : 'state-reason'}>
                 <span className="sr-only">: </span>
-                {status.reason ?? 'Camera offline'}
+                {reason}
               </span>
             )}
           </p>
@@ -150,9 +185,25 @@ export default function Home() {
             {problem}
           </p>
         )}
+
+        <a className="museum-only chevron" href="#today" aria-label="Go to Today">
+          <svg viewBox="0 0 84 26" aria-hidden="true">
+            <path d="M1 1l41 23L83 1" fill="none" stroke="currentColor" strokeWidth="1" />
+          </svg>
+        </a>
       </section>
 
       <TodaySummary today={todaySummary(visits, Date.now())} />
+
+      <svg className="museum-only flourish" viewBox="0 0 320 280" aria-hidden="true">
+        <path
+          d="M318 2C250 22 230 70 222 140c-8 70-40 120-110 132-40 6-66-18-64-44 2-22 26-28 34-8 8 22-18 48-78 50"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1"
+        />
+      </svg>
+
       <LifeList species={lifeList(visits)} />
 
       <nav className="preview-bar" aria-label="Design samples, preview only">

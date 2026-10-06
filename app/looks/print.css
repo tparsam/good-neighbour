@@ -296,7 +296,7 @@
   .look-print .live {
     grid-template-rows: auto 1fr auto;
   }
-  .look-print .live-frame {
+  .look-print .live-stage {
     grid-area: 1 / 1 / 4 / 9;
     align-self: start;
   }

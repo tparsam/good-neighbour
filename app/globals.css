@@ -99,6 +99,11 @@ h3 {
   }
 }
 
+/* Parts only the Museum sample draws (nav row, arched title, ornaments). */
+.museum-only {
+  display: none;
+}
+
 /* PREVIEW ONLY: the sample switcher. Delete with the unused looks. */
 .preview-bar {
   position: fixed;

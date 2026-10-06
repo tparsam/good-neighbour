@@ -5,7 +5,7 @@ const dayLabel = (time: number) =>
 
 export function LifeList({ species }: { species: Species[] }) {
   return (
-    <section aria-labelledby="life-list-heading" className="section lifelist">
+    <section id="life-list" aria-labelledby="life-list-heading" className="section lifelist">
       <div className="section-head">
         <h2 id="life-list-heading">Life list</h2>
         {species.length > 0 && <p className="count">{species.length} species</p>}
