@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Shared structure. Colour, type and layout come from the look stylesheets in app/looks/. */
+/* Structure shared by every part of the page. */
 
 :root {
   color-scheme: light dark;
@@ -38,17 +38,11 @@ h3 {
   overflow: hidden;
 }
 
-.live-frame video,
-.live-frame .demo-shot {
+.live-frame video {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.live-frame .demo-shot {
-  position: absolute;
-  inset: 0;
 }
 
 .live-idle {
@@ -99,37 +93,400 @@ h3 {
   }
 }
 
-/* Parts only the Museum sample draws (nav row, arched title, ornaments). */
-.museum-only {
+/* The look.
+   Modelled on the Thyssen-Bornemisza "Return to Nature" webdoc: a title arched over an
+   oval picture, a tall condensed uppercase serif against a plain grotesk, black on light
+   grey, a ruled top bar, staggered picture blocks and oversized quotes.
+   Fonts are open stand-ins: Instrument Serif for the reference's Glossy Display,
+   Archivo for its Neue Haas Grotesk. No accent colour: ink and paper only.
+   Radius: ovals for the camera frame and the button, square everywhere else. */
+
+:root {
+  --bg: #f5f5f5;
+  --ink: #0a0a0a;
+  --muted: #4a4a4a;
+  --accent: #0a0a0a;
+  --font-body: var(--f-grot), 'Helvetica Neue', Arial, sans-serif;
+  --font-display: var(--f-tall), 'Times New Roman', serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111111;
+    --ink: #f1f1ee;
+    --muted: #b4b4ae;
+    --accent: #f1f1ee;
+  }
+}
+
+.page {
+  padding-bottom: 8rem;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+/* Top bar and section links */
+
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4rem;
+  border-bottom: 1px solid var(--ink);
+  background: var(--bg);
+  padding: 0 1.875rem;
+}
+
+.masthead-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.masthead-title em {
+  font-style: normal;
+}
+
+.masthead-date {
+  font-size: 0.8125rem;
+}
+
+.section-nav {
+  display: flex;
+  gap: 1.5rem 4rem;
+  padding: 0 1.875rem;
+  text-transform: uppercase;
+}
+
+/* Padding makes each link a comfortable tap target on a phone. */
+.section-nav a {
+  padding-block: 0.9rem;
+}
+
+.section-nav a:first-child {
+  margin-right: auto;
+}
+
+.section-nav a:hover,
+.section-nav a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Live: the arched title, the oval frame, the state running under it */
+
+.live {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1.25rem;
+  text-align: center;
+}
+
+.live .section-head,
+.bird {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.live-stage {
+  position: relative;
+  width: min(74vw, 1050px);
+  margin-top: clamp(4.5rem, 10.5vw, 9.5rem);
+}
+
+.live-frame {
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ink) 7%, var(--bg));
+}
+
+.live-idle {
+  padding-inline: 26%;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.arc {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  fill: var(--ink);
+}
+
+.arc-title {
+  font-family: var(--font-display);
+  font-size: 176px;
+  letter-spacing: -3px;
+  text-transform: uppercase;
+}
+
+.arc-caption {
+  font-family: var(--font-body);
+  font-size: 37px;
+  text-transform: uppercase;
+}
+
+.live-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+
+/* The arc already says the state on wide screens; the reason stays in plain type under it. */
+.state-mark {
   display: none;
 }
 
-/* PREVIEW ONLY: the sample switcher. Delete with the unused looks. */
-.preview-bar {
-  position: fixed;
-  left: 50%;
-  bottom: 0.75rem;
-  z-index: 10;
+.state-line {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.state-reason {
+  display: block;
+  margin-top: 0.4rem;
+  text-transform: uppercase;
+}
+
+.btn {
+  min-width: 9rem;
+  min-height: 5.25rem;
+  margin-top: 1.5rem;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  padding: 0 2.25rem;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.btn:disabled {
+  border-style: dashed;
+  color: var(--muted);
+}
+
+.note {
+  max-width: 62ch;
+  margin-top: 1.75rem;
+  border-top: 1px solid var(--ink);
+  padding-top: 0.9rem;
+  text-align: left;
+}
+
+.chevron {
+  display: block;
+  width: 5.25rem;
+  margin-top: 3rem;
+}
+
+.flourish {
+  display: block;
+  width: min(42vw, 20rem);
+  margin: 2rem 14% 0 auto;
+}
+
+/* Today: the day's figures set like one of the reference's oversized quotes */
+
+.today,
+.lifelist {
+  padding: 0 1.875rem;
+}
+
+.today {
+  margin-top: clamp(5rem, 11vw, 9rem);
+  scroll-margin-top: 6rem;
+}
+
+.section-head h2,
+.count,
+.meta {
+  text-transform: uppercase;
+}
+
+.figures,
+.empty {
+  max-width: 22ch;
+  margin-top: 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8.4vw, 7.5rem);
+  line-height: 0.93;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.figures::before,
+.empty::before {
+  content: '\00ab';
+}
+
+.figures::after,
+.empty::after {
+  content: '\00bb';
+}
+
+.figures,
+.figure,
+.figure dt,
+.figure dd {
+  display: inline;
+}
+
+/* Number first, then its label: "2 species, 5 visits, 9:00 busiest hour". */
+.figure {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  gap: 0.22em;
+  margin-right: 0.22em;
+}
+
+.figure:not(:last-child) dt::after {
+  content: ',';
+}
+
+.figure:last-child {
+  margin-right: 0;
+}
+
+/* Life list: an oversized title, then picture blocks staggered across the sheet */
+
+.lifelist {
+  margin-top: 1rem;
+  scroll-margin-top: 6rem;
+}
+
+.lifelist .section-head {
+  text-align: center;
+}
+
+.lifelist .section-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 10.4vw, 9.375rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.count {
+  margin-top: 0.75rem;
+}
+
+.lifelist .section-body {
+  margin-top: clamp(3rem, 7vw, 6rem);
+}
+
+.species {
+  display: grid;
+  gap: 4rem 0;
+}
+
+.specimen {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.25rem 1rem;
-  max-width: calc(100vw - 1.5rem);
-  transform: translateX(-50%);
-  border-radius: 8px;
-  background: #16181a;
-  padding: 0.5rem 0.9rem;
-  color: #f2f3f1;
-  font: 500 0.8125rem/1.4 system-ui, sans-serif;
+  flex-direction: column;
 }
 
-.preview-bar a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+.specimen .meta {
+  order: 1;
 }
 
-.preview-bar a[aria-current='true'] {
-  text-decoration: none;
-  font-weight: 700;
+.specimen h3 {
+  order: 2;
+  margin: 0.2rem 0 0.9rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 2.6vw, 2.25rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.specimen .shot {
+  order: 3;
+}
+
+.shot-empty {
+  border: 1px solid var(--ink);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media (min-width: 768px) {
+  /* On wide screens the arc carries the state, so the plain copy is kept for screen readers only. */
+  .state-line,
+  .state-reason.in-arc {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .state-reason {
+    margin-top: 0;
+  }
+  .species {
+    grid-template-columns: repeat(12, 1fr);
+    gap: 0 2rem;
+  }
+  /* A repeating stagger of three: left, right and lower, then centre. */
+  .specimen:nth-child(3n + 1) {
+    grid-column: 1 / span 5;
+  }
+  .specimen:nth-child(3n + 2) {
+    grid-column: 7 / span 6;
+    margin-top: 16rem;
+  }
+  .specimen:nth-child(3n) {
+    grid-column: 4 / span 6;
+    margin-top: 6rem;
+  }
+  .specimen:nth-child(n + 4) {
+    margin-top: 8rem;
+  }
+  .specimen:nth-child(3n + 2):nth-child(n + 4) {
+    margin-top: 20rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .masthead {
+    padding-inline: 1.25rem;
+  }
+  .section-nav {
+    gap: 1.5rem;
+    padding-inline: 1.25rem;
+  }
+  .live-stage {
+    width: 90vw;
+  }
+  /* The curved state would be too small to read on a phone, so it is set straight below. */
+  .arc-caption {
+    display: none;
+  }
+  .live-panel {
+    margin-top: 1.5rem;
+  }
+  .today,
+  .lifelist {
+    padding-inline: 1.25rem;
+  }
 }
