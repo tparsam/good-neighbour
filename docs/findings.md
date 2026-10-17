@@ -28,6 +28,31 @@ Not yet checked.
 
 Not yet checked.
 
+## First live run with the app (2026-10-17, from the UAE)
+
+- **Devices:** the token's account has one camera, "Playground Device",
+  reported as `online: false`.
+- **Configurations, confirmed:** privacy zones sit at
+  `data.attributes.image_enhancements.privacy_zones` (empty on this camera)
+  and the encryption flag at `data.attributes.e2e_encryption.enabled`
+  (`false`). The camera also has a motion zone at
+  `data.attributes.motion_detection.motion_zones`, which the app rightly does
+  not count as a privacy zone. The app's zones route returned
+  `{"zones":[],"encrypted":false}`.
+- **Live stream:** Ring accepted every stream request (POST 200 in 2 to 5 s).
+  Once, video played at 1280 x 720. Every stream then ended within seconds
+  with "The camera stream ended", before a frame could be checked; once no
+  video arrived within 20 s.
+- **Likely cause, not yet confirmed:** the app ended a stream as soon as the
+  connection reported "disconnected", which in WebRTC is often temporary on a
+  slow network. It now waits 5 s for it to recover and logs every state
+  change ("Ring stream connection: ...") so the next run shows the cause.
+- **Network:** connecting to Ring's servers (`api.amazonvision.com`, which
+  resolved to eu-south-2) took 2 to 3 s and sometimes more than Node's 10 s
+  connect limit, so some requests failed with "fetch failed". This was worse
+  while other uploads were running on the same connection.
+- Not yet seen: a live frame checked by Nova, and which clip the stream shows.
+
 ## How well Nova Lite marks what is not the owner's
 
 Checked on 2026-10-17 with `us.amazon.nova-lite-v1:0` at temperature 0, on two

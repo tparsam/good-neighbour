@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback, RefObject } from 'react'
+import { watchConnection } from '@/lib/journal/connection'
 
 interface UseWebRTCStreamOptions {
   videoRef: RefObject<HTMLVideoElement>
@@ -53,11 +54,9 @@ export function useWebRTCStream({ videoRef, deviceId }: UseWebRTCStreamOptions):
       })
       pcRef.current = pc
 
-      pc.onconnectionstatechange = () => {
-        if (pcRef.current === pc && (pc.connectionState === 'failed' || pc.connectionState === 'disconnected')) {
-          void teardown().then(() => setStreamError('The camera stream ended.'))
-        }
-      }
+      watchConnection(pc, () => {
+        if (pcRef.current === pc) void teardown().then(() => setStreamError('The camera stream ended.'))
+      })
 
       pc.addTransceiver('audio', { direction: 'sendrecv' })
       pc.addTransceiver('video', { direction: 'recvonly' })
