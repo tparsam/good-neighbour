@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { explain, useRingDevice } from '../hooks/useRingDevice'
 import { useWebRTCStream } from '../hooks/useWebRTCStream'
 import { coverage, suggestZones } from '@/lib/privacy/geometry'
@@ -20,13 +20,34 @@ interface Result {
   zones: Zone[] | null
   /** The frame that was checked, as a data URL. */
   image: string
+  /** Its width over its height, so the survey shows the whole picture and the marks line up. */
+  ratio: number
   time: string
 }
 
 const percent = (share: number) => `${Math.round(share * 100)}%`
-const points = (zone: Zone) => zone.map(p => `${p.x * 1600},${p.y * 900}`).join(' ')
+const points = (zone: Zone, height: number) => zone.map(p => `${p.x * 1600},${p.y * height}`).join(' ')
 const corners = (zone: Zone) => zone.map(p => `(${p.x.toFixed(2)}, ${p.y.toFixed(2)})`).join('  ')
 const share = (zone: Zone) => (zone[1].x - zone[0].x) * (zone[2].y - zone[1].y)
+
+/** Draws a video frame or a photo into a JPEG at most 1024 px wide, as a data URL. */
+function toJpeg(source: CanvasImageSource, width: number, height: number): Picture {
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.min(1024, width)
+  canvas.height = Math.round((canvas.width * height) / width)
+  canvas.getContext('2d')!.drawImage(source, 0, 0, canvas.width, canvas.height)
+  return { image: canvas.toDataURL('image/jpeg', 0.85), ratio: canvas.width / canvas.height }
+}
+
+interface Picture {
+  image: string
+  ratio: number
+}
+
+const readZones = (deviceId: string | undefined) =>
+  fetch(`/api/ring/zones?deviceId=${encodeURIComponent(deviceId ?? '')}`)
+    .then(res => res.json())
+    .catch(() => ({ zones: null }))
 
 export default function PrivacyCheck() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -36,29 +57,47 @@ export default function PrivacyCheck() {
   const [checking, setChecking] = useState(false)
   const [checkError, setCheckError] = useState<string | null>(null)
   const [asRecorded, setAsRecorded] = useState(false)
+  // Ring's TAKE encryption hides a camera's video from apps, so its live view cannot be checked.
+  const [encrypted, setEncrypted] = useState(false)
 
-  // Takes the frame on screen, asks which parts are not the owner's, and reads the camera's own zones.
-  async function check() {
+  useEffect(() => {
+    if (deviceId) readZones(deviceId).then(data => setEncrypted(data.encrypted === true))
+  }, [deviceId])
+
+  // Takes the frame on screen and checks it.
+  function checkLive() {
     const video = videoRef.current
-    if (!video || !video.videoWidth || checking) return
+    if (video?.videoWidth) analyse(() => toJpeg(video, video.videoWidth, video.videoHeight))
+  }
+
+  // Checks a photo the owner chose, such as a screenshot of the camera's view in the Ring app.
+  function checkPhoto(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    event.target.value = '' // so choosing the same photo again checks it again
+    if (!file) return
+    analyse(async () => {
+      if (!file.type.startsWith('image/')) throw new Error('That file is not a picture. Choose a photo or a screenshot.')
+      const bitmap = await createImageBitmap(file).catch(() => {
+        throw new Error('That picture could not be opened. Try a JPEG or PNG.')
+      })
+      return toJpeg(bitmap, bitmap.width, bitmap.height)
+    })
+  }
+
+  // Asks which parts of the picture are not the owner's, and reads the camera's own zones.
+  async function analyse(picture: () => Picture | Promise<Picture>) {
+    if (checking) return
     setChecking(true)
     setCheckError(null)
     try {
-      const canvas = document.createElement('canvas')
-      canvas.width = 1024
-      canvas.height = Math.round((1024 * video.videoHeight) / video.videoWidth)
-      canvas.getContext('2d')!.drawImage(video, 0, 0, canvas.width, canvas.height)
-      const image = canvas.toDataURL('image/jpeg', 0.85)
-
+      const { image, ratio } = await picture()
       const [found, existing] = await Promise.all([
         fetch('/api/privacy', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ image: image.split(',')[1] }),
         }).then(async res => ({ ok: res.ok, data: await res.json() })),
-        fetch(`/api/ring/zones?deviceId=${encodeURIComponent(deviceId ?? '')}`)
-          .then(res => res.json())
-          .catch(() => ({ zones: null })),
+        readZones(deviceId),
       ])
       if (!found.ok) throw new Error(found.data.error ?? 'The check failed.')
       // No usable answer is not the same as "nothing found", so it is reported, never shown as a clean result.
@@ -68,6 +107,7 @@ export default function PrivacyCheck() {
         regions: found.data.regions,
         zones: Array.isArray(existing.zones) ? existing.zones : null,
         image,
+        ratio,
         time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
       })
       setAsRecorded(false)
@@ -83,6 +123,8 @@ export default function PrivacyCheck() {
   const regions = result ? result.regions : SAMPLE_REGIONS
   const zones = result ? result.zones ?? [] : SAMPLE_ZONES
   const zonesUnknown = result !== null && result.zones === null
+  // The marks are drawn 1600 units wide and as tall as the picture's shape needs (the sample is 16:9).
+  const height = result ? 1600 / result.ratio : 900
   const found = coverage(regions, zones)
   const suggestions = suggestZones(regions, zones)
 
@@ -146,12 +188,16 @@ export default function PrivacyCheck() {
             <span className="state-line">{summary}</span>
           </p>
           <div className="actions">
-            <button className="btn" onClick={streamActive ? stopStream : startStream} disabled={!deviceId}>
+            <button className="btn" onClick={streamActive ? stopStream : startStream} disabled={!deviceId || encrypted}>
               {streamActive ? 'Stop' : 'Start live stream'}
             </button>
-            <button className="btn" onClick={check} disabled={!streamActive || checking}>
+            <button className="btn" onClick={checkLive} disabled={!streamActive || checking}>
               {checking ? 'Checking' : 'Check this view'}
             </button>
+            <label className="btn btn-file" data-disabled={checking}>
+              Check a photo
+              <input type="file" accept="image/*" onChange={checkPhoto} disabled={checking} />
+            </label>
           </div>
         </div>
 
@@ -160,11 +206,22 @@ export default function PrivacyCheck() {
             {problem}
           </p>
         )}
+        {checking && (
+          <p className="note live-note">
+            Sending the picture to be checked. On a slow internet connection this can take up to a minute.
+          </p>
+        )}
+        {encrypted && (
+          <p className="note live-note">
+            This camera’s video is encrypted by Ring, so apps cannot see its live view. Open the camera’s live view in
+            the Ring app, take a screenshot, and press Check a photo. Your existing privacy zones are still read.
+          </p>
+        )}
         {isSample && (
           <p className="note live-note">
             This is a sample result on a drawn scene, not a real camera. The areas marked as not yours are made up; the
             percentages and the suggested zones are worked out from them by the app. To check your own camera, start
-            the live stream and press Check this view.
+            the live stream and press Check this view, or press Check a photo and choose a screenshot of its view.
           </p>
         )}
         {zonesUnknown && (
@@ -210,9 +267,9 @@ export default function PrivacyCheck() {
 
         <div className="section-body">
           <figure className="survey">
-            <div className="survey-frame">
+            <div className="survey-frame" style={result ? { aspectRatio: result.ratio } : undefined}>
               {picture}
-              <svg className="survey-marks" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+              <svg className="survey-marks" viewBox={`0 0 1600 ${height}`} aria-hidden="true">
                 <defs>
                   <pattern id="hatch" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
                     <path d="M0 0v18" stroke="currentColor" strokeWidth="2" />
@@ -224,21 +281,21 @@ export default function PrivacyCheck() {
                       <rect
                         className="mark-region"
                         x={r.box.x1 * 1600}
-                        y={r.box.y1 * 900}
+                        y={r.box.y1 * height}
                         width={(r.box.x2 - r.box.x1) * 1600}
-                        height={(r.box.y2 - r.box.y1) * 900}
+                        height={(r.box.y2 - r.box.y1) * height}
                         fill="url(#hatch)"
                       />
-                      <text className="mark-label" x={r.box.x1 * 1600 + 30} y={r.box.y1 * 900 + 46}>
+                      <text className="mark-label" x={r.box.x1 * 1600 + 30} y={r.box.y1 * height + 46}>
                         {KIND[r.kind].label}
                       </text>
                     </g>
                   ))}
                 {suggestions.map((s, i) => (
-                  <polygon key={i} className={asRecorded ? 'mark-hidden' : 'mark-suggested'} points={points(s.zone)} />
+                  <polygon key={i} className={asRecorded ? 'mark-hidden' : 'mark-suggested'} points={points(s.zone, height)} />
                 ))}
                 {zones.map((zone, i) => (
-                  <polygon key={i} className="mark-hidden" points={points(zone)} />
+                  <polygon key={i} className="mark-hidden" points={points(zone, height)} />
                 ))}
               </svg>
             </div>

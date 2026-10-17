@@ -527,6 +527,33 @@ h3 {
   gap: 0 1.25rem;
 }
 
+/* "Check a photo" is a label styled as .btn; the file input inside stays focusable but unseen. */
+.btn-file {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-file input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.btn-file:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.btn-file[data-disabled='true'] {
+  border-style: dashed;
+  color: var(--muted);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .survey-frame {
   position: relative;
   aspect-ratio: 16 / 9;

@@ -60,3 +60,18 @@ for (const [label, text] of [
     assert.equal(parseRegions(text), null)
   })
 }
+
+// Seen from Nova Lite on 2026-10-17, about 1 reply in 8: valid regions inside broken JSON (an extra "]").
+test('regions are still read when the reply around them is broken JSON', () => {
+  const reply = '{"regions":[{"kind":"road","box":[0, 839, 1000, 999]}]]}'
+  assert.deepEqual(parseRegions(reply), [{ kind: 'road', box: { x1: 0, y1: 0.839, x2: 1, y2: 0.999 } }])
+})
+
+test('broken JSON with no readable region is still no answer, not "nothing found"', () => {
+  assert.equal(parseRegions('{"regions":[{"kind":"road","box":[0, 839'), null)
+  assert.equal(parseRegions('{"regions":[}'), null)
+})
+
+test('broken JSON whose only regions are unusable is no answer', () => {
+  assert.equal(parseRegions('{"regions":[{"kind":"tree","box":[0, 0, 10, 10]}]]}'), null)
+})

@@ -31,12 +31,25 @@ export function parseRegions(text: string): Region[] | null {
   const end = text.lastIndexOf('}')
   if (start === -1 || end <= start) return null
   let data: any
+  let recovered = false
   try {
     data = JSON.parse(text.slice(start, end + 1))
   } catch {
-    return null
+    // Nova sometimes wraps good regions in broken JSON (a stray bracket), so each complete
+    // region object is read on its own. If none can be read, it is still no answer.
+    const found = [...text.matchAll(/\{[^{}]*"kind"[^{}]*\}/g)].flatMap(m => {
+      try {
+        return [JSON.parse(m[0])]
+      } catch {
+        return []
+      }
+    })
+    if (found.length === 0) return null
+    data = { regions: found }
+    recovered = true
   }
   if (!Array.isArray(data?.regions)) return null
   // ponytail: at most 30 regions are read; a camera view never needs more.
-  return data.regions.slice(0, 30).map(toRegion).filter((r: Region | null): r is Region => r !== null)
+  const regions = data.regions.slice(0, 30).map(toRegion).filter((r: Region | null): r is Region => r !== null)
+  return recovered && regions.length === 0 ? null : regions
 }

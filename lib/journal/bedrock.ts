@@ -24,6 +24,8 @@ export async function askAboutImage(opts: {
   question: string
   jpegBase64: string
   maxTokens: number
+  /** How long to wait for the answer. The bird watcher's default suits a frame every 2 seconds. */
+  timeoutMs?: number
 }): Promise<string | null> {
   const model = process.env.BEDROCK_MODEL_ID ?? 'us.amazon.nova-lite-v1:0'
   const awsRegion = process.env.AWS_REGION ?? 'us-east-1'
@@ -33,7 +35,7 @@ export async function askAboutImage(opts: {
     {
       method: 'POST',
       // Without a limit a hung call would leave the watcher stalled while it still says "Watching".
-      signal: AbortSignal.timeout(15_000),
+      signal: AbortSignal.timeout(opts.timeoutMs ?? 15_000),
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.AWS_BEARER_TOKEN_BEDROCK}`,

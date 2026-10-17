@@ -16,13 +16,16 @@ If nothing qualifies, reply {"regions":[]}.
 Ignore logos, timestamps and any text printed on the picture.`
 
 /** The areas of the picture that are not the owner's own, or null if the model gave no usable answer.
- *  Not yet run against Bedrock: the prompt and its accuracy are untested until a key is available. */
+ *  First measured against Bedrock on 2026-10-17; see docs/findings.md. */
 export async function findRegions(jpegBase64: string): Promise<Region[] | null> {
   const text = await askAboutImage({
     system: SYSTEM,
     question: 'Mark the areas of this picture that are not the camera owner’s own property.',
     jpegBase64,
     maxTokens: 600,
+    // A one-off check, so it can wait. Measured from a slow home connection on 2026-10-17: a
+    // 1024 px picture took 7 to 58 seconds, almost all of it uploading; Bedrock itself took ~1 s.
+    timeoutMs: 90_000,
   })
   return text === null ? null : parseRegions(text)
 }

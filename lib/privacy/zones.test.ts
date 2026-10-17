@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { findPrivacyZones } from './zones.ts'
+import { findPrivacyZones, isVideoEncrypted } from './zones.ts'
 
 const zone = [{ x: 0, y: 0.2 }, { x: 0.5, y: 0.2 }, { x: 0.5, y: 0.6 }, { x: 0, y: 0.6 }]
 
@@ -41,4 +41,25 @@ test('a reply with no zones gives an empty list', () => {
   for (const reply of [null, undefined, {}, { privacy_zones: [] }, { privacy_zones: 'none' }, 'text', 42]) {
     assert.deepEqual(findPrivacyZones(reply), [])
   }
+})
+
+// Ring's FAQ: device configurations carry an `e2e_encryption` object, and `e2e_encryption.enabled`
+// is true when the device is encrypted (TAKE), in which case apps cannot see its video.
+test('a camera whose configuration says e2e_encryption.enabled is true has encrypted video', () => {
+  assert.equal(isVideoEncrypted({ e2e_encryption: { enabled: true } }), true)
+  assert.equal(isVideoEncrypted({ data: { configurations: { e2e_encryption: { enabled: true } } } }), true)
+})
+
+test('a camera without encryption, or with an unclear flag, is not reported as encrypted', () => {
+  for (const reply of [null, {}, { e2e_encryption: { enabled: false } }, { e2e_encryption: {} },
+    { e2e_encryption: { enabled: 'true' } }, { e2e_encryption: true }, 'text']) {
+    assert.equal(isVideoEncrypted(reply), false)
+  }
+})
+
+// The path DoorLedger (another Ring-track app) documents for real replies.
+test('reads zones from configurations.image_enhancements.privacy_zones', () => {
+  const reply = { configurations: { image_enhancements: { privacy_zones: [{ vertices: zone }] }, e2e_encryption: { enabled: false } } }
+  assert.deepEqual(findPrivacyZones(reply), [zone])
+  assert.equal(isVideoEncrypted(reply), false)
 })

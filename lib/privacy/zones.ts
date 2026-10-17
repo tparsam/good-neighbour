@@ -29,3 +29,13 @@ export function findPrivacyZones(reply: unknown, depth = 0): Zone[] {
   }
   return zones
 }
+
+/** Whether a Ring device-configurations reply says the camera's video is encrypted (Ring's TAKE).
+ *  Apps then get only encrypted video, so the live view cannot be checked. Only an explicit
+ *  `e2e_encryption.enabled === true` counts. */
+export function isVideoEncrypted(reply: unknown, depth = 0): boolean {
+  if (reply === null || typeof reply !== 'object' || depth > 8) return false
+  return Object.entries(reply).some(([key, value]) =>
+    key === 'e2e_encryption' ? (value as any)?.enabled === true : isVideoEncrypted(value, depth + 1)
+  )
+}
