@@ -51,6 +51,22 @@ interface Picture {
   ratio: number
 }
 
+/** Openly licensed photos anyone can try, served from public/samples (credited on the page). */
+const SAMPLES = [
+  { src: '/samples/ring-doorbell-frame.jpg', label: 'A Ring doorbell' },
+  { src: '/samples/front-door-street-view.jpg', label: 'A front door' },
+  { src: '/samples/street-from-across-the-road.jpg', label: 'Across the road' },
+]
+
+/** Opens a picture file (a photo, a screenshot or a sample) as a JPEG ready to check. */
+async function fromFile(file: Blob) {
+  if (!file.type.startsWith('image/')) throw new Error('That file is not a picture. Choose a photo or a screenshot.')
+  const bitmap = await createImageBitmap(file).catch(() => {
+    throw new Error('That picture could not be opened. Try a JPEG or PNG.')
+  })
+  return toJpeg(bitmap, bitmap.width, bitmap.height)
+}
+
 const readZones = (deviceId: string | undefined) =>
   fetch(`/api/ring/zones?deviceId=${encodeURIComponent(deviceId ?? '')}`)
     .then(res => res.json())
@@ -58,7 +74,7 @@ const readZones = (deviceId: string | undefined) =>
 
 export default function PrivacyCheck() {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const { deviceId, error: setupError } = useRingDevice()
+  const { deviceId, error: setupError, notConfigured } = useRingDevice()
   const { streamActive, streamError, startStream, stopStream } = useWebRTCStream({ videoRef, deviceId })
   const [result, setResult] = useState<Result | null>(null)
   const [checking, setChecking] = useState(false)
@@ -81,14 +97,12 @@ export default function PrivacyCheck() {
   function checkPhoto(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
     event.target.value = '' // so choosing the same photo again checks it again
-    if (!file) return
-    analyse(async () => {
-      if (!file.type.startsWith('image/')) throw new Error('That file is not a picture. Choose a photo or a screenshot.')
-      const bitmap = await createImageBitmap(file).catch(() => {
-        throw new Error('That picture could not be opened. Try a JPEG or PNG.')
-      })
-      return toJpeg(bitmap, bitmap.width, bitmap.height)
-    })
+    if (file) analyse(() => fromFile(file))
+  }
+
+  // Checks one of the sample photos, for anyone without a Ring camera or a photo to hand.
+  function checkSample(src: string) {
+    analyse(async () => fromFile(await fetch(src).then(res => res.blob())))
   }
 
   // Asks which parts of the picture are not the owner's, and reads the camera's own zones.
@@ -211,6 +225,14 @@ export default function PrivacyCheck() {
               <input type="file" accept="image/*" onChange={checkPhoto} disabled={checking} />
             </label>
           </div>
+          <div className="samples">
+            <span>Or try a sample photo:</span>
+            {SAMPLES.map(s => (
+              <button key={s.src} type="button" onClick={() => checkSample(s.src)} disabled={checking}>
+                {s.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {problems.map(problem => (
@@ -221,6 +243,12 @@ export default function PrivacyCheck() {
         {checking && (
           <p className="note live-note">
             Sending the picture to be checked. On a slow internet connection this can take up to a minute.
+          </p>
+        )}
+        {notConfigured && (
+          <p className="note live-note">
+            This copy of Good Neighbour is not connected to a Ring account, so the live camera is off. Check a photo
+            of your own, or try one of the sample photos.
           </p>
         )}
         {encrypted && (
@@ -236,7 +264,7 @@ export default function PrivacyCheck() {
             the live stream and press Check this view, or press Check a photo and choose a screenshot of its view.
           </p>
         )}
-        {zonesUnknown && (
+        {zonesUnknown && !notConfigured && (
           <p className="note live-note">
             The camera’s existing privacy zones could not be read, so none are shown. Some of the suggested zones may
             already be in place.
@@ -372,6 +400,18 @@ export default function PrivacyCheck() {
               cannot know where your property ends. Ring does not let apps change zones, so you draw them yourself.
             </p>
           </div>
+
+          <p className="credit">
+            Sample photos from Wikimedia Commons:{' '}
+            <a href="https://commons.wikimedia.org/wiki/File:Ring_Video_Doorbell_2_capture_video_quality.jpg">a Ring doorbell</a> by Amin
+            and{' '}
+            <a href="https://commons.wikimedia.org/wiki/File:2022-05-28_13_25_53_Panoramic_view_across_a_front_yard_from_the_front_door_of_a_house_along_Aquetong_Lane_in_the_Mountainview_section_of_Ewing_Township,_Mercer_County,_New_Jersey.jpg">
+              a front door
+            </a>{' '}
+            by Famartin (CC BY-SA 4.0, cropped);{' '}
+            <a href="https://commons.wikimedia.org/wiki/File:View_of_suburban_house_and_street_(AM_80798-1).jpg">across the road</a>{' '}
+            (CC BY 4.0).
+          </p>
         </div>
       </section>
     </main>

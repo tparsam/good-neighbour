@@ -6,6 +6,10 @@ const DEVICE_NAME = process.env.NEXT_PUBLIC_RING_DEVICE_NAME || 'Camera'
 const API_BASE = 'https://api.amazonvision.com'
 
 export async function GET() {
+  // A copy with no Ring credentials (such as a public demo) has no camera: said plainly, not as a failure.
+  if (!process.env.RING_ACCESS_TOKEN && !process.env.RING_REFRESH_TOKEN) {
+    return NextResponse.json({ devices: [], notConfigured: true })
+  }
   try {
     const token = await getAccessToken()
 

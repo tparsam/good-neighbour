@@ -547,6 +547,40 @@ h3 {
   outline-offset: 3px;
 }
 
+/* One-tap sample photos: plain underlined words, set like the section links. */
+.samples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.samples button {
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.samples button:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.credit {
+  max-width: 62ch;
+  margin-top: 3rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.credit a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
 .btn-file[data-disabled='true'] {
   border-style: dashed;
   color: var(--muted);

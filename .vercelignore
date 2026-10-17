@@ -1,0 +1,5 @@
+docs/
+.playwright-cli/
+.impeccable/
+data/
+*.webm
