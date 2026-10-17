@@ -27,3 +27,61 @@ Not yet checked.
 ## Device location response
 
 Not yet checked.
+
+## How well Nova Lite marks what is not the owner's
+
+Checked on 2026-10-17 with `us.amazon.nova-lite-v1:0` at temperature 0, on two
+public photos taken from across a residential street (Wikimedia Commons, "View
+of suburban house and street", AM 80798-1 and -2, CC BY 4.0), each resized to
+1024 px wide. Seen from a front door opposite, the road and every house in
+these photos are not the owner's.
+
+- **The road was found every time**, with a tight box along the bottom of the
+  frame (photo 1: y from 0.83 to 1.00; photo 2: y from 0.78 to 0.94).
+- **The houses were found only some of the time.** On photo 1, the house on
+  the right was marked as "neighbour" in some runs and missed in others. The
+  large house straight across the road was not marked in any run. Through the
+  page (same photo, re-encoded by the browser), only the road was marked.
+- **About 1 reply in 8 was broken JSON** with good regions inside (for example
+  `{"regions":[...]]}`, a stray bracket). The reply reader now recovers these;
+  after the fix, 8 calls out of 8 on photo 1 gave a usable answer.
+- A text-only test call answered in 535 ms. Checks with a picture finished
+  within the 6 to 7 seconds the browser test waited; they were not timed more
+  closely.
+
+What this means: the road is reliable; neighbours' houses need a better
+prompt (for example, telling the model the camera is on the owner's own front
+door, so any building across the road belongs to someone else) or a stronger
+model (`BEDROCK_MODEL_ID=us.amazon.nova-pro-v1:0`). Re-check with real
+front-door photos before recording the demo.
+
+### Doorbell-style photos (second round, same day)
+
+Photos from Wikimedia Commons (credits in `ring-bird-journal-samples/web-photos/CREDITS.txt`
+outside this repository), each 1024 px wide, three runs each unless stated:
+
+| Photo | What Nova Lite marked | Consistency |
+|---|---|---|
+| A real Ring Video Doorbell 2 frame: front garden, road, houses opposite | Both groups of houses opposite, a parked car | Same boxes in 3 of 3 runs; one run missed the house on the right |
+| A front-door view across a lawn to a street with three houses | All three houses, three cars, part of the road | Full answer in 1 run; the other 2 timed out (see below) |
+| A church porch looking out on a churchyard (a check for false alarms) | The churchyard, as "neighbour", 29% of the frame | Same in 3 of 3 runs |
+
+- Houses and cars across the road are found well in real doorbell-style
+  views. Far-off houses are small, so most fall under the 1% size floor and
+  only the biggest gets a suggested zone.
+- The road is often missed or only partly boxed in these views.
+- Anything beyond an opening tends to be called "neighbour", even when it is
+  not a home, as in the churchyard.
+- At 768 px and JPEG quality 70 (half the upload), the Ring frame came out
+  better (both houses and all three cars) but the street view lost its houses
+  in one run. Not enough runs to call it, so the app stays at 1024 px.
+
+### Why some checks took up to a minute
+
+From a home connection in the UAE, a 1024 px check took 7 to 58 seconds.
+Bedrock's own `metrics.latencyMs` was about 1.1 seconds; the rest was the
+upload. The connection was sending 13 to 21 KB per second to Bedrock and to an
+unrelated test server alike, so the slowness is the connection, not AWS. The
+old 15 second limit (set for the bird watcher) failed 2 of 3 checks on the
+street view. The privacy check now waits up to 90 seconds and says on screen
+that it can take up to a minute.

@@ -1,23 +1,77 @@
-# Ring Bird Journal
+# Good Neighbour
 
-Turn a Ring camera into a smart bird feeder camera. The app watches the camera's
-live stream, names the birds that visit, saves a snapshot of each, and keeps a
-life list.
+**Is your camera being a good neighbour?**
 
-Built for the Ring track of the Build, Ship, Shape: Amazon Developer Hackathon,
-with the AWS Builder and Open Source mini challenges.
+A Ring doorbell sees more than its owner's home: the street, the pavement, the
+house across the road. Ring lets owners hide those parts with privacy zones, but
+they have to notice the problem and draw every zone by hand. Good Neighbour
+looks at what the camera actually sees, finds the parts that are not the
+owner's, checks them against the zones already set, and suggests the ones that
+are missing.
 
-## How it works
+Built for the Ring track of the Build, Ship, Shape: Amazon Developer Hackathon
+2026, with the AWS Builder and Open Source mini challenges.
 
-1. The browser plays the Ring live stream and samples a frame every 2 seconds.
-2. Frames that have not changed are skipped.
-3. Changed frames go to Amazon Bedrock (Nova Lite), which names the birds it can see.
-4. A bird named on two frames in a row starts a visit. The visit ends 10 seconds
-   after the bird was last seen.
-5. Visits and snapshots are saved as plain files in `data/`.
+## What it does
 
-The app never shows a species it is unsure of: unclear birds are recorded as
-"Unidentified bird".
+1. Plays the Ring camera's live stream in the browser.
+2. On **Check this view**, takes the frame on screen (or, on **Check a photo**,
+   a picture the owner chooses) and sends it to Amazon
+   Bedrock (Nova Lite), which marks three kinds of area that are not the
+   owner's: **road** (street or pavement), **neighbour** (another household's
+   building, window, door, garden or driveway) and **vehicle** (on the public
+   road).
+3. At the same time, reads the camera's existing privacy zones from the Ring
+   API.
+4. Works out how much of the view is not the owner's, how much of that is
+   already hidden, and how much is still recorded.
+5. Suggests one privacy zone for each area that is big enough to matter and
+   not already hidden, with its corners and the steps to add it in the Ring
+   app.
+
+The page has three parts:
+
+- **The view**: the camera in an oval, with the headline finding written along
+  its edge, for example "34% of this view is not yours and is still recorded".
+- **Findings**: one sentence: share not yours, share already hidden, number of
+  zones suggested.
+- **Zones**: the frame with every area marked (hatched: not yours; solid:
+  already hidden; dashed outline: suggested), a button to **Show what would be
+  recorded** with the suggestions in place, and the list of suggested zones.
+
+Before the first check, the page shows a **sample result** on a drawn scene and
+says so. The sample's areas are made up; its percentages and suggestions are
+computed by the same code as a real check.
+
+## Cameras with encrypted video
+
+Since September 2026 Ring has been rolling out its TAKE encryption as the
+default. Ring's developer FAQ says apps can still reach a TAKE camera, but its
+video arrives encrypted, so no app can open its live stream. (A camera with
+full end-to-end encryption is not shown to apps at all.)
+
+Good Neighbour reads the camera's `e2e_encryption.enabled` setting. When it is
+on, the page turns off **Start live stream**, says why, and asks the owner to
+take a screenshot of the camera's live view in the Ring app and use **Check a
+photo**. The camera's existing privacy zones are still read, because they are
+settings, not video. The same button works with no Ring token at all, for
+example to try the app on any front-door photo.
+
+## What it will not do
+
+- **It does not change your zones.** The Ring API lets apps read privacy zones
+  but not create or edit them, so the owner draws each suggested zone in the
+  Ring app. This also keeps the owner in charge.
+- **It does not claim to know your property line.** A model can recognise a
+  road or another house; it cannot know where a garden ends. The page calls its
+  output suggestions, not verdicts, and the prompt tells the model to leave out
+  anything it is unsure of.
+- **It never shows a failed check as a clean result.** If the model gives no
+  usable answer, the page says so; "nothing found" is only shown when the model
+  actually found nothing. If the camera's zones cannot be read, the page says
+  that too, rather than treating the camera as having none.
+- **It stores nothing.** The checked frame lives in the browser tab and is sent
+  only to Bedrock.
 
 ## Run it
 
@@ -28,30 +82,130 @@ You need Node.js 24 or newer, a Ring developer account and an AWS account.
 
 In `.env.local`, set:
 
-- `RING_ACCESS_TOKEN`: from the Ring Developer Playground. It lasts 30 minutes.
-- `AWS_BEARER_TOKEN_BEDROCK`: an Amazon Bedrock API key, US East (N. Virginia).
+- `RING_ACCESS_TOKEN`: from the
+  [Ring Developer Playground](https://developer.amazon.com/ring/console/playground).
+  It lasts 30 minutes; paste a new one and restart when it runs out.
+- `AWS_BEARER_TOKEN_BEDROCK`: an Amazon Bedrock API key made in **US East (N.
+  Virginia)** (Bedrock console, API keys, Long-term API keys). A brand-new AWS
+  account may answer "Your account is currently being verified" for up to two
+  hours.
+
+Optional settings, with their defaults:
+
+- `AWS_REGION=us-east-1`
+- `BEDROCK_MODEL_ID=us.amazon.nova-lite-v1:0` (set `us.amazon.nova-pro-v1:0`
+  to try Nova Pro)
+- `MAX_FRAMES_PER_RUN=2000`: the most pictures sent to Bedrock per server run.
 
 Then:
 
     npm run dev
 
-Open http://localhost:3000 and press "Start live stream".
+Open http://127.0.0.1:3000 (it opens `/privacy`), press **Start live stream**, then **Check
+this view**. Or press **Check a photo** and choose a picture of the view from
+the front door; this needs only the Bedrock key.
+
+## Try the model on your own photos
+
+The probe sends photos straight to the same Bedrock call the app uses and
+prints what it found. It is the quickest way to judge the model on real
+doorbell views, without the Ring stream.
+
+    node --env-file=.env.local lib/privacy/probe.ts door.jpg driveway.jpg
+
+Each photo is one Bedrock call. Output, per photo: each area's kind and box
+(0 to 1 from the top-left), the share of the frame that is not the owner's,
+and the number of zones it would suggest.
 
 ## Tests
 
     npm test
+    npm run typecheck
 
-## What uses what
+The tests cover the zone geometry, the reader for the model's reply
+(including the broken replies Nova Lite sometimes sends), the reader for
+Ring's zones and its encryption flag, and a check that this README and the
+demo script only name files, scripts and settings that exist.
 
-- Ring API: device discovery, device location, live stream (WHEP).
-- Amazon Bedrock: Nova Lite through the Converse API.
+## How it works
+
+| Step | Where |
+|---|---|
+| Live stream (WebRTC, WHEP) | `app/hooks/useWebRTCStream.ts`, `app/api/ring/stream/` |
+| Finds the camera | `app/hooks/useRingDevice.ts`, `app/api/ring/devices/` |
+| Frame or photo to a JPEG at most 1024 px wide | `app/privacy/page.tsx` |
+| Input checks, Bedrock key check, cost cap | `app/api/privacy/route.ts` |
+| Prompt and Bedrock call (Converse API, temperature 0) | `lib/privacy/bedrock.ts`, `lib/journal/bedrock.ts` |
+| Reading the model's reply | `lib/privacy/regions.ts` |
+| Reading the camera's zones and encryption flag | `app/api/ring/zones/route.ts`, `lib/privacy/zones.ts` |
+| Coverage and suggestions | `lib/privacy/geometry.ts` |
+
+Details worth knowing:
+
+- **Two coordinate systems.** Nova gives boxes as `[x1, y1, x2, y2]` on a 0 to
+  1000 scale, as AWS documents for Nova object detection. Ring gives zones as
+  polygons with corners from 0 to 1, origin top-left. The reply reader divides
+  by 1000, clamps to the frame, fixes swapped corners, and drops boxes with no
+  area, unknown kinds and anything past the first 30. It accepts "neighbor" as
+  well as "neighbour". About 1 reply in 8 from Nova Lite is broken JSON (a
+  stray bracket) around good regions; the reader then reads each complete
+  region on its own. A reply with no readable region is "no answer", never
+  "nothing found".
+- **The whole picture is surveyed.** The Zones view takes the shape of the
+  checked picture (a phone screenshot is rarely 16:9), so the marks always sit
+  on what they mark.
+- **Coverage** is measured on a 100 by 100 grid of points across the frame,
+  accurate to about 1% of the frame, which is finer than the model's boxes.
+  Each point is tested against the zones' polygons (ray casting), so zones of
+  any shape work.
+- **Suggestions.** Areas are taken largest first. An area smaller than 1% of
+  the frame is ignored. An area is suggested unless at least 80% of it is
+  already hidden, either by an existing zone or by a zone already suggested,
+  so a car on the road does not get a second zone inside the road's.
+- **Where Ring keeps the zones.** Ring's guide names the `privacy_zones` field
+  of the device configurations reply but not where it sits. Another Ring-track
+  app documents it at `configurations.image_enhancements.privacy_zones`; the
+  reader searches the whole reply, so it finds the field there or anywhere
+  else. Unusable zones are skipped.
+- **Cost and abuse limits.** The check route accepts only base64 under 2
+  million characters, refuses work when the Bedrock key is missing, times out
+  a Bedrock call after 15 seconds, and stops after `MAX_FRAMES_PER_RUN` checks
+  until restarted. A bad value for that setting falls back to the default, so
+  a typo cannot remove the cap.
 
 ## Limits
 
-- Tested only against the Ring Developer Playground's sandbox camera.
+- **Accuracy is only partly measured.** On a public street photo, Nova Lite
+  found the road every time but marked the houses across the road only some of
+  the time. See `docs/findings.md`. Use the probe above to judge it on your own
+  views.
+- Areas are rectangles, so a suggested zone can cover a little more than the
+  area itself.
+- A check uploads a picture of about 200 KB. On a slow connection this takes
+  most of the time (up to about a minute was measured); Bedrock itself
+  answers in about a second. The check waits up to 90 seconds.
+- The live stream is tested only against the Ring Developer Playground's
+  sandbox camera, whose video is not encrypted. The encrypted-camera path is
+  built from Ring's documentation and covered by tests, but has not been seen
+  on a real TAKE camera.
 - One camera, one user, one laptop. Nothing is hosted.
-- Species names come from an AI model and can be wrong.
-- At most 2,000 frames are analysed per run, as a cost stop.
+
+## What uses what
+
+- **Ring API**: device discovery, device location, live stream (WHEP), device
+  configurations (privacy zones and the encryption flag).
+- **Amazon Bedrock**: Nova Lite through the Converse API, with API-key
+  authentication.
+
+Product feedback on all of these, as the hackathon asks, is in `FEEDBACK.md`.
+
+## Also in this repository
+
+The project began as **Ring Bird Journal**, which names the birds that visit a
+feeder and keeps a life list. It still runs at http://127.0.0.1:3000/birds and its
+code is in `lib/journal/`. It was set aside because a bird app for Ring
+cameras already exists. Good Neighbour reuses its live stream, its Bedrock
+call, its cost cap and its visual design.
 
 ## Credits
 
