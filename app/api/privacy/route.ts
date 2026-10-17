@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { frameCap } from '@/lib/journal/limits'
 import { findRegions } from '@/lib/privacy/bedrock'
+import { describeFailure } from '@/lib/privacy/failure'
 
 const MAX_CHECKS = frameCap(process.env.MAX_FRAMES_PER_RUN)
 const MAX_IMAGE_CHARS = 2_000_000
@@ -38,6 +39,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ regions: await findRegions(image) })
   } catch (error) {
     console.error('Privacy check error:', error)
-    return NextResponse.json({ error: 'The picture analysis service failed.' }, { status: 502 })
+    const { status, error: message } = describeFailure(error)
+    return NextResponse.json({ error: message }, { status })
   }
 }
