@@ -3,7 +3,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
-import { HIDDEN_ENOUGH, TOO_SMALL, coverage } from '../lib/privacy/geometry.ts'
+import { HIDDEN_ENOUGH, MAX_ZONES, TOO_SMALL, coverage } from '../lib/privacy/geometry.ts'
 import { SAMPLE_REGIONS, SAMPLE_ZONES } from '../app/privacy/sample.ts'
 
 const root = new URL('../', import.meta.url)
@@ -35,8 +35,10 @@ test('README names only settings that .env.example has', () => {
 })
 
 test('README states the suggestion thresholds the code uses', () => {
-  assert.ok(readme.includes(`at least ${HIDDEN_ENOUGH * 100}% of it is already hidden`))
-  assert.ok(readme.includes(`smaller than ${TOO_SMALL * 100}% of the frame is ignored`))
+  const pct = (share: number) => `${+(share * 100).toFixed(2)}%`
+  assert.ok(readme.includes(`at least ${pct(HIDDEN_ENOUGH)} of it is already hidden`))
+  assert.ok(readme.includes(`smaller than ${pct(TOO_SMALL)} of the frame is not suggested`))
+  assert.ok(readme.includes(`up to ${MAX_ZONES} privacy zones`))
 })
 
 test('README quotes the figure the sample result really shows', () => {

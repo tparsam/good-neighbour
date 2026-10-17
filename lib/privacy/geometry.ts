@@ -7,8 +7,9 @@ const GRID = 100
 
 /** A region is suggested unless at least this share of it is already hidden. */
 export const HIDDEN_ENOUGH = 0.8
-/** Regions smaller than this share of the frame are ignored. */
-export const TOO_SMALL = 0.01
+/** Zones smaller than this share of the frame are not suggested. Distant houses are often under
+ *  1%, and with only two zones allowed the limit, not this floor, keeps suggestions few. */
+export const TOO_SMALL = 0.003
 
 /** Whether a point lies inside a polygon (ray casting). */
 export function pointInZone(p: Point, zone: Zone): boolean {
@@ -61,23 +62,74 @@ export function coverage(regions: Region[], zones: Zone[]): Coverage {
   return { outside: total / points, hidden: hidden / points, exposed: (total - hidden) / points }
 }
 
+/** Ring's help: "You can make up to two Privacy Zones for each Ring device you have", drawn as boxes. */
+export const MAX_ZONES = 2
+/** Two areas share a zone for free if the shared box adds less than this share of the frame. */
+const FREE_MERGE = 0.005
+
 export interface Suggestion {
-  kind: RegionKind
+  /** What the zone covers, the biggest first. */
+  kinds: RegionKind[]
   zone: Zone
 }
 
-/** One suggested privacy zone per region that is big enough to matter and not already hidden.
- *  Larger regions are taken first, and a zone already suggested counts as hiding what lies
- *  under it, so a car parked on the road does not get a second zone inside the road's. */
+interface Group {
+  box: Box
+  members: Region[]
+  /** Share of the frame these areas take up that is not yet hidden by a zone. */
+  exposed: number
+}
+
+const boxArea = (box: Box) => (box.x2 - box.x1) * (box.y2 - box.y1)
+const around = (a: Box, b: Box): Box => ({
+  x1: Math.min(a.x1, b.x1),
+  y1: Math.min(a.y1, b.y1),
+  x2: Math.max(a.x2, b.x2),
+  y2: Math.max(a.y2, b.y2),
+})
+// ponytail: the waste of a shared box is its area minus its members' areas, so overlapping
+// members count twice and look cheaper to merge. Good enough to choose between a few boxes.
+const waste = (a: Group, b: Group) =>
+  Math.max(0, boxArea(around(a.box, b.box)) - [...a.members, ...b.members].reduce((sum, r) => sum + boxArea(r.box), 0))
+
+/** At most as many zones as Ring has left on the camera, covering as much of what is not the
+ *  owner's as possible. Areas already mostly hidden are left alone. When there are more areas
+ *  than zones, two areas share one box if that hides little else, otherwise the smallest area
+ *  is left out, whichever costs less. Areas next to each other always share a box. */
 export function suggestZones(regions: Region[], zones: Zone[]): Suggestion[] {
-  const area = (r: Region) => (r.box.x2 - r.box.x1) * (r.box.y2 - r.box.y1)
-  const suggestions: Suggestion[] = []
-  for (const region of [...regions].sort((a, b) => area(b) - area(a))) {
-    const covering = [...zones, ...suggestions.map(s => s.zone)]
-    const { total, hidden } = sample(p => inBox(p, region.box), covering)
-    if (total / (GRID * GRID) < TOO_SMALL) continue
-    if (hidden / total >= HIDDEN_ENOUGH) continue
-    suggestions.push({ kind: region.kind, zone: boxToZone(region.box) })
+  const slots = Math.max(0, MAX_ZONES - zones.length)
+  let groups: Group[] = []
+  for (const region of regions) {
+    const { total, hidden } = sample(p => inBox(p, region.box), zones)
+    if (total === 0 || hidden / total >= HIDDEN_ENOUGH) continue
+    groups.push({ box: region.box, members: [region], exposed: (total - hidden) / (GRID * GRID) })
   }
-  return suggestions
+
+  for (;;) {
+    let pair: [number, number] | null = null
+    let pairCost = Infinity
+    for (let i = 0; i < groups.length; i++)
+      for (let j = i + 1; j < groups.length; j++) {
+        const cost = waste(groups[i], groups[j])
+        if (cost < pairCost) [pair, pairCost] = [[i, j], cost]
+      }
+    const smallest = groups.reduce((min, g, i) => (g.exposed < groups[min].exposed ? i : min), 0)
+    const tooMany = groups.length > slots
+
+    if (pair && (pairCost <= FREE_MERGE || (tooMany && pairCost <= groups[smallest].exposed))) {
+      const [a, b] = [groups[pair[0]], groups[pair[1]]]
+      groups = groups.filter((_, i) => i !== pair![0] && i !== pair![1])
+      groups.push({ box: around(a.box, b.box), members: [...a.members, ...b.members], exposed: a.exposed + b.exposed })
+    } else if (tooMany) {
+      groups.splice(smallest, 1)
+    } else break
+  }
+
+  return groups
+    .filter(g => boxArea(g.box) >= TOO_SMALL)
+    .sort((a, b) => b.exposed - a.exposed)
+    .map(g => ({
+      kinds: [...new Set([...g.members].sort((a, b) => boxArea(b.box) - boxArea(a.box)).map(r => r.kind))],
+      zone: boxToZone(g.box),
+    }))
 }

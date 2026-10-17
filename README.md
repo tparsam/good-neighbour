@@ -25,9 +25,9 @@ Built for the Ring track of the Build, Ship, Shape: Amazon Developer Hackathon
    API.
 4. Works out how much of the view is not the owner's, how much of that is
    already hidden, and how much is still recorded.
-5. Suggests one privacy zone for each area that is big enough to matter and
-   not already hidden, with its corners and the steps to add it in the Ring
-   app.
+5. Suggests at most the privacy zones the camera has left (Ring allows two),
+   placed to hide as much as possible of what is not the owner's, with their
+   corners and the steps to add them in the Ring app.
 
 The page has three parts:
 
@@ -168,10 +168,15 @@ Details worth knowing:
   accurate to about 1% of the frame, which is finer than the model's boxes.
   Each point is tested against the zones' polygons (ray casting), so zones of
   any shape work.
-- **Suggestions.** Areas are taken largest first. An area smaller than 1% of
-  the frame is ignored. An area is suggested unless at least 80% of it is
-  already hidden, either by an existing zone or by a zone already suggested,
-  so a car on the road does not get a second zone inside the road's.
+- **Suggestions fit Ring's limit.** Ring allows up to 2 privacy zones per
+  camera, each a box, so the app never suggests more than the camera has
+  left. An area is left alone if at least 80% of it is already hidden. When
+  there are more areas than free zones, two areas share one box if that hides
+  little else, otherwise the smallest area is left out, whichever costs less;
+  areas side by side (a car on the road, a row of houses) always share a box.
+  A zone smaller than 0.3% of the frame is not suggested. The page says how
+  much that is not yours would still be recorded with the suggestions in
+  place.
 - **Where Ring keeps the zones.** Ring's guide names the `privacy_zones` field
   of the device configurations reply but not where it sits. Another Ring-track
   app documents it at `configurations.image_enhancements.privacy_zones`; the

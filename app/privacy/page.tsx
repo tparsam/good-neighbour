@@ -3,15 +3,22 @@
 import { useEffect, useRef, useState } from 'react'
 import { explain, useRingDevice } from '../hooks/useRingDevice'
 import { useWebRTCStream } from '../hooks/useWebRTCStream'
-import { coverage, suggestZones } from '@/lib/privacy/geometry'
+import { MAX_ZONES, coverage, suggestZones } from '@/lib/privacy/geometry'
 import type { Region, RegionKind, Zone } from '@/lib/privacy/types'
 import { SampleScene } from './SampleScene'
 import { SAMPLE_REGIONS, SAMPLE_ZONES } from './sample'
 
 const KIND: Record<RegionKind, { label: string; title: string }> = {
-  road: { label: 'Road', title: 'The road and pavement' },
-  neighbour: { label: 'Neighbour', title: 'The neighbour’s house' },
-  vehicle: { label: 'Vehicle', title: 'A vehicle on the road' },
+  road: { label: 'Road', title: 'the road and pavement' },
+  neighbour: { label: 'Neighbour', title: 'houses that are not yours' },
+  vehicle: { label: 'Vehicle', title: 'vehicles' },
+}
+
+/** "a", "a and b", "a, b and c" */
+const list = (items: string[]) => (items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`)
+const title = (kinds: RegionKind[]) => {
+  const text = list(kinds.map(k => KIND[k].title))
+  return text[0].toUpperCase() + text.slice(1)
 }
 
 interface Result {
@@ -25,7 +32,7 @@ interface Result {
   time: string
 }
 
-const percent = (share: number) => `${Math.round(share * 100)}%`
+const percent = (share: number) => (share > 0 && share < 0.005 ? 'under 1%' : `${Math.round(share * 100)}%`)
 const points = (zone: Zone, height: number) => zone.map(p => `${p.x * 1600},${p.y * height}`).join(' ')
 const corners = (zone: Zone) => zone.map(p => `(${p.x.toFixed(2)}, ${p.y.toFixed(2)})`).join('  ')
 const share = (zone: Zone) => (zone[1].x - zone[0].x) * (zone[2].y - zone[1].y)
@@ -131,9 +138,12 @@ export default function PrivacyCheck() {
   const summary = checking
     ? 'Checking this view'
     : `${percent(found.exposed)} of this view is not yours and is still recorded`
+  // What would still be recorded with the suggested zones added to the camera's own.
+  const after = coverage(regions, [...zones, ...suggestions.map(s => s.zone)])
   const findings =
     `${percent(found.outside)} not yours, ${percent(found.hidden)} already hidden, ` +
-    `${suggestions.length} ${suggestions.length === 1 ? 'zone' : 'zones'} suggested`
+    `${suggestions.length} ${suggestions.length === 1 ? 'zone' : 'zones'} suggested` +
+    (suggestions.length ? `, leaving ${percent(after.exposed)} recorded` : '')
   const problem = setupError || (streamError && explain(streamError)) || checkError
   const picture = result ? (
     // eslint-disable-next-line @next/next/no-img-element
@@ -261,7 +271,8 @@ export default function PrivacyCheck() {
         <div className="section-head">
           <h2 id="zones-heading">Zones</h2>
           <p className="count">
-            {suggestions.length} suggested, {zonesUnknown ? 'existing zones unknown' : `${zones.length} already set`}
+            {suggestions.length} suggested, {zonesUnknown ? 'existing zones unknown' : `${zones.length} already set`}, Ring
+            allows {MAX_ZONES}
           </p>
         </div>
 
@@ -325,17 +336,19 @@ export default function PrivacyCheck() {
             <p className="empty">
               {regions.length === 0
                 ? 'Nothing outside your property was found in this view.'
-                : 'Nothing to suggest. Everything outside your property is already hidden.'}
+                : zones.length >= MAX_ZONES && found.exposed > 0
+                  ? `Your camera already uses the ${MAX_ZONES} privacy zones Ring allows. To hide more, make one of them bigger in the Ring app.`
+                  : 'Nothing to suggest. Everything outside your property is already hidden.'}
             </p>
           ) : (
             <ul className="species">
               {suggestions.map((s, i) => (
                 <li key={i} className="specimen">
                   <p className="meta">
-                    {KIND[s.kind].label}. {percent(share(s.zone))} of the frame.
+                    {list(s.kinds.map(k => KIND[k].label))}. {percent(share(s.zone))} of the frame.
                   </p>
                   <h3>
-                    Zone {i + 1}: {KIND[s.kind].title}
+                    Zone {i + 1}: {title(s.kinds)}
                   </h3>
                   <p className="coords">
                     Corners, as fractions of the picture from the top-left: <span>{corners(s.zone)}</span>
