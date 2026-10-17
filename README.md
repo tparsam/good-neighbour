@@ -117,6 +117,16 @@ Each photo is one Bedrock call. Output, per photo: each area's kind and box
 (0 to 1 from the top-left), the share of the frame that is not the owner's,
 and the number of zones it would suggest.
 
+## Measure accuracy
+
+    node --env-file=.env.local lib/privacy/eval.ts [prompt.txt] [runs]
+
+Scores the app's prompt (or another prompt file) on the photos in
+`docs/test-photos`: which expected houses, cars and roads were found, and any
+false alarms. Results so far, including three prompts that did worse, are in
+`docs/findings.md`. A prompt change should beat the current score before it
+ships.
+
 ## Tests
 
     npm test
@@ -175,10 +185,10 @@ Details worth knowing:
 
 ## Limits
 
-- **Accuracy is only partly measured.** On a public street photo, Nova Lite
-  found the road every time but marked the houses across the road only some of
-  the time. See `docs/findings.md`. Use the probe above to judge it on your own
-  views.
+- **Accuracy is measured on only four photos.** The app's prompt finds 17 of
+  24 expected areas on them: houses and cars across the road well, the road
+  about two times in three, and it calls a churchyard a neighbour. See
+  `docs/findings.md`.
 - Areas are rectangles, so a suggested zone can cover a little more than the
   area itself.
 - A check uploads a picture of about 200 KB. On a slow connection this takes

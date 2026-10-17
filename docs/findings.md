@@ -85,3 +85,30 @@ unrelated test server alike, so the slowness is the connection, not AWS. The
 old 15 second limit (set for the bird watcher) failed 2 of 3 checks on the
 street view. The privacy check now waits up to 90 seconds and says on screen
 that it can take up to a minute.
+
+## Trying to improve the prompt (2026-10-17)
+
+Four prompts were scored with `lib/privacy/eval.ts` on the photos in
+`docs/test-photos` (12 expected areas across three doorbell-style views, plus
+a churchyard where nothing should be called a neighbour), two runs each. The two
+runs of a prompt nearly always matched, so each row is close to one sample per
+photo. A later single run of the app's prompt found 9 of 12 (the Ring frame's
+left-hand cars this time, but not the house on the right across the road), so
+answers can still shift by an item between sessions.
+
+| Prompt | Found (of 24) | False alarms | Ring frame | Street view | Across the road | Road |
+|---|---|---|---|---|---|---|
+| **App's prompt (kept)** | **17** | 2 | 6 of 8 | 8 of 10 | 3 of 6 | 4 of 6 |
+| v1: long "doorbell on the owner's home" context, road as one full-width box, a do-not-mark list | 14 | 2 | 2 of 8 | 8 of 10 | 4 of 6 | 0 of 6 |
+| v2: shorter doorbell context, original road wording | 12 | 2 | 2 of 8 | 8 of 10 | 2 of 6 | 0 of 6 |
+| v3: app's prompt plus "a house on the far side of a road is never the owner's" | 14 | **0** | **8 of 8** | 4 of 10 | 2 of 6 | 0 of 6 |
+
+- Describing the scene as a doorbell made Nova Lite list fewer things: houses
+  stayed, roads and most cars went. The raw answers show single-box replies
+  where the app's prompt gave four or five.
+- v3 was the best on the real Ring frame and stopped the churchyard false
+  alarm, but never found a road.
+- The rule set before testing was to switch only if a prompt found more than
+  the app's 17. None did, so the app's prompt is unchanged. Four photos are
+  too few to prefer v3 on its strengths alone; more real doorbell frames
+  would settle it.

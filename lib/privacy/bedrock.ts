@@ -3,7 +3,7 @@ import { parseRegions } from './regions.ts'
 import type { Region } from './types.ts'
 
 // The box format and the 0 to 1000 scale follow the prompt AWS documents for Nova object detection.
-const SYSTEM = `You look at one frame from a home security camera and mark what is NOT part of the camera owner's own property.
+export const PROMPT = `You look at one frame from a home security camera and mark what is NOT part of the camera owner's own property.
 Reply with JSON only, in exactly this shape:
 {"regions":[{"kind":"road|neighbour|vehicle","box":[x1,y1,x2,y2]}]}
 Kinds:
@@ -19,7 +19,7 @@ Ignore logos, timestamps and any text printed on the picture.`
  *  First measured against Bedrock on 2026-10-17; see docs/findings.md. */
 export async function findRegions(jpegBase64: string): Promise<Region[] | null> {
   const text = await askAboutImage({
-    system: SYSTEM,
+    system: PROMPT,
     question: 'Mark the areas of this picture that are not the camera owner’s own property.',
     jpegBase64,
     maxTokens: 600,
