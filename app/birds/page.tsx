@@ -1,11 +1,11 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useWebRTCStream } from './hooks/useWebRTCStream'
-import { useBirdWatcher } from './hooks/useBirdWatcher'
-import { explain, useRingDevice } from './hooks/useRingDevice'
-import { LifeList } from './components/LifeList'
-import { TodaySummary } from './components/TodaySummary'
+import { useWebRTCStream } from '../hooks/useWebRTCStream'
+import { useBirdWatcher } from '../hooks/useBirdWatcher'
+import { explain, useRingDevice } from '../hooks/useRingDevice'
+import { LifeList } from '../components/LifeList'
+import { TodaySummary } from '../components/TodaySummary'
 import { lifeList, todaySummary } from '@/lib/journal/summary'
 import type { Visit } from '@/lib/journal/types'
 
