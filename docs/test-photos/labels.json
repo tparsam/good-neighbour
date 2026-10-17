@@ -1,0 +1,2369 @@
+[
+ {
+  "file": "ring-doorbell-frame.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.17,
+     0.4,
+     0.45,
+     0.57
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.74,
+     0.47,
+     0.8,
+     0.59
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.09,
+     0.57,
+     0.2,
+     0.65
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.81,
+     0.57,
+     0.87,
+     0.62
+    ]
+   }
+  ]
+ },
+ {
+  "file": "front-door-street-view.jpg",
+  "areas": [
+   {
+    "kind": "road",
+    "box": [
+     0.27,
+     0.51,
+     1,
+     0.56
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.49,
+     0.38,
+     0.69,
+     0.49
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.29,
+     0.43,
+     0.37,
+     0.5
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.82,
+     0.4,
+     0.93,
+     0.48
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.39,
+     0.47,
+     0.6,
+     0.53
+    ]
+   }
+  ]
+ },
+ {
+  "file": "street-from-across-the-road.jpg",
+  "areas": [
+   {
+    "kind": "road",
+    "box": [
+     0,
+     0.84,
+     1,
+     1
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.08,
+     0.3,
+     0.83,
+     0.82
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.82,
+     0.38,
+     1,
+     0.8
+    ]
+   }
+  ]
+ },
+ {
+  "file": "churchyard-porch-control.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c002.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.2,
+     0.1,
+     1.0,
+     0.65
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.6,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.69,
+     0.56,
+     0.85,
+     0.66
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c005.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.15,
+     0.75,
+     0.75
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.14,
+     0.62,
+     0.3,
+     0.74
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.8,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c007.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.05,
+     1.0,
+     0.85
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.85,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c008.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.1,
+     0.1,
+     0.75,
+     0.75
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.72,
+     0.38,
+     0.92,
+     0.65
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.68,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c009.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.1,
+     0.45,
+     0.6
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.5,
+     1.0,
+     0.9
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c010.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.2,
+     0.3,
+     0.85,
+     0.8
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c011.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.38,
+     0.33,
+     0.55
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.38,
+     0.2,
+     0.92,
+     0.58
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.55,
+     0.4,
+     0.85
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.65,
+     0.53,
+     0.75,
+     0.63
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.6,
+     0.8,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c013.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.3,
+     0.2,
+     0.75,
+     0.72
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.1,
+     0.18,
+     0.62
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.82,
+     0.52,
+     1.0,
+     0.62
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c014.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.05,
+     1.0,
+     0.92
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c015.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.05,
+     1.0,
+     0.88
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.88,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c016.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.1,
+     0.0,
+     1.0,
+     0.88
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.85,
+     0.27,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.45,
+     0.83,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c017.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.05,
+     0.15,
+     0.95,
+     0.8
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.48,
+     0.78,
+     1.0,
+     0.98
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c019.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.05,
+     0.95,
+     0.88
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c021.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.0,
+     0.8,
+     0.7
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.15,
+     0.55,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.82,
+     0.53,
+     1.0,
+     0.72
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c022.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.25,
+     0.65,
+     0.75
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.6,
+     0.1,
+     1.0,
+     0.82
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.68,
+     0.55,
+     0.88
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.85,
+     0.78,
+     1.0,
+     0.92
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.8,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c024.jpg",
+  "areas": [
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.22,
+     0.65,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c027.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.0,
+     0.32,
+     0.65
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.3,
+     0.23,
+     0.82,
+     0.62
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.8,
+     0.0,
+     1.0,
+     0.85
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.6,
+     0.7,
+     0.82
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c028.jpg",
+  "areas": [
+   {
+    "kind": "road",
+    "box": [
+     0.43,
+     0.6,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.52,
+     0.35,
+     0.68,
+     0.6
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c029.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.15,
+     0.05,
+     0.83,
+     0.72
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.82,
+     0.22,
+     1.0,
+     0.6
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c030.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.05,
+     0.08,
+     1.0,
+     0.93
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.92,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.57,
+     0.87,
+     0.71,
+     0.94
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c031.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.12,
+     0.12,
+     0.93,
+     0.58
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c032.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.15,
+     0.55,
+     0.68
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.58,
+     0.15,
+     0.85,
+     0.6
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.85,
+     0.12,
+     1.0,
+     0.65
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.65,
+     0.68,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.51,
+     0.6,
+     0.68,
+     0.76
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c035.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.02,
+     1.0,
+     0.95
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c038.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c039.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.12,
+     0.08,
+     1.0,
+     0.82
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.8,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c040.jpg",
+  "areas": [
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.08,
+     1.0,
+     0.74
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.7,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c041.jpg",
+  "areas": [
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.15,
+     1.0,
+     0.95
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c042.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.25,
+     0.08,
+     1.0,
+     0.9
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.05,
+     0.6,
+     0.35,
+     0.85
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c047.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.12,
+     0.95,
+     0.73
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c048.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.0,
+     1.0,
+     0.88
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.85,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.78,
+     0.9,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c049.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.05,
+     0.1,
+     1.0,
+     0.85
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c051.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.1,
+     0.28,
+     0.75
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.25,
+     0.58,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.58,
+     0.15,
+     0.82
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.46,
+     0.56,
+     0.62,
+     0.66
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c052.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.25,
+     0.95,
+     0.65
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.62,
+     1.0,
+     0.75
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.68,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c053.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.28,
+     0.0,
+     1.0,
+     0.83
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.25,
+     0.15,
+     0.8
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.15,
+     0.65,
+     0.8,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c055.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.08,
+     0.3,
+     0.72
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.65,
+     0.35,
+     1.0,
+     0.75
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.6,
+     0.5,
+     0.92
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.3,
+     0.7,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c056.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.06,
+     0.1,
+     0.7,
+     0.62
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.65,
+     0.18,
+     1.0,
+     0.52
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.55,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.15,
+     0.48,
+     0.28,
+     0.62
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c057.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.1,
+     0.95,
+     0.75
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.72,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c059.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.08,
+     0.5,
+     0.65
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.7,
+     0.05,
+     1.0,
+     0.65
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.55,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.58,
+     0.49,
+     0.66,
+     0.57
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c060.jpg",
+  "areas": [
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.6,
+     1.0,
+     0.95
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c061.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.15,
+     0.35,
+     0.8,
+     0.75
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.32,
+     0.65,
+     0.8,
+     0.82
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.2,
+     0.75,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c062.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.83,
+     0.0,
+     1.0,
+     0.65
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.65,
+     0.16,
+     0.95
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.25,
+     0.72,
+     0.6,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c063.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.25,
+     1.0,
+     0.55
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.5,
+     0.13,
+     0.62
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.56,
+     0.48,
+     1.0,
+     0.66
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.58,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c064.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.28,
+     0.25,
+     0.55,
+     0.5
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.62,
+     0.25,
+     1.0,
+     0.48
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c065.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.35,
+     0.45,
+     0.62
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.68,
+     0.34,
+     1.0,
+     0.6
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.58,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c066.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.06,
+     0.1,
+     0.9,
+     0.83
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c073.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.28,
+     1.0,
+     0.92
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.82,
+     0.55,
+     0.98
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c074.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.17,
+     0.32,
+     0.56
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.3,
+     0.35,
+     0.55,
+     0.55
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.52,
+     0.85,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.72,
+     0.54,
+     0.85,
+     0.62
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c076.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.25,
+     0.22,
+     0.65
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.72,
+     0.12,
+     1.0,
+     0.58
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.6,
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.58,
+     0.23,
+     0.92
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.3,
+     0.56,
+     0.41,
+     0.64
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c077.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c079.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.05,
+     0.1,
+     0.93,
+     0.9
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.78,
+     0.35,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c083.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.2,
+     0.85,
+     0.62
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.55,
+     0.22,
+     0.68
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.67,
+     0.56,
+     0.93,
+     0.66
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.62,
+     0.95,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c084.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.45,
+     0.3,
+     0.58
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.68,
+     0.4,
+     1.0,
+     0.56
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.3,
+     0.55,
+     0.7,
+     0.95
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c085.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.1,
+     0.3,
+     0.65
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.37,
+     0.35,
+     0.65,
+     0.56
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.75,
+     0.32,
+     1.0,
+     0.58
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.65,
+     0.85,
+     1.0
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.07,
+     0.5,
+     0.65,
+     0.62
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c086.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.0,
+     0.85,
+     0.58
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.88,
+     0.23,
+     1.0,
+     0.53
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.41,
+     0.46,
+     0.86,
+     0.73
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.56,
+     0.82,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c087.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.1,
+     0.08,
+     0.85,
+     0.85
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.68,
+     0.0,
+     1.0,
+     0.45
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.68,
+     0.7,
+     0.85,
+     0.82
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c088.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.15,
+     0.45,
+     0.8
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.58,
+     0.52,
+     0.75,
+     0.68
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.76,
+     0.64,
+     0.94,
+     0.84
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.2,
+     0.75,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c089.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.1,
+     0.15,
+     1.0,
+     0.75
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.5,
+     0.8,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c091.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.18,
+     0.15,
+     0.85,
+     0.9
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.86,
+     0.4,
+     1.0,
+     0.72
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c092.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.1,
+     0.1,
+     0.87,
+     0.7
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c093.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.4,
+     0.56,
+     0.68
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.44,
+     0.7,
+     0.72,
+     1.0
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.7,
+     0.5,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c094.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.03,
+     0.15,
+     0.9,
+     0.88
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.75,
+     0.82,
+     0.88,
+     0.95
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c099.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.08,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c100.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.2,
+     0.9,
+     0.78
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.2,
+     0.65,
+     0.4,
+     0.78
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.75,
+     0.65,
+     0.95,
+     0.8
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.72,
+     0.16,
+     0.93
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.75,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c101.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.18,
+     0.15,
+     1.0,
+     0.77
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.45,
+     0.17,
+     0.65
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.03,
+     0.68,
+     0.46,
+     0.9
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.61,
+     0.68,
+     0.88,
+     0.83
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.83,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c102.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.0,
+     1.0,
+     0.85
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.72,
+     0.65,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c103.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.25,
+     0.15,
+     0.95,
+     0.75
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.12,
+     0.18,
+     0.7
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.8,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c104.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.05,
+     0.75,
+     0.65
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.73,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c105.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.63,
+     0.0,
+     1.0,
+     0.85
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.15,
+     0.25,
+     0.65
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.25,
+     0.65,
+     0.9,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c106.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.03,
+     0.18,
+     0.7,
+     0.68
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.62,
+     0.19,
+     0.87
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.75,
+     0.62,
+     0.88,
+     0.68
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.08,
+     0.65,
+     0.95,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c107.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.18,
+     0.33,
+     0.72,
+     0.58
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.6,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c111.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.28,
+     0.18,
+     0.94,
+     0.7
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.6,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c112.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.1,
+     0.2,
+     0.8,
+     0.75
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.8,
+     0.46,
+     0.87,
+     0.73
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.2,
+     0.82,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c116.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.0,
+     0.86,
+     0.55
+    ]
+   },
+   {
+    "kind": "road",
+    "box": [
+     0.0,
+     0.52,
+     1.0,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c118.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.12,
+     0.45,
+     0.65
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.55,
+     0.18,
+     0.98,
+     0.6
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.0,
+     0.63,
+     0.24,
+     0.94
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.62,
+     0.62,
+     0.88,
+     0.72
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c119.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.03,
+     0.3,
+     1.0,
+     0.87
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c121.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c126.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c131.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c135.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c136.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c138.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c143.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c144.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c148.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c150.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.33,
+     0.4,
+     0.95
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.55,
+     0.45,
+     0.85,
+     0.95
+    ]
+   },
+   {
+    "kind": "vehicle",
+    "box": [
+     0.1,
+     0.9,
+     0.75,
+     1.0
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c151.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c153.jpg",
+  "areas": []
+ },
+ {
+  "file": "bench/c156.jpg",
+  "areas": [
+   {
+    "kind": "neighbour",
+    "box": [
+     0.0,
+     0.3,
+     0.72,
+     0.7
+    ]
+   },
+   {
+    "kind": "neighbour",
+    "box": [
+     0.6,
+     0.18,
+     1.0,
+     0.47
+    ]
+   }
+  ]
+ },
+ {
+  "file": "bench/c158.jpg",
+  "areas": []
+ }
+]

@@ -27,7 +27,7 @@ and suggests two zones). Everything on screen is real; nothing is mocked.
 | 0:10 | Scroll slowly down to **Zones** on the sample, then back up | Ring lets you hide those parts with privacy zones, but you have to notice the problem and draw every zone yourself. This is a drawn example of what Good Neighbour does instead. |
 | 0:25 | Press **Start live stream**; the oval fills with the porch clip | This is Ring's own sandbox camera, live through the Ring API. |
 | 0:32 | Within 10 s, press **Check this view**; a note says the picture is being sent | One frame goes to Qwen3-VL on Amazon Bedrock, which marks what is not yours: the road, neighbours' houses, cars on the street. At the same time the app reads this camera's existing privacy zones from the Ring API. |
-| 0:45 | *(while it checks)* Keep the page in view | We tested seven vision models on Bedrock and picked this one: it found 20 of 21 test areas, with no false alarms. |
+| 0:45 | *(while it checks)* Keep the page in view | We tested seven vision models on Bedrock and picked this one. On 93 labelled photos it finds 89% of what is not yours, and 98% of roads. |
 | 0:55 | The result: "Nothing outside your property was found in this view" | This porch is all the owner's, and it says so. It does not invent a problem. |
 | 1:05 | Scroll to the top; press **Check a photo** and choose `ring-doorbell-frame.jpg` | Now a real Ring doorbell view of a street. A photo works too, and that matters: Ring's new encryption hides camera video from apps, so an owner can check a screenshot instead. |
 | 1:20 | *(while it checks)* | The picture goes to Bedrock and nowhere else, and nothing is stored. |

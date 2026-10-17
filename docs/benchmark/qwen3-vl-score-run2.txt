@@ -1,0 +1,11 @@
+
+Model: qwen.qwen3-vl-235b-a22b
+Answers scored: 93 of 93 (0 failed or unusable)
+
+Areas found:                 190 of 213 = 89% (95% range 84 to 93%)
+  neighbour                  90 of 110 = 82% (95% range 74 to 88%)
+  vehicle                    53 of 55 = 96% (95% range 88 to 99%)
+  road                       47 of 48 = 98% (95% range 89 to 100%)
+Photos with every area found: 56 of 78 = 72% (95% range 61 to 81%)
+Empty scenes marked anyway:  1 of 15 = 7% (95% range 1 to 30%)
+Marks matching no labelled area: 54 of 445

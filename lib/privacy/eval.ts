@@ -1,78 +1,88 @@
-// Scores the prompt on the photos in docs/test-photos. Each call goes to Bedrock.
+// Scores the model on the labelled photos in docs/test-photos (labels.json). Each photo is one
+// Bedrock call, so a full run uploads about 18 MB.
 //
-//   node --env-file=.env.local lib/privacy/eval.ts [prompt.txt] [runs]
+//   node --env-file=.env.local lib/privacy/eval.ts [prompt.txt] [runs] [answers.json]
 //
-// With no prompt file it scores the app's own prompt, on the app's model; set BEDROCK_MODEL_ID
-// to score another model. For each photo it reports which
-// expected areas were found (a found box of the right kind that covers 30% of the expected
-// box, or whose centre lies inside it) and, for the churchyard, any false "neighbour".
-import { readFileSync } from 'node:fs'
+// With no prompt file it scores the app's own prompt on the app's model; set BEDROCK_MODEL_ID to
+// score another model. Every answer is saved to answers.json (if given) so the scoring can be
+// re-run without calling Bedrock again: node lib/privacy/eval.ts --rescore answers.json
+import { readFileSync, writeFileSync } from 'node:fs'
 import { askAboutImage } from '../journal/bedrock.ts'
 import { MODEL, PROMPT } from './bedrock.ts'
 import { parseRegions } from './regions.ts'
-import type { Box, RegionKind } from './types.ts'
+import { matches, wilson } from './score.ts'
+import type { Region, RegionKind } from './types.ts'
 
-const b = (x1: number, y1: number, x2: number, y2: number): Box => ({ x1, y1, x2, y2 })
-// Drawn by hand from each photo, 0 to 1 from the top-left.
-const PHOTOS: { file: string; want: { name: string; kind: RegionKind; box: Box }[] }[] = [
-  { file: 'ring-doorbell-frame.jpg', want: [
-    { name: 'houses left', kind: 'neighbour', box: b(0.17, 0.4, 0.45, 0.57) },
-    { name: 'house right', kind: 'neighbour', box: b(0.74, 0.47, 0.8, 0.59) },
-    { name: 'cars left', kind: 'vehicle', box: b(0.09, 0.57, 0.2, 0.65) },
-    { name: 'car right', kind: 'vehicle', box: b(0.81, 0.57, 0.87, 0.62) } ] },
-  { file: 'front-door-street-view.jpg', want: [
-    { name: 'road', kind: 'road', box: b(0.27, 0.51, 1, 0.56) },
-    { name: 'house centre', kind: 'neighbour', box: b(0.49, 0.38, 0.69, 0.49) },
-    { name: 'house left', kind: 'neighbour', box: b(0.29, 0.43, 0.37, 0.5) },
-    { name: 'house right', kind: 'neighbour', box: b(0.82, 0.4, 0.93, 0.48) },
-    { name: 'cars', kind: 'vehicle', box: b(0.39, 0.47, 0.6, 0.53) } ] },
-  { file: 'street-from-across-the-road.jpg', want: [
-    { name: 'road', kind: 'road', box: b(0, 0.84, 1, 1) },
-    { name: 'house opposite', kind: 'neighbour', box: b(0.08, 0.3, 0.83, 0.82) },
-    { name: 'house right', kind: 'neighbour', box: b(0.82, 0.38, 1, 0.8) } ] },
-  // Not a home: nothing here should be called a neighbour.
-  { file: 'churchyard-porch-control.jpg', want: [] },
-]
+const dir = new URL('../../docs/test-photos/', import.meta.url)
+type Label = { file: string; areas: { kind: RegionKind; box: [number, number, number, number] }[] }
+const toRegion = (a: Label['areas'][number]): Region => ({ kind: a.kind, box: { x1: a.box[0], y1: a.box[1], x2: a.box[2], y2: a.box[3] } })
+const labels: Label[] = JSON.parse(readFileSync(new URL('labels.json', dir), 'utf8'))
 
-const covered = (g: Box, w: Box) => {
-  const x = Math.min(g.x2, w.x2) - Math.max(g.x1, w.x1)
-  const y = Math.min(g.y2, w.y2) - Math.max(g.y1, w.y1)
-  return x > 0 && y > 0 ? (x * y) / ((w.x2 - w.x1) * (w.y2 - w.y1)) : 0
-}
-const centreIn = (g: Box, w: Box) => {
-  const x = (g.x1 + g.x2) / 2
-  const y = (g.y1 + g.y2) / 2
-  return x >= w.x1 && x <= w.x2 && y >= w.y1 && y <= w.y2
-}
+type Answer = { file: string; run: number; regions: Region[] | null; error?: string }
+let answers: Answer[]
 
-const prompt = process.argv[2] ? readFileSync(process.argv[2], 'utf8') : PROMPT
-const runs = Number(process.argv[3] ?? 2)
-let found = 0
-let expected = 0
-let falseAlarms = 0
-let noAnswer = 0
-for (const photo of PHOTOS) {
-  const jpegBase64 = readFileSync(new URL(`../../docs/test-photos/${photo.file}`, import.meta.url)).toString('base64')
-  for (let run = 0; run < runs; run++) {
-    let text: string | null = null
-    try {
-      text = await askAboutImage({ system: prompt, question: 'Mark the areas of this picture that are not the camera owner’s own property.', jpegBase64, maxTokens: 600, timeoutMs: 120_000, model: MODEL })
-    } catch (error) {
-      console.log(`${photo.file} run ${run + 1}: failed, ${error instanceof Error ? error.message : error}`)
+if (process.argv[2] === '--rescore') {
+  answers = JSON.parse(readFileSync(process.argv[3], 'utf8'))
+} else {
+  const prompt = process.argv[2] ? readFileSync(process.argv[2], 'utf8') : PROMPT
+  const runs = Number(process.argv[3] || 1)
+  const out = process.argv[4]
+  answers = []
+  for (let run = 1; run <= runs; run++) {
+    for (const [i, label] of labels.entries()) {
+      const jpegBase64 = readFileSync(new URL(label.file, dir)).toString('base64')
+      let answer: Answer = { file: label.file, run, regions: null }
+      try {
+        const text = await askAboutImage({ system: prompt, question: 'Mark the areas of this picture that are not the camera owner’s own property.', jpegBase64, maxTokens: 800, timeoutMs: 120_000, model: MODEL })
+        answer.regions = text === null ? null : parseRegions(text)
+      } catch (error) {
+        answer.error = error instanceof Error ? error.message.slice(0, 200) : String(error)
+      }
+      answers.push(answer)
+      console.error(`run ${run} ${i + 1}/${labels.length} ${label.file}: ${answer.error ? 'failed' : answer.regions === null ? 'no answer' : answer.regions.length + ' marks'}`)
+      if (out) writeFileSync(out, JSON.stringify(answers, null, 1))
     }
-    const regions = text === null ? null : parseRegions(text)
-    if (regions === null) {
-      noAnswer++
-      console.log(`${photo.file} run ${run + 1}: no usable answer`)
-      continue
-    }
-    const hits = photo.want.map(w => regions.some(g => g.kind === w.kind && (covered(g.box, w.box) >= 0.3 || centreIn(g.box, w.box))))
-    const wrong = photo.want.length === 0 ? regions.filter(g => g.kind === 'neighbour').length : 0
-    found += hits.filter(Boolean).length
-    expected += photo.want.length
-    falseAlarms += wrong
-    const line = photo.want.length ? photo.want.map((w, i) => `${hits[i] ? 'found' : 'MISSED'} ${w.name}`).join(', ') : `false neighbours: ${wrong}`
-    console.log(`${photo.file} run ${run + 1}: ${line}`)
   }
 }
-console.log(`\nScore: found ${found} of ${expected}, false alarms ${falseAlarms}, no answer ${noAnswer}`)
+
+// Score.
+const byFile = new Map(labels.map(l => [l.file, l.areas.map(toRegion)]))
+const pct = (k: number, n: number) => {
+  const [lo, hi] = wilson(k, n)
+  return `${k} of ${n} = ${n ? Math.round((100 * k) / n) : 0}% (95% range ${Math.round(lo * 100)} to ${Math.round(hi * 100)}%)`
+}
+let found = 0, expected = 0, posPhotos = 0, allFound = 0, negPhotos = 0, negWithMarks = 0, marks = 0, strayMarks = 0, failed = 0
+const kinds: Record<string, [number, number]> = {}
+for (const a of answers) {
+  const want = byFile.get(a.file)!
+  if (a.regions === null) {
+    failed++
+    continue
+  }
+  if (want.length === 0) {
+    negPhotos++
+    if (a.regions.length > 0) negWithMarks++
+    continue
+  }
+  posPhotos++
+  const hits = want.map(w => a.regions!.some(g => matches(g, w)))
+  hits.forEach((hit, i) => {
+    const k = (kinds[want[i].kind] ??= [0, 0])
+    k[0] += hit ? 1 : 0
+    k[1]++
+  })
+  found += hits.filter(Boolean).length
+  expected += want.length
+  if (hits.every(Boolean)) allFound++
+  marks += a.regions.length
+  // A mark that matches no labelled area of any kind: a false alarm, or something the labels missed.
+  strayMarks += a.regions.filter(g => !want.some(w => matches({ kind: w.kind, box: g.box }, w))).length
+}
+
+console.log(`\nModel: ${process.env.BEDROCK_MODEL_ID || MODEL}`)
+console.log(`Answers scored: ${answers.length - failed} of ${answers.length} (${failed} failed or unusable)\n`)
+console.log(`Areas found:                 ${pct(found, expected)}`)
+for (const [kind, [k, n]] of Object.entries(kinds)) console.log(`  ${kind.padEnd(10)}                 ${pct(k, n)}`)
+console.log(`Photos with every area found: ${pct(allFound, posPhotos)}`)
+console.log(`Empty scenes marked anyway:  ${pct(negWithMarks, negPhotos)}`)
+console.log(`Marks matching no labelled area: ${strayMarks} of ${marks}`)

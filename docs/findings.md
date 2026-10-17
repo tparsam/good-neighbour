@@ -177,3 +177,38 @@ runs on Amazon Bedrock like the others. Nova 2 Lite was the runner-up: also
 no false alarms, but it often missed cars and the house straight across the
 road. The bird journal keeps Nova Lite. `BEDROCK_MODEL_ID` still overrides the
 model, so any of these can be tried again.
+
+## The 93-photo benchmark (2026-10-17)
+
+`lib/privacy/eval.ts` on `docs/test-photos/labels.json`: 93 photos, 78 with
+213 labelled areas (110 houses, 55 vehicle groups, 48 roads) and 15 with
+nothing to find, labelled by the rules in `docs/test-photos/LABELLING.md`.
+Qwen3-VL, the app's prompt, two full runs. Raw answers and scores are in
+`docs/benchmark/`.
+
+| | Run 1 | Run 2 | 95% range (one run) |
+|---|---|---|---|
+| Areas found | 190 of 213, **89%** | 190 of 213, **89%** | 84 to 93% |
+| Roads | 47 of 48, 98% | 47 of 48, 98% | 89 to 100% |
+| Vehicles | 53 of 55, 96% | 53 of 55, 96% | 88 to 99% |
+| Houses | 90 of 110, 82% | 90 of 110, 82% | 74 to 88% |
+| Photos with every area found | 56 of 78, 72% | 56 of 78, 72% | 61 to 81% |
+| Empty scenes marked anyway | 1 of 15, 7% | 1 of 15, 7% | 1 to 30% |
+
+- **No call failed:** 186 of 186 answered with something usable.
+- **The totals repeated exactly between runs**, though only 21 of 93
+  individual answers were word for word the same.
+- **Ranges are for one run.** The two runs use the same photos, so pooling
+  them would make the ranges look narrower than they are.
+- **The one false alarm** was the same photo both times (`bench/c153.jpg`, a
+  back garden, marked as having a road).
+- **Houses are the weak spot, with a pattern.** Of the 20 houses missed in
+  run 1, 10 fill over 40% of the photo (a single house photographed close up),
+  and every one of the 20 was missed in both runs. Our reading, not tested:
+  a house that fills the frame looks like the owner's own, and the prompt says
+  to leave out anything it cannot tell is someone else's. A real doorbell
+  rarely sees a neighbour's house that close. Leaving those 10 out, 90 of the
+  other 100 houses were found.
+- 105 of 877 marks over both runs matched no labelled area. Some are likely
+  real things the labels left out (small distant houses), so this is only a
+  rough measure of false marks.

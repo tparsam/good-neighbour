@@ -120,13 +120,28 @@ and the number of zones it would suggest.
 
 ## Measure accuracy
 
-    node --env-file=.env.local lib/privacy/eval.ts [prompt.txt] [runs]
+    node --env-file=.env.local lib/privacy/eval.ts [prompt.txt] [runs] [answers.json]
+    node lib/privacy/eval.ts --rescore answers.json
 
-Scores the app's prompt (or another prompt file) on the photos in
-`docs/test-photos`: which expected houses, cars and roads were found, and any
-false alarms. Results so far, including three prompts that did worse, are in
-`docs/findings.md`. A prompt change should beat the current score before it
-ships.
+Scores the app's prompt (or another prompt file) on 93 labelled photos in
+`docs/test-photos`: 78 with 213 expected houses, vehicles and roads, and 15
+where nothing should be marked. The labelling rules are in
+`docs/test-photos/LABELLING.md` and the photo credits in
+`docs/test-photos/CREDITS.md`. Every figure comes with a 95% range. Saved
+answers can be re-scored without calling Bedrock again. A full run uploads
+about 18 MB.
+
+Latest results, with Qwen3-VL (details in `docs/findings.md`, raw answers in
+`docs/benchmark/`):
+
+| | One run | 95% range |
+|---|---|---|
+| Areas found | 89% (190 of 213) | 84 to 93% |
+| Roads / vehicles / houses | 98% / 96% / 82% | |
+| Photos with every area found | 72% (56 of 78) | 61 to 81% |
+| Empty scenes marked anyway | 7% (1 of 15) | 1 to 30% |
+
+A second run gave the same totals.
 
 ## Tests
 
@@ -192,10 +207,11 @@ Details worth knowing:
 
 ## Limits
 
-- **Accuracy is measured on only five pictures** (four test photos and one
-  live Ring frame). Qwen3-VL found 20 of the 21 expected areas it answered
-  for, over two runs, with no false alarms; it missed the large house
-  straight across the road in one photo. See `docs/findings.md`.
+- **Houses are the weak spot.** On the 93-photo benchmark it finds 98% of
+  roads and 96% of vehicles but 82% of houses; half the missed houses fill
+  most of the photo, perhaps because a house that close looks like the
+  owner's own. The labels were drawn by one person, and 15 empty scenes are
+  too few to pin the false-alarm rate down (1 to 30%).
 - Areas are rectangles, so a suggested zone can cover a little more than the
   area itself.
 - A check uploads a picture of about 200 KB. On a slow connection this takes
