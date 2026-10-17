@@ -1,0 +1,422 @@
+/* Good Neighbour's look, modelled on parco.jp/style (PARCO 2026 AW). Only its layout and style are
+   followed; none of its images, text or font files are used. It applies to this page only; the
+   bird journal at /birds keeps the earlier museum look from globals.css. */
+
+/* Warm paper and ink. One accent, a muted deep red, used once (the Zones heading). */
+:root:has(main.page-gn) {
+  --bg: #e4dfd8;
+  --ink: #1d1c1b;
+  --muted: #55514c;
+  --gn-accent: #9b2a2c;
+  --gn-shadow: rgb(60 48 36 / 0.22);
+  --font-body: var(--f-mincho), 'Hiragino Mincho ProN', 'Times New Roman', serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:has(main.page-gn) {
+    --bg: #171615;
+    --ink: #e6e1da;
+    --muted: #aaa49c;
+    --gn-accent: #d0645e;
+    --gn-shadow: rgb(0 0 0 / 0.5);
+  }
+}
+
+/* Film grain over the whole page: a fixed layer that never takes clicks. */
+.page-gn::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+@media (prefers-color-scheme: dark) {
+  .page-gn::before {
+    mix-blend-mode: screen;
+    opacity: 0.12;
+  }
+}
+
+/* The blurred photo and the oversized words run past the edges on purpose; clip, never scroll
+   sideways. (clip, unlike hidden, leaves the sticky top bar working.) */
+.page-gn {
+  overflow-x: clip;
+}
+
+/* Top: a small wordmark, no rule; the section links stacked in tiny caps at the top right. */
+.page-gn .masthead {
+  min-height: 3.25rem;
+  border-bottom: 0;
+  background: var(--bg);
+  font-family: var(--f-grot), sans-serif;
+}
+
+.page-gn .masthead-date {
+  display: none;
+}
+
+.page-gn .section-nav {
+  position: fixed;
+  background: var(--bg);
+  padding: 0.15rem 0.35rem;
+  top: 0.6rem;
+  right: 1.25rem;
+  z-index: 6;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+  font-family: var(--f-grot), sans-serif;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+}
+
+.page-gn .section-nav a {
+  padding-block: 0.15rem;
+  min-height: 24px;
+}
+
+.page-gn .section-nav a:first-child {
+  margin-right: 0;
+}
+
+/* The view: a tall condensed title over a small centred print, not an oval. */
+.page-gn .hero-title {
+  margin-top: clamp(4rem, 12vh, 8rem);
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 5vw, 4.25rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.page-gn .live-stage {
+  width: min(56vw, 720px);
+  margin-top: 1.25rem;
+}
+
+.page-gn .live-frame {
+  border-radius: 0;
+  background: color-mix(in srgb, var(--ink) 9%, var(--bg));
+}
+
+/* The answer runs under the print in small caps, like PARCO's "SOUND ON / OFF" line. */
+.page-gn .live-panel {
+  margin-top: 1.5rem;
+}
+
+
+/* The actions become words with slashes between them. */
+.page-gn .actions {
+  gap: 0;
+  margin-top: 0.75rem;
+}
+
+.page-gn .actions .btn {
+  min-width: 0;
+  min-height: 44px;
+  margin-top: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0 0.9rem;
+  background: none;
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  letter-spacing: 0.02em;
+}
+
+.page-gn .actions .btn + .btn::before {
+  content: '/';
+  position: relative;
+  left: -0.95rem;
+  color: var(--muted);
+}
+
+.page-gn .actions .btn:hover:not(:disabled),
+.page-gn .actions .btn-file:hover {
+  background: none;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.page-gn .actions .btn:disabled,
+.page-gn .actions .btn-file[data-disabled='true'] {
+  border-style: none;
+  color: color-mix(in srgb, var(--ink) 55%, var(--bg));
+}
+
+.page-gn .samples {
+  font-size: 0.875rem;
+}
+
+.page-gn .note {
+  border-top: 0;
+  font-size: 0.875rem;
+  line-height: 1.75;
+}
+
+/* Findings: one dark section, the checked picture blurred behind it; heading left, words right. */
+.page-gn .today {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 2rem 4rem;
+  align-items: start;
+  margin-top: clamp(6rem, 14vw, 10rem);
+  padding: clamp(5rem, 12vw, 9rem) clamp(1.25rem, 6vw, 6rem) clamp(9rem, 18vw, 14rem);
+  background: #24211e;
+  color: #ece7e0;
+}
+
+.page-gn .findings-bg {
+  position: absolute;
+  inset: -40px;
+  z-index: -1;
+  background-position: center;
+  background-size: cover;
+  filter: blur(22px) saturate(0.85);
+  opacity: 0.55;
+}
+
+.page-gn .today .section-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4vw, 3.5rem);
+  line-height: 1;
+}
+
+.page-gn .today .figures {
+  max-width: 30ch;
+  margin-top: 0;
+  font-family: var(--font-body);
+  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  line-height: 1.85;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.page-gn .today .figures::before,
+.page-gn .today .figures::after {
+  content: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .page-gn .today {
+    background: #e4dfd8;
+    color: #1d1c1b;
+  }
+
+  .page-gn .findings-bg {
+    opacity: 0.3;
+  }
+
+  .page-gn .today .bigtype {
+    color: rgb(29 28 27 / 0.14);
+  }
+}
+
+/* Oversized words running off the edge, as PARCO does with its title. */
+.page-gn .bigtype {
+  position: absolute;
+  left: -2vw;
+  bottom: clamp(-1.5rem, -1vw, -0.5rem);
+  z-index: -1;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 13vw, 13rem);
+  line-height: 1;
+  text-transform: uppercase;
+  color: rgb(236 231 224 / 0.16);
+}
+
+/* Zones: the heading in the one accent; the survey as a slightly turned print. */
+.page-gn .lifelist {
+  margin-top: clamp(6rem, 12vw, 9rem);
+}
+
+.page-gn .lifelist .section-head {
+  text-align: left;
+}
+
+.page-gn .lifelist .section-head h2 {
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  color: var(--gn-accent);
+}
+
+.page-gn .count {
+  font-family: var(--f-grot), sans-serif;
+  font-size: 0.8125rem;
+}
+
+.page-gn .survey {
+  max-width: 1080px;
+  margin-inline: auto;
+}
+
+.page-gn .survey-frame {
+  border: 0;
+  rotate: -1.2deg;
+  box-shadow: 0 18px 40px -12px var(--gn-shadow);
+}
+
+.page-gn .legend {
+  margin-top: 2rem;
+  font-family: var(--f-grot), sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.page-gn .legend .btn {
+  min-width: 0;
+  min-height: 44px;
+  margin-top: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: none;
+  font-size: 1.05rem;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.page-gn .legend .btn:hover {
+  background: none;
+  color: var(--ink);
+}
+
+/* Each suggested zone as its own print, cut from the photo, set at staggered angles. */
+.page-gn .specimen .print {
+  order: 0;
+  position: relative;
+  width: 100%;
+  margin-bottom: 1.25rem;
+  background-repeat: no-repeat;
+  box-shadow: 0 14px 30px -12px var(--gn-shadow);
+}
+
+.page-gn .specimen:nth-child(odd) .print {
+  rotate: 1.4deg;
+}
+
+.page-gn .specimen:nth-child(even) .print {
+  rotate: -1.1deg;
+}
+
+/* Small "+" marks at a print's corner, as on PARCO's photos. */
+.page-gn .specimen .print::after {
+  content: '+';
+  position: absolute;
+  right: -1.1rem;
+  bottom: -1.4rem;
+  font-family: var(--f-grot), sans-serif;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.page-gn .specimen .meta,
+.page-gn .specimen .coords {
+  font-family: var(--f-grot), sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.page-gn .apply {
+  max-width: 62ch;
+  margin-top: clamp(5rem, 9vw, 7rem);
+  line-height: 1.85;
+}
+
+.page-gn .apply h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.4vw, 2rem);
+  text-transform: uppercase;
+}
+
+/* The answer under the print. The shared base hides this line on wide screens (it belonged to the
+   old curved caption), so it is shown again here. */
+.page-gn .state-line {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+  white-space: normal;
+}
+
+.page-gn .state {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+  line-height: 1.6;
+}
+
+/* "Sample: a drawn scene" or "Checked at 22:03", under the print like PARCO's "SOUND ON / OFF". */
+.page-gn .caption {
+  margin-top: 0.9rem;
+  font-family: var(--f-grot), sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Survey marks that hold up on a busy photo: suggestions in the red, thicker; hidden areas stay dark
+   in both themes (a light block would read as a highlight). */
+.page-gn .mark-suggested {
+  stroke: var(--gn-accent);
+  stroke-width: 8;
+}
+
+.page-gn .mark-hidden {
+  fill: #1d1c1b;
+}
+
+.page-gn .key-suggested {
+  border-color: var(--gn-accent);
+}
+
+.page-gn .key-hidden {
+  background: #1d1c1b;
+}
+
+/* Sentences and labels stay in normal case: caps are for the short headings only (easier to read). */
+.page-gn .state,
+.page-gn .state-line,
+.page-gn .count,
+.page-gn .legend,
+.page-gn .specimen .meta {
+  text-transform: none;
+}
+
+.page-gn .specimen h3 {
+  line-height: 1.1;
+}
+
+/* Phones: one column; the print fills the width; the stacked links stay small at the top right. */
+@media (max-width: 767px) {
+  .page-gn .live-stage {
+    width: 100%;
+  }
+
+  .page-gn .actions {
+    flex-direction: column;
+  }
+
+  .page-gn .actions .btn + .btn::before {
+    content: none;
+  }
+
+  .page-gn .today {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-gn .survey-frame,
+  .page-gn .specimen .print {
+    rotate: none;
+  }
+}

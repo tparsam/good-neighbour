@@ -6,6 +6,7 @@ import { useWebRTCStream } from '../hooks/useWebRTCStream'
 import { MAX_ZONES, coverage, suggestZones } from '@/lib/privacy/geometry'
 import type { Region, RegionKind, Zone } from '@/lib/privacy/types'
 import { SampleScene } from './SampleScene'
+import './look.css'
 import { SAMPLE_REGIONS, SAMPLE_ZONES } from './sample'
 
 const KIND: Record<RegionKind, { label: string; title: string }> = {
@@ -35,6 +36,22 @@ interface Result {
 const percent = (share: number) => (share > 0 && share < 0.005 ? 'under 1%' : `${Math.round(share * 100)}%`)
 const points = (zone: Zone, height: number) => zone.map(p => `${p.x * 1600},${p.y * height}`).join(' ')
 const corners = (zone: Zone) => zone.map(p => `(${p.x.toFixed(2)}, ${p.y.toFixed(2)})`).join('  ')
+/** Background settings that show only `zone` of a picture, for the zone prints. */
+function crop(image: string, ratio: number, zone: Zone) {
+  const [x1, y1, x2, y2] = [zone[0].x, zone[0].y, zone[1].x, zone[2].y]
+  const w = x2 - x1
+  const h = y2 - y1
+  const at = (start: number, size: number) => (size >= 1 ? 0 : (start / (1 - size)) * 100)
+  return {
+    backgroundImage: `url(${image})`,
+    backgroundSize: `${100 / w}% ${100 / h}%`,
+    backgroundPosition: `${at(x1, w)}% ${at(y1, h)}%`,
+    aspectRatio: String((w * ratio) / h),
+    // Never taller than 420px: a tall, narrow zone gets a narrow print rather than a squashed one.
+    maxWidth: `${Math.round((420 * w * ratio) / h)}px`,
+  }
+}
+
 const share = (zone: Zone) => (zone[1].x - zone[0].x) * (zone[2].y - zone[1].y)
 
 /** Draws a video frame or a photo into a JPEG at most 1024 px wide, as a data URL. */
@@ -150,17 +167,34 @@ export default function PrivacyCheck() {
   const suggestions = suggestZones(regions, zones)
 
   const summary = checking
-    ? 'Checking this view'
+    ? 'Sending the picture to be checked. On a slow connection this can take up to a minute.'
     : `${percent(found.exposed)} of this view is not yours and is still recorded`
+  // The answer in a few words, set large over the picture.
+  const verdict = checking
+    ? 'Checking'
+    : regions.length === 0
+      ? 'Nothing found'
+      : found.exposed === 0
+        ? 'All hidden'
+        : `${percent(found.exposed)} not yours`
   // What would still be recorded with the suggested zones added to the camera's own.
   const after = coverage(regions, [...zones, ...suggestions.map(s => s.zone)])
+  // Plain sentences, so "before" and "after" the suggested zones cannot be confused.
   const findings =
-    `${percent(found.outside)} not yours, ${percent(found.hidden)} already hidden, ` +
-    `${suggestions.length} ${suggestions.length === 1 ? 'zone' : 'zones'} suggested` +
-    (suggestions.length ? `, leaving ${percent(after.exposed)} recorded` : '')
+    regions.length === 0
+      ? 'Nothing in this view looks like someone else’s.'
+      : `${percent(found.outside)} of this view is not yours, and ${percent(found.hidden)} is already hidden by your zones.` +
+        (suggestions.length
+          ? ` With the ${suggestions.length === 1 ? 'suggested zone' : `${suggestions.length} suggested zones`} added, ${percent(after.exposed)} would still be recorded.`
+          : '')
   // The camera's problem and the check's problem can both happen (a stream often ends while a
   // check is still running), so each is shown.
-  const problems = [setupError || (streamError && explain(streamError)), checkError].filter(Boolean)
+  // Once a photo has been checked, a Ring sign-in problem no longer matters to what is on screen.
+  const ringProblem = setupError || (streamError && explain(streamError))
+  const problems = [result && !streamActive ? null : ringProblem, checkError].filter(Boolean)
+  // Survey labels that would print on top of an earlier one are left out.
+  const labelAt = regions.map(r => ({ x: r.box.x1 * 1600 + 30, y: r.box.y1 * height + 46 }))
+  const showLabel = labelAt.map((p, i) => !labelAt.slice(0, i).some(q => Math.abs(q.x - p.x) < 260 && Math.abs(q.y - p.y) < 50))
   const picture = result ? (
     // eslint-disable-next-line @next/next/no-img-element
     <img className="scene" src={result.image} alt="The camera view that was checked" />
@@ -169,7 +203,7 @@ export default function PrivacyCheck() {
   )
 
   return (
-    <main className="page">
+    <main className="page page-gn">
       <header className="masthead">
         <h1 className="masthead-title">Good Neighbour</h1>
         <p className="masthead-date">{isSample ? 'Sample result' : `Checked at ${result.time}`}</p>
@@ -186,28 +220,16 @@ export default function PrivacyCheck() {
           <h2 id="view-heading">The view</h2>
         </div>
 
+        <p className="hero-title" aria-hidden="true">
+          {verdict}
+        </p>
         <div className="live-stage">
           <div className="live-frame">
             <video ref={videoRef} autoPlay playsInline muted aria-label="Live camera view" />
             {!streamActive && <div className="cover">{picture}</div>}
           </div>
-          {/* The title arches over the oval and the finding runs under it. Decorative copies only;
-              the real heading is the h1 and the real finding is the status paragraph below. */}
-          <svg className="arc" viewBox="0 0 1600 900" aria-hidden="true">
-            <path id="arc-top" d="M -44 450 A 844 494 0 0 1 1644 450" fill="none" />
-            <path id="arc-bottom" d="M -64 450 A 864 514 0 0 0 1664 450" fill="none" />
-            <text className="arc-title">
-              <textPath href="#arc-top" startOffset="50%" textAnchor="middle">
-                Good Neighbour
-              </textPath>
-            </text>
-            <text className="arc-caption">
-              <textPath href="#arc-bottom" startOffset="50%" textAnchor="middle">
-                {summary}
-              </textPath>
-            </text>
-          </svg>
         </div>
+        <p className="caption">{isSample ? 'Sample: a drawn scene' : `Checked at ${result.time}`}</p>
 
         <div className="live-panel">
           <p role="status" className="state">
@@ -240,11 +262,6 @@ export default function PrivacyCheck() {
             {problem}
           </p>
         ))}
-        {checking && (
-          <p className="note live-note">
-            Sending the picture to be checked. On a slow internet connection this can take up to a minute.
-          </p>
-        )}
         {notConfigured && (
           <p className="note live-note">
             This copy of Good Neighbour is not connected to a Ring account, so the live camera is off. Check a photo
@@ -271,14 +288,17 @@ export default function PrivacyCheck() {
           </p>
         )}
 
-        <a className="chevron" href="#findings" aria-label="Go to Findings">
-          <svg viewBox="0 0 84 26" aria-hidden="true">
-            <path d="M1 1l41 23L83 1" fill="none" stroke="currentColor" strokeWidth="1" />
-          </svg>
-        </a>
       </section>
 
       <section id="findings" aria-labelledby="findings-heading" className="section today">
+        <div
+          className="findings-bg"
+          style={result ? { backgroundImage: `url(${result.image})` } : undefined}
+          aria-hidden="true"
+        />
+        <p className="bigtype" aria-hidden="true">
+          Not yours not yours not yours
+        </p>
         <div className="section-head">
           <h2 id="findings-heading">Findings</h2>
         </div>
@@ -288,14 +308,6 @@ export default function PrivacyCheck() {
         </div>
       </section>
 
-      <svg className="flourish" viewBox="0 0 320 280" aria-hidden="true">
-        <path
-          d="M318 2C250 22 230 70 222 140c-8 70-40 120-110 132-40 6-66-18-64-44 2-22 26-28 34-8 8 22-18 48-78 50"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1"
-        />
-      </svg>
 
       <section id="zones" aria-labelledby="zones-heading" className="section lifelist">
         <div className="section-head">
@@ -327,9 +339,11 @@ export default function PrivacyCheck() {
                         height={(r.box.y2 - r.box.y1) * height}
                         fill="url(#hatch)"
                       />
-                      <text className="mark-label" x={r.box.x1 * 1600 + 30} y={r.box.y1 * height + 46}>
-                        {KIND[r.kind].label}
-                      </text>
+                      {showLabel[i] && (
+                        <text className="mark-label" x={labelAt[i].x} y={labelAt[i].y}>
+                          {KIND[r.kind].label}
+                        </text>
+                      )}
                     </g>
                   ))}
                 {suggestions.map((s, i) => (
@@ -374,6 +388,7 @@ export default function PrivacyCheck() {
             <ul className="species">
               {suggestions.map((s, i) => (
                 <li key={i} className="specimen">
+                  {result && <div className="print" style={crop(result.image, result.ratio, s.zone)} aria-hidden="true" />}
                   <p className="meta">
                     {list(s.kinds.map(k => KIND[k].label))}. {percent(share(s.zone))} of the frame.
                   </p>

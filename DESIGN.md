@@ -1,113 +1,168 @@
-# Design system: Good Neighbour
+---
+name: Good Neighbour
+description: A calm survey of what a Ring camera records that is not the owner's, set like a fashion lookbook printed on paper.
+colors:
+  paper: "#e4dfd8"
+  ink: "#1d1c1b"
+  muted: "#55514c"
+  accent-red: "#9b2a2c"
+  findings-dark: "#24211e"
+  findings-text: "#ece7e0"
+  paper-dark: "#171615"
+  ink-dark: "#e6e1da"
+  muted-dark: "#aaa49c"
+  accent-red-dark: "#d0645e"
+typography:
+  display:
+    fontFamily: "Instrument Serif, Times New Roman, serif"
+    fontSize: "clamp(2.6rem, 5vw, 4.25rem)"
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: "-0.01em"
+  body:
+    fontFamily: "Shippori Mincho, Hiragino Mincho ProN, Times New Roman, serif"
+    fontSize: "0.9375rem"
+    fontWeight: 400
+    lineHeight: 1.85
+  label:
+    fontFamily: "Archivo, Helvetica Neue, sans-serif"
+    fontSize: "0.75rem"
+    fontWeight: 400
+    letterSpacing: "0.04em"
+rounded:
+  none: "0px"
+spacing:
+  gutter: "1.25rem"
+  section: "clamp(6rem, 12vw, 9rem)"
+components:
+  text-action:
+    textColor: "{colors.ink}"
+    typography: "{typography.display}"
+    height: "44px"
+    padding: "0 0.9rem"
+  findings-band:
+    backgroundColor: "{colors.findings-dark}"
+    textColor: "{colors.findings-text}"
+---
 
-Chosen by the owner on 2026-10-06. The look is modelled on the
-Thyssen-Bornemisza museum's "Return to Nature" webdoc
-(museothyssen.org/webdocs/conectathyssen/volver-naturaleza/en/). Only its
-layout and style were followed; none of its images, text or font files are
-used. All styles live in `app/globals.css`.
+# Design System: Good Neighbour
 
-It was first built for Ring Bird Journal (now at `/birds`) and is shared by
-Good Neighbour (`/privacy`, the main app). The Layout section below covers
-both; the bird journal's parts are named Today and Life list.
+## Overview
 
-## The idea
+Chosen by the owner on 2026-10-17, modelled on PARCO's 2026 AW campaign page
+(parco.jp/style). Only its layout and style are followed; none of its images,
+text or font files are used. The styles live in `app/privacy/look.css`, on top
+of the shared base in `app/globals.css`.
 
-A museum page for a garden. The camera view is an oval picture with the title
-arched over it and the state running along the curve underneath. Type does
-the rest: a tall condensed uppercase serif against a plain grotesk, black on
-light grey.
+The page reads like a lookbook printed on paper: a tall condensed title over a
+small photo print, quiet words for actions, one dark band where the result is
+read, and the camera's picture cut into prints for each suggested zone. The
+subject is privacy, so nothing shouts and nothing accuses; the page surveys,
+explains and suggests.
 
-## Colour
+The bird journal at `/birds`, the first app in this repository, keeps the
+earlier museum look described in git history; it does not load `look.css`.
 
-Tokens are CSS variables on `:root` and switch on `prefers-color-scheme`.
+## Colors
 
-| Token | Light | Dark | Used for |
-|---|---|---|---|
-| `--bg` | `#F5F5F5` | `#111111` | Page background |
-| `--ink` | `#0A0A0A` | `#F1F1EE` | Text, rules, button outline |
-| `--muted` | `#4A4A4A` | `#B4B4AE` | Idle-frame text, disabled button, empty snapshot |
-| `--accent` | same as ink | same as ink | Focus ring and text selection |
+### Primary
+- **Accent red** `#9b2a2c` (dark theme `#d0645e`): used once on the page, for
+  the Zones heading. Nothing else is red.
 
-- There is no accent colour. Ink and paper only.
-- The idle camera frame is ink mixed into the background at 7%.
-- State is always written in words. Nothing is signalled by colour.
+### Neutral
+- **Paper** `#e4dfd8` with a film-grain layer; **ink** `#1d1c1b`; **muted**
+  `#55514c` for credits and disabled actions.
+- **Findings band** `#24211e` with `#ece7e0` text, the checked picture blurred
+  behind it at 55% opacity.
+- Dark theme: paper `#171615`, ink `#e6e1da`, muted `#aaa49c`. It follows
+  `prefers-color-scheme`.
 
-## Type
+### Named Rules
+- **One red, once.** The accent marks one heading per page.
+- **Meaning never by colour.** The survey's marks differ by pattern: hatched
+  (not yours), solid (already hidden), dashed outline (suggested).
 
-- Display: Instrument Serif 400, always uppercase, tracking -0.02em. It
-  stands in for the reference's Glossy Display. Used for the arched title,
-  the state on phones, the button, Today's figures, the Life list title and
-  species names.
-- Text: Archivo 400 (600 for the wordmark). It stands in for Neue Haas
-  Grotesk. Used for labels, dates, notes and the curved state line.
-- Both load through `next/font/google`, which self-hosts them at build time.
-- Sizes: arched title 176 units in a 1600-unit frame (it scales with the
-  oval); Life list title up to 150px; Today's figures up to 120px; species
-  names 30 to 36px; button 28px; body and labels 15px; wordmark and date 13px.
-- Labels are uppercase grotesk at body size. They are data labels (a date, a
-  count), never a kicker above a heading.
+## Typography
+
+- **Display:** Instrument Serif, uppercase, for the title, section headings,
+  zone titles and the text actions. It stands in for PARCO's condensed serif.
+- **Body:** Shippori Mincho, for sentences: the answer under the print, the
+  findings, notes and the steps to add a zone. It stands in for PARCO's Kozuka
+  Mincho.
+- **Labels:** Archivo at 0.75 to 0.8125rem for the stacked section links, the
+  legend, zone labels and corners.
+
+### Hierarchy
+- Title `clamp(2.6rem, 5vw, 4.25rem)`; section headings `clamp(2.4rem, 4vw,
+  3.5rem)` (Zones up to 4.5rem); zone titles about 2rem; the answer line
+  `clamp(1.25rem, 1.8vw, 1.6rem)`; findings text `clamp(1.15rem, 1.7vw,
+  1.45rem)` at 1.85 line height.
+
+### Named Rules
+- **Caps for short headings only.** Sentences, counts, legends and labels stay
+  in normal case.
 
 ## Layout
 
-- **Top bar:** sticky, 64px, one 1px rule under it. Wordmark left, date right.
-- **Section links:** one row under the bar. The first sits left, the rest right.
-- **Live:** centred. The oval frame is `min(74vw, 1050px)` wide and 16:9. An
-  SVG laid over it draws the title along the top of the oval and the state
-  along the bottom. Under it: the reason (if too long for the curve), the
-  oval button, any message, and a thin chevron that links to Today.
-- **Today:** left aligned. The three figures are set as one oversized quote
-  in guillemets: «2 species, 5 visits, 9:00 busiest hour».
-- **Life list:** a centred oversized title with the species count, then
-  blocks staggered on a 12-column grid in a repeating pattern of three: left,
-  right and lower, then centre. Each block is a label line (first seen,
-  visits), the species name, then the 16:9 snapshot.
-- **Good Neighbour's sections** reuse these three: **The view** is Live,
-  with three oval buttons (start the stream, check this view, check a photo)
-  and notes under them; **Findings** is Today's oversized quote
-  («5% not yours, 0% already hidden, 2 zones suggested, leaving 2%
-  recorded»); **Zones** is the Life list's centred title, then the survey.
-- **The survey:** the checked picture in a 1px ink frame, at the picture's own
-  shape (not forced to 16:9), so the marks always line up. Marks differ by
-  pattern, never colour: 45-degree ink hatching for "not yours", solid ink for
-  "already hidden by a zone", a dashed ink outline for "suggested zone", each
-  with a small uppercase label. A legend and an oval button ("Show what would
-  be recorded") sit under it, then one block per suggested zone (label line,
-  name, corners) and the steps to add a zone in the Ring app.
-- **Phone (under 768px):** one column. The arched title stays. The curved
-  state line is hidden and the state is set straight under the oval.
+- **Top:** the small wordmark at the top left; the section links (The view,
+  Findings, Zones) stacked in tiny caps at the top right, fixed.
+- **The view:** centred. The verdict in tall caps ("5% not yours"), then the picture as a small print
+  (`min(56vw, 720px)`, 16:9), a small caption ("Sample: a drawn scene" or
+  "Checked at 22:03"), then the answer in one sentence, then the actions
+  as words separated by slashes, then the sample photos, then any notes.
+- **Findings:** a full-width dark band: heading on the left, the finding on the
+  right (one column on phones); the words "Not yours" repeat oversized and cropped along its bottom.
+  In dark mode the band turns to paper so it still stands apart.
+- **Zones:** the heading in red, left aligned; the survey as a print turned
+  -1.2 degrees; then one print per suggested zone, cut from the picture,
+  staggered on the 12-column grid and turned slightly each way; then the steps
+  to add a zone and the photo credits.
+- **Phones (under 768px):** one column; the print fills the width; actions
+  stack; nothing scrolls sideways (the page clips the oversized type and the
+  blurred photo).
 
-## Shape
+## Elevation & Depth
 
-- Ovals for the camera frame (`border-radius: 50%`) and the button. Square
-  corners everywhere else.
-- Rules and outlines are 1px ink. No shadows, no gradients, no cards.
-- A species with no snapshot gets a 1px outlined 16:9 box that says so.
+- No cards. Depth comes from prints: a soft shadow tinted to the paper,
+  `0 18px 40px -12px rgb(60 48 36 / 0.22)` on the survey and
+  `0 14px 30px -12px` on zone prints.
+- Film grain: a fixed, click-through noise layer over the page (multiply in
+  light, screen at low opacity in dark).
 
-## Ornaments
+## Shapes
 
-Two thin 1px line drawings, both `aria-hidden` or labelled: the down chevron
-under Live (a real link to Today) and a hand-drawn curve between Today and
-Life list.
+- Square corners everywhere. Prints are rectangles at the picture's own shape,
+  never cropped to a fixed ratio, so marks line up.
+- Small "+" marks at the corner of each zone print.
 
-## Accessibility notes
+## Components
 
-- The arched title and curved state are decorative copies (`aria-hidden`).
-  The real heading is the `h1` in the top bar; the real state is the
-  `role="status"` element, kept for screen readers on wide screens and shown
-  on phones.
-- Focus is a 2px ink outline, offset 3px.
-- The only motion is the button press; it sits inside
-  `prefers-reduced-motion: no-preference`.
+### Actions
+- Words, not boxes: `START LIVE STREAM / CHECK THIS VIEW / CHECK A PHOTO`,
+  each at least 44px tall. Hover underlines; disabled actions fade to 38% ink.
+- "Show what would be recorded" is an underlined text action under the survey.
 
-## Icon
+### Navigation
+- Three stacked links at the top right; on phones they stay small.
 
-The camera oval in 1px-style ink on the page grey, its right half hatched like
-a "not yours" mark (`app/icon.png`, also the favicon and the home-screen icon).
+### Zone prints
+- Each suggested zone is shown as a print of that part of the picture: CSS
+  background crop, aspect ratio from the zone, at most 420px tall.
 
-## Known trade-off
+### Notes and errors
+- Mincho text under the actions, no rules or boxes; errors are announced with
+  `role="alert"`.
 
-The oval hides the corners of the camera picture, about a fifth of the frame.
-A bird in a corner is not visible in the live view. Identification still
-uses the full frame, and saved snapshots are full rectangles. Good
-Neighbour's check also uses the full frame, and its Zones survey shows the
-whole picture.
+## Do's and Don'ts
+
+- **Do** keep sentences in normal case and caps for short headings.
+- **Do** keep the one red heading; **don't** add a second accent.
+- **Don't** add an entry gate, sound control or warped photos: PARCO's are
+  for a campaign, not a tool.
+- **Known detector findings, checked and kept on purpose** (impeccable detect,
+  2026-10-17): the oversized cropped words in Findings are uppercase and set
+  tight (decorative, hidden from screen readers); "The view" heading reports
+  overflow because it is visually hidden for screen readers; the legend's
+  hatch swatch is a repeating stripe because it must match the survey's
+  hatching. The detector could only ignore these file-wide, so they are
+  recorded here instead.
