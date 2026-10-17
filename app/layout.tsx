@@ -8,6 +8,7 @@ const tall = Instrument_Serif({ subsets: ['latin'], weight: '400', variable: '--
 export const metadata = {
   title: 'Good Neighbour',
   description: 'Is your camera being a good neighbour? Finds what a Ring camera records that is not yours.',
+  appleWebApp: { capable: true, title: 'Good Neighbour', statusBarStyle: 'default' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

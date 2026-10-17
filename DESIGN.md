@@ -1,10 +1,14 @@
-# Design system: Ring Bird Journal
+# Design system: Good Neighbour
 
 Chosen by the owner on 2026-10-06. The look is modelled on the
 Thyssen-Bornemisza museum's "Return to Nature" webdoc
 (museothyssen.org/webdocs/conectathyssen/volver-naturaleza/en/). Only its
 layout and style were followed; none of its images, text or font files are
 used. All styles live in `app/globals.css`.
+
+It was first built for Ring Bird Journal (now at `/birds`) and is shared by
+Good Neighbour (`/privacy`, the main app). The Layout section below covers
+both; the bird journal's parts are named Today and Life list.
 
 ## The idea
 
@@ -57,6 +61,18 @@ Tokens are CSS variables on `:root` and switch on `prefers-color-scheme`.
   blocks staggered on a 12-column grid in a repeating pattern of three: left,
   right and lower, then centre. Each block is a label line (first seen,
   visits), the species name, then the 16:9 snapshot.
+- **Good Neighbour's sections** reuse these three: **The view** is Live,
+  with three oval buttons (start the stream, check this view, check a photo)
+  and notes under them; **Findings** is Today's oversized quote
+  («5% not yours, 0% already hidden, 2 zones suggested, leaving 2%
+  recorded»); **Zones** is the Life list's centred title, then the survey.
+- **The survey:** the checked picture in a 1px ink frame, at the picture's own
+  shape (not forced to 16:9), so the marks always line up. Marks differ by
+  pattern, never colour: 45-degree ink hatching for "not yours", solid ink for
+  "already hidden by a zone", a dashed ink outline for "suggested zone", each
+  with a small uppercase label. A legend and an oval button ("Show what would
+  be recorded") sit under it, then one block per suggested zone (label line,
+  name, corners) and the steps to add a zone in the Ring app.
 - **Phone (under 768px):** one column. The arched title stays. The curved
   state line is hidden and the state is set straight under the oval.
 
@@ -83,8 +99,15 @@ Life list.
 - The only motion is the button press; it sits inside
   `prefers-reduced-motion: no-preference`.
 
+## Icon
+
+The camera oval in 1px-style ink on the page grey, its right half hatched like
+a "not yours" mark (`app/icon.png`, also the favicon and the home-screen icon).
+
 ## Known trade-off
 
 The oval hides the corners of the camera picture, about a fifth of the frame.
 A bird in a corner is not visible in the live view. Identification still
-uses the full frame, and saved snapshots are full rectangles.
+uses the full frame, and saved snapshots are full rectangles. Good
+Neighbour's check also uses the full frame, and its Zones survey shows the
+whole picture.
