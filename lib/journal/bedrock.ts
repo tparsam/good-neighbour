@@ -30,12 +30,13 @@ export async function askAboutImage(opts: {
   const model = process.env.BEDROCK_MODEL_ID ?? 'us.amazon.nova-lite-v1:0'
   const awsRegion = process.env.AWS_REGION ?? 'us-east-1'
 
-  const res = await fetch(
+  const signal = AbortSignal.timeout(opts.timeoutMs ?? 15_000)
+  const send = () => fetch(
     `https://bedrock-runtime.${awsRegion}.amazonaws.com/model/${encodeURIComponent(model)}/converse`,
     {
       method: 'POST',
       // Without a limit a hung call would leave the watcher stalled while it still says "Watching".
-      signal: AbortSignal.timeout(opts.timeoutMs ?? 15_000),
+      signal,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.AWS_BEARER_TOKEN_BEDROCK}`,
@@ -54,6 +55,11 @@ export async function askAboutImage(opts: {
         inferenceConfig: { maxTokens: opts.maxTokens, temperature: 0 },
       }),
     }
+  )
+  // On a slow connection the secure handshake alone can pass Node's 10 s connect limit; a second
+  // try usually gets through. Only a connect timeout is retried, within the same overall limit.
+  const res = await send().catch(error =>
+    error?.cause?.code === 'UND_ERR_CONNECT_TIMEOUT' ? send() : Promise.reject(error)
   )
 
   if (!res.ok) {

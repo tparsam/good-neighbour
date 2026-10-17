@@ -51,7 +51,21 @@ Not yet checked.
   resolved to eu-south-2) took 2 to 3 s and sometimes more than Node's 10 s
   connect limit, so some requests failed with "fetch failed". This was worse
   while other uploads were running on the same connection.
-- Not yet seen: a live frame checked by Nova, and which clip the stream shows.
+- **Second live run, same day, with a fresh token:** video arrived 3.5 s
+  after pressing Start, and a 1280 x 720 live frame went through the whole
+  check: Nova answered in 7.3 s and the camera's real zones (none) were read.
+  The stream log showed `connecting`, `connected` (8.6 s), then
+  `disconnected` about 20 s later: the sandbox clip simply ends, so the
+  dropped streams were the clip finishing, not a fault.
+- The first check that day failed with "fetch failed": the secure connection
+  to Bedrock took over Node's 10 s connect limit. A connect timeout is now
+  retried once. The page also hid the check's error behind "The camera stream
+  ended"; it now shows both.
+- **The clip:** the stream showed the Playground's porch clip (snowy steps
+  with a parcel), nearly all of it the owner's own property. Nova Lite marked
+  77% of it as "road", the owner's steps and parcel included. On the same
+  frame, Nova Pro marked 13% (a snowy area top right) as a neighbour's, and
+  Nova 2 Lite and Qwen3-VL marked nothing, which is right.
 
 ## How well Nova Lite marks what is not the owner's
 

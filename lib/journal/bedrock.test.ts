@@ -27,3 +27,19 @@ test('a caller can set how long to wait for Bedrock', async () => {
     globalThis.fetch = realFetch
   }
 })
+
+test('a connection that times out is tried once more', async () => {
+  const realFetch = globalThis.fetch
+  let calls = 0
+  globalThis.fetch = (async () => {
+    calls++
+    if (calls === 1) throw Object.assign(new TypeError('fetch failed'), { cause: { code: 'UND_ERR_CONNECT_TIMEOUT' } })
+    return new Response(JSON.stringify({ output: { message: { content: [{ text: 'ok' }] } } }))
+  }) as typeof fetch
+  try {
+    assert.equal(await askAboutImage({ system: 's', question: 'q', jpegBase64: 'AA==', maxTokens: 5 }), 'ok')
+    assert.equal(calls, 2)
+  } finally {
+    globalThis.fetch = realFetch
+  }
+})

@@ -144,7 +144,9 @@ export default function PrivacyCheck() {
     `${percent(found.outside)} not yours, ${percent(found.hidden)} already hidden, ` +
     `${suggestions.length} ${suggestions.length === 1 ? 'zone' : 'zones'} suggested` +
     (suggestions.length ? `, leaving ${percent(after.exposed)} recorded` : '')
-  const problem = setupError || (streamError && explain(streamError)) || checkError
+  // The camera's problem and the check's problem can both happen (a stream often ends while a
+  // check is still running), so each is shown.
+  const problems = [setupError || (streamError && explain(streamError)), checkError].filter(Boolean)
   const picture = result ? (
     // eslint-disable-next-line @next/next/no-img-element
     <img className="scene" src={result.image} alt="The camera view that was checked" />
@@ -211,11 +213,11 @@ export default function PrivacyCheck() {
           </div>
         </div>
 
-        {problem && (
-          <p role="alert" className="note live-note">
+        {problems.map(problem => (
+          <p key={problem} role="alert" className="note live-note">
             {problem}
           </p>
-        )}
+        ))}
         {checking && (
           <p className="note live-note">
             Sending the picture to be checked. On a slow internet connection this can take up to a minute.
