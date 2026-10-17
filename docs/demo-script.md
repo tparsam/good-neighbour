@@ -14,7 +14,7 @@ real device.
 | 0:00 | The page at rest: "Good Neighbour" arched over the oval, the drawn sample scene inside, "Sample result" at the top | A Ring doorbell sees more than your home. It sees the street, and the house across the road. |
 | 0:12 | Hold on the sample; pointer traces the road and the house opposite | Ring lets you hide those parts with privacy zones, but you have to notice the problem and draw every zone yourself. Most people never do. |
 | 0:25 | Press **Start live stream**; the oval fills with the Playground clip | Good Neighbour does the noticing for you. This is Ring's own sandbox camera, streamed through the Ring API. Nothing here is mocked. |
-| 0:40 | Press **Check this view**; the button reads "Checking" | One frame goes to Amazon Nova Lite on Bedrock, which marks what is not yours: the road, neighbours' houses, vehicles on the street. At the same time, the app reads the camera's existing privacy zones from the Ring API. |
+| 0:40 | Press **Check this view**; the button reads "Checking" | One frame goes to Qwen3-VL on Amazon Bedrock, which marks what is not yours: the road, neighbours' houses, vehicles on the street. At the same time, the app reads the camera's existing privacy zones from the Ring API. |
 | 1:00 | The curved line under the oval changes to "[N]% of this view is not yours and is still recorded" | The answer, in one line. |
 | 1:10 | Scroll to **Findings** | How much of the view is not yours, how much is already hidden, and how many zones it suggests. |
 | 1:22 | Scroll to **Zones**; pause on the marked frame and the legend | Hatched is not yours. Solid is already hidden by a zone you have. A dashed outline is a zone it suggests. |
@@ -56,7 +56,7 @@ Never present the sample result as a live result.
 - [ ] Terminal ready in a second window with `npm test` typed in, and the
       README open.
 - [ ] A front-door photo or Ring-app screenshot ready on the Desktop for
-      **Check a photo**. Check it once beforehand: Nova Lite's answers vary,
+      **Check a photo**. Check it once beforehand: the model's answers can vary,
       so pick a photo where it marks both the road and the house opposite.
 
 ## After recording

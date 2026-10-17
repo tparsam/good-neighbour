@@ -2,12 +2,13 @@
 //
 //   node --env-file=.env.local lib/privacy/eval.ts [prompt.txt] [runs]
 //
-// With no prompt file it scores the app's own prompt. For each photo it reports which
+// With no prompt file it scores the app's own prompt, on the app's model; set BEDROCK_MODEL_ID
+// to score another model. For each photo it reports which
 // expected areas were found (a found box of the right kind that covers 30% of the expected
 // box, or whose centre lies inside it) and, for the churchyard, any false "neighbour".
 import { readFileSync } from 'node:fs'
 import { askAboutImage } from '../journal/bedrock.ts'
-import { PROMPT } from './bedrock.ts'
+import { MODEL, PROMPT } from './bedrock.ts'
 import { parseRegions } from './regions.ts'
 import type { Box, RegionKind } from './types.ts'
 
@@ -55,7 +56,7 @@ for (const photo of PHOTOS) {
   for (let run = 0; run < runs; run++) {
     let text: string | null = null
     try {
-      text = await askAboutImage({ system: prompt, question: 'Mark the areas of this picture that are not the camera owner’s own property.', jpegBase64, maxTokens: 600, timeoutMs: 120_000 })
+      text = await askAboutImage({ system: prompt, question: 'Mark the areas of this picture that are not the camera owner’s own property.', jpegBase64, maxTokens: 600, timeoutMs: 120_000, model: MODEL })
     } catch (error) {
       console.log(`${photo.file} run ${run + 1}: failed, ${error instanceof Error ? error.message : error}`)
     }

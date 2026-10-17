@@ -17,7 +17,7 @@ Built for the Ring track of the Build, Ship, Shape: Amazon Developer Hackathon
 1. Plays the Ring camera's live stream in the browser.
 2. On **Check this view**, takes the frame on screen (or, on **Check a photo**,
    a picture the owner chooses) and sends it to Amazon
-   Bedrock (Nova Lite), which marks three kinds of area that are not the
+   Bedrock (Qwen3-VL), which marks three kinds of area that are not the
    owner's: **road** (street or pavement), **neighbour** (another household's
    building, window, door, garden or driveway) and **vehicle** (on the public
    road).
@@ -93,8 +93,9 @@ In `.env.local`, set:
 Optional settings, with their defaults:
 
 - `AWS_REGION=us-east-1`
-- `BEDROCK_MODEL_ID=us.amazon.nova-lite-v1:0` (set `us.amazon.nova-pro-v1:0`
-  to try Nova Pro)
+- `BEDROCK_MODEL_ID`: unset, the privacy check uses Qwen3-VL
+  (`qwen.qwen3-vl-235b-a22b`). Set it to try another Bedrock model, for
+  example `us.amazon.nova-2-lite-v1:0`.
 - `MAX_FRAMES_PER_RUN=2000`: the most pictures sent to Bedrock per server run.
 
 Then:
@@ -133,7 +134,7 @@ ships.
     npm run typecheck
 
 The tests cover the zone geometry, the reader for the model's reply
-(including the broken replies Nova Lite sometimes sends), the reader for
+(including the broken replies some models send), the reader for
 Ring's zones and its encryption flag, and a check that this README and the
 demo script only name files, scripts and settings that exist.
 
@@ -152,12 +153,13 @@ demo script only name files, scripts and settings that exist.
 
 Details worth knowing:
 
-- **Two coordinate systems.** Nova gives boxes as `[x1, y1, x2, y2]` on a 0 to
-  1000 scale, as AWS documents for Nova object detection. Ring gives zones as
+- **Two coordinate systems.** The model gives boxes as `[x1, y1, x2, y2]` on a
+  0 to 1000 scale, the format AWS documents for Nova object detection, which
+  Qwen3-VL also uses. Ring gives zones as
   polygons with corners from 0 to 1, origin top-left. The reply reader divides
   by 1000, clamps to the frame, fixes swapped corners, and drops boxes with no
   area, unknown kinds and anything past the first 30. It accepts "neighbor" as
-  well as "neighbour". About 1 reply in 8 from Nova Lite is broken JSON (a
+  well as "neighbour". About 1 reply in 8 from Nova Lite was broken JSON (a
   stray bracket) around good regions; the reader then reads each complete
   region on its own. A reply with no readable region is "no answer", never
   "nothing found".
@@ -190,10 +192,10 @@ Details worth knowing:
 
 ## Limits
 
-- **Accuracy is measured on only four photos.** The app's prompt finds 17 of
-  24 expected areas on them: houses and cars across the road well, the road
-  about two times in three, and it calls a churchyard a neighbour. See
-  `docs/findings.md`.
+- **Accuracy is measured on only five pictures** (four test photos and one
+  live Ring frame). Qwen3-VL found 20 of the 21 expected areas it answered
+  for, over two runs, with no false alarms; it missed the large house
+  straight across the road in one photo. See `docs/findings.md`.
 - Areas are rectangles, so a suggested zone can cover a little more than the
   area itself.
 - A check uploads a picture of about 200 KB. On a slow connection this takes
@@ -209,8 +211,10 @@ Details worth knowing:
 
 - **Ring API**: device discovery, device location, live stream (WHEP), device
   configurations (privacy zones and the encryption flag).
-- **Amazon Bedrock**: Nova Lite through the Converse API, with API-key
-  authentication.
+- **Amazon Bedrock**: Qwen3-VL through the Converse API, with API-key
+  authentication. It was chosen over Amazon Nova Lite, Nova 2 Lite and Nova
+  Pro, Llama 4 Maverick, Pixtral Large and Gemma 3 by the scorecard below; see
+  `docs/findings.md`.
 
 Product feedback on all of these, as the hackathon asks, is in `FEEDBACK.md`.
 

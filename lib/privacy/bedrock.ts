@@ -3,6 +3,11 @@ import { parseRegions } from './regions.ts'
 import type { Region } from './types.ts'
 
 // The box format and the 0 to 1000 scale follow the prompt AWS documents for Nova object detection.
+/** Chosen on 2026-10-17 by the scorecard (lib/privacy/eval.ts) and a live Ring frame: it found
+ *  20 of 21 expected areas with no false alarms. Nova Lite found ~70% and called the owner's own
+ *  porch a road. See docs/findings.md. */
+export const MODEL = 'qwen.qwen3-vl-235b-a22b'
+
 export const PROMPT = `You look at one frame from a home security camera and mark what is NOT part of the camera owner's own property.
 Reply with JSON only, in exactly this shape:
 {"regions":[{"kind":"road|neighbour|vehicle","box":[x1,y1,x2,y2]}]}
@@ -26,6 +31,7 @@ export async function findRegions(jpegBase64: string): Promise<Region[] | null> 
     // A one-off check, so it can wait. Measured from a slow home connection on 2026-10-17: a
     // 1024 px picture took 7 to 58 seconds, almost all of it uploading; Bedrock itself took ~1 s.
     timeoutMs: 90_000,
+    model: MODEL,
   })
   return text === null ? null : parseRegions(text)
 }

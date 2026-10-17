@@ -43,3 +43,25 @@ test('a connection that times out is tried once more', async () => {
     globalThis.fetch = realFetch
   }
 })
+
+test('a caller picks the model, and BEDROCK_MODEL_ID overrides it', async () => {
+  const realFetch = globalThis.fetch
+  const realModel = process.env.BEDROCK_MODEL_ID
+  const urls: string[] = []
+  globalThis.fetch = (async (url: string) => {
+    urls.push(url)
+    return new Response(JSON.stringify({ output: { message: { content: [{ text: 'ok' }] } } }))
+  }) as typeof fetch
+  try {
+    delete process.env.BEDROCK_MODEL_ID
+    await askAboutImage({ system: 's', question: 'q', jpegBase64: 'AA==', maxTokens: 5, model: 'qwen.qwen3-vl-235b-a22b' })
+    process.env.BEDROCK_MODEL_ID = 'us.amazon.nova-pro-v1:0'
+    await askAboutImage({ system: 's', question: 'q', jpegBase64: 'AA==', maxTokens: 5, model: 'qwen.qwen3-vl-235b-a22b' })
+    assert.match(urls[0], /\/model\/qwen\.qwen3-vl-235b-a22b\/converse$/)
+    assert.match(urls[1], /\/model\/us\.amazon\.nova-pro-v1%3A0\/converse$/)
+  } finally {
+    globalThis.fetch = realFetch
+    if (realModel === undefined) delete process.env.BEDROCK_MODEL_ID
+    else process.env.BEDROCK_MODEL_ID = realModel
+  }
+})

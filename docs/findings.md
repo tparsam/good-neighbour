@@ -151,3 +151,29 @@ answers can still shift by an item between sessions.
   the app's 17. None did, so the app's prompt is unchanged. Four photos are
   too few to prefer v3 on its strengths alone; more real doorbell frames
   would settle it.
+
+## Choosing the model (2026-10-17)
+
+Every vision model on Bedrock that this account could use was scored with
+`lib/privacy/eval.ts` (the app's prompt, the four test photos, 12 expected
+areas a run) and checked on the live Playground porch frame, where the right
+answer is nothing or almost nothing. Claude models were listed but answered
+"not available for this account".
+
+| Model | Found, run 1 | Found, run 2 | False alarms (churchyard, 2 runs) | Live porch frame | 4 photos took |
+|---|---|---|---|---|---|
+| **Qwen3-VL 235B** (`qwen.qwen3-vl-235b-a22b`) | 9 of 9 (1 upload failed) | 11 of 12 | 0 | nothing (right) | 77 to 228 s |
+| Nova Pro | 10 of 12 | 9 of 12 | 2 | 13% "neighbour" | 41 to 136 s |
+| Nova 2 Lite | 8 of 12 | 8 of 12 | 0 | nothing (right) | 49 to 107 s |
+| Nova Lite (the old default) | 8 of 12 | about 8.5 of 12 earlier | 1 to 2 | 77% "road", the owner's steps and parcel | 55 s |
+| Pixtral Large | 5 of 12 | | 0 | | 103 s |
+| Gemma 3 27B | 3 of 12 | | 2 | | 99 s |
+| Llama 4 Maverick | 1 of 8 (1 failed) | | 1 | | 68 s |
+
+Times depend mostly on the slow upload measured above, not the model.
+
+**Chosen: Qwen3-VL**, the most accurate with no false alarms anywhere. It
+runs on Amazon Bedrock like the others. Nova 2 Lite was the runner-up: also
+no false alarms, but it often missed cars and the house straight across the
+road. The bird journal keeps Nova Lite. `BEDROCK_MODEL_ID` still overrides the
+model, so any of these can be tried again.

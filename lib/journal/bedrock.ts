@@ -26,8 +26,10 @@ export async function askAboutImage(opts: {
   maxTokens: number
   /** How long to wait for the answer. The bird watcher's default suits a frame every 2 seconds. */
   timeoutMs?: number
+  /** Which Bedrock model to ask. BEDROCK_MODEL_ID, when set, overrides it (for trying others). */
+  model?: string
 }): Promise<string | null> {
-  const model = process.env.BEDROCK_MODEL_ID ?? 'us.amazon.nova-lite-v1:0'
+  const model = process.env.BEDROCK_MODEL_ID || opts.model || 'us.amazon.nova-lite-v1:0'
   const awsRegion = process.env.AWS_REGION ?? 'us-east-1'
 
   const signal = AbortSignal.timeout(opts.timeoutMs ?? 15_000)

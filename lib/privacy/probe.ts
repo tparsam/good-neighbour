@@ -1,4 +1,4 @@
-// A throwaway probe, not part of the app. It answers one question: how good are Nova's
+// A throwaway probe, not part of the app. It answers one question: how good are the model's
 // boxes on doorbell-style pictures?
 //
 //   node --env-file=.env.local lib/privacy/probe.ts photo1.jpg [photo2.jpg ...]
