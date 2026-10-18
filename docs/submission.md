@@ -101,8 +101,14 @@ stores nothing.
   Llama 4 Maverick, Pixtral Large and Gemma 3) with our own evaluation
   script, then built a 93-photo labelled benchmark for the winner.
 - **Geometry in plain TypeScript:** model boxes (0 to 1000) and Ring polygons
-  (0 to 1) are compared on a 100 by 100 grid with ray casting; a small search
-  picks the zones that hide the most within Ring's limit of two.
+  (0 to 1) are compared on a grid $G$ of $100 \times 100$ points, each tested
+  against the zones with ray casting. With $N$ the areas that are not the
+  owner's and $Z$ the privacy zones, the headline figure is
+
+  $$\text{still recorded} = \frac{|\{\, p \in G : p \in N,\ p \notin Z \,\}|}{|G|}$$
+
+  A small search then picks the zones that hide the most within Ring's limit
+  of two.
 - **Tested:** 128 tests cover the geometry, the reader for the model's reply
   (including broken JSON), the reader for Ring's zones and encryption flag,
   the pasted-token checks, and that the docs only name files that exist.
