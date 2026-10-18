@@ -9,7 +9,8 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { MODEL, PROMPT, askAboutImage } from './bedrock.ts'
 import { parseRegions } from './regions.ts'
-import { matches, wilson } from './score.ts'
+import { headlineError, matches, wilson } from './score.ts'
+import { coverage } from './geometry.ts'
 import type { Region, RegionKind } from './types.ts'
 
 const dir = new URL('../../docs/test-photos/', import.meta.url)
@@ -50,6 +51,10 @@ const pct = (k: number, n: number) => {
   const [lo, hi] = wilson(k, n)
   return `${k} of ${n} = ${n ? Math.round((100 * k) / n) : 0}% (95% range ${Math.round(lo * 100)} to ${Math.round(hi * 100)}%)`
 }
+const errors: number[] = []
+// The same, for photos where no labelled house fills over 40% of the picture (closer to a doorbell's view).
+const usualErrors: number[] = []
+let over = 0
 let found = 0, expected = 0, posPhotos = 0, allFound = 0, negPhotos = 0, negWithMarks = 0, marks = 0, strayMarks = 0, failed = 0
 const kinds: Record<string, [number, number]> = {}
 for (const a of answers) {
@@ -58,6 +63,9 @@ for (const a of answers) {
     failed++
     continue
   }
+  errors.push(headlineError(a.regions, want))
+  if (!want.some(w => w.kind === 'neighbour' && (w.box.x2 - w.box.x1) * (w.box.y2 - w.box.y1) > 0.4)) usualErrors.push(headlineError(a.regions, want))
+  if (coverage(a.regions, []).outside > coverage(want, []).outside) over++
   if (want.length === 0) {
     negPhotos++
     if (a.regions.length > 0) negWithMarks++
@@ -85,3 +93,18 @@ for (const [kind, [k, n]] of Object.entries(kinds)) console.log(`  ${kind.padEnd
 console.log(`Photos with every area found: ${pct(allFound, posPhotos)}`)
 console.log(`Empty scenes marked anyway:  ${pct(negWithMarks, negPhotos)}`)
 console.log(`Marks matching no labelled area: ${strayMarks} of ${marks}`)
+// The page's headline: the share of the picture that is not the owner's. Only the box sizes matter here.
+const points = (x: number) => `${(x * 100).toFixed(1)} points`
+const report = (title: string, errs: number[]) => {
+  const sorted = [...errs].sort((x, y) => x - y)
+  if (!sorted.length) return
+  const within = (limit: number) => sorted.filter(e => e <= limit).length
+  console.log(`\n${title} (${sorted.length} answers):`)
+  console.log(`  Average error:               ${points(sorted.reduce((t, e) => t + e, 0) / sorted.length)}`)
+  console.log(`  Median error:                ${points(sorted[Math.floor(sorted.length / 2)])}`)
+  console.log(`  Within 5 points:             ${pct(within(0.05), sorted.length)}`)
+  console.log(`  Within 10 points:            ${pct(within(0.1), sorted.length)}`)
+}
+report('Headline "% not yours", model against labels', errors)
+console.log(`  Model higher than labels:    ${over} of ${errors.length}`)
+report('The same, where no labelled house fills over 40% of the photo', usualErrors)

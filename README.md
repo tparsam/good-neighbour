@@ -170,6 +170,17 @@ Latest results, with Qwen3-VL (details in `docs/findings.md`, raw answers in
 
 A second run gave the same totals.
 
+How close the page's headline ("x% of this view is not yours") comes to the
+labels, from the same answers (both runs), in points of the frame:
+
+| | Median error | Within 10 points |
+|---|---|---|
+| Photos where no house fills over 40% of the picture (112) | 3.8 | 66% |
+| Photos where one house fills most of the picture (74) | 39.3 | 14% |
+
+The large misses are close-up houses the model leaves out, the weak spot
+below.
+
 ## Tests
 
     npm test

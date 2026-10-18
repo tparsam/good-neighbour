@@ -1,3 +1,4 @@
+import { coverage } from './geometry.ts'
 import type { Region } from './types.ts'
 
 /** Whether a box the model found counts as finding an expected area: the same kind, and either
@@ -26,3 +27,10 @@ export function wilson(k: number, n: number, z = 1.959964): [number, number] {
   return [Math.max(0, centre - margin), Math.min(1, centre + margin)]
 }
 
+
+/** How far the share of the picture marked "not yours" is from the labelled share, as a fraction
+ *  of the frame: the error in the page's headline figure (before any zones). Kinds do not matter,
+ *  since a zone hides a house and a road alike. */
+export function headlineError(found: Region[], expected: Region[]): number {
+  return Math.abs(coverage(found, []).outside - coverage(expected, []).outside)
+}

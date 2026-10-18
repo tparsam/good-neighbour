@@ -207,3 +207,30 @@ Qwen3-VL, the app's prompt, two full runs. Raw answers and scores are in
 - 105 of 877 marks over both runs matched no labelled area. Some are likely
   real things the labels left out (small distant houses), so this is only a
   rough measure of false marks.
+
+## How close the headline figure is (2026-10-18)
+
+The benchmark above asks whether each area was found, not whether its box is
+the right size, but the page's headline ("x% of this view is not yours")
+comes from the box sizes. `headlineError` in `lib/privacy/score.ts` now
+compares the share the model marks with the labelled share, and
+`lib/privacy/eval.ts` reports it. Re-scored from the saved answers in
+`docs/benchmark/`, with no new calls:
+
+| Answers (both runs) | Average error | Median error | Within 5 points | Within 10 points |
+|---|---|---|---|---|
+| All 186 | 22.0 | 15.5 | 37% | 45% |
+| 112 where no labelled house fills over 40% of the photo | 9.2 | 3.8 | 54% | 66% |
+| 74 where one does | 41.5 | 39.3 | | 14% |
+| 8 on the four doorbell-style test photos | 9.8 | 1.1 | | 75% |
+
+- **The model marks less than the labels** in 143 of 186 answers. On average
+  it marks 18% of a photo as houses where the labels say 37%; for roads it
+  marks a little more (19% against 14%).
+- **The big misses are close-up houses.** The twelve worst photos each have
+  a labelled house over 60% of the frame and a model share near 0, the same
+  houses the found-rate already showed as missed.
+- **Part of the gap is the labels:** a row of houses is labelled as one box,
+  while the model draws one tight box per house, so even a correct answer
+  can mark less. This measure therefore overstates the error somewhat.
+

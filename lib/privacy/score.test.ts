@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { matches, wilson } from './score.ts'
+import { headlineError, matches, wilson } from './score.ts'
 
 const box = (x1: number, y1: number, x2: number, y2: number) => ({ x1, y1, x2, y2 })
 
@@ -24,4 +24,17 @@ test('the 95% range around a share follows the Wilson score interval', () => {
   const [l0, h0] = wilson(0, 14)
   assert.equal(l0, 0)
   assert.ok(Math.abs(h0 - 0.2153) < 0.001, `${h0}`)
+})
+
+test('the headline error is how far the share "not yours" is from the labelled share', () => {
+  const road = { kind: 'road' as const, box: box(0, 0.5, 1, 1) }
+  assert.equal(headlineError([road], [road]), 0)
+  // The model marks half the frame; the labels say a quarter.
+  assert.ok(Math.abs(headlineError([road], [{ kind: 'road', box: box(0, 0.75, 1, 1) }]) - 0.25) < 0.011)
+  // Marks on a scene with nothing to find count in full.
+  assert.ok(Math.abs(headlineError([{ kind: 'neighbour', box: box(0, 0, 0.1, 0.1) }], []) - 0.01) < 0.003)
+})
+
+test('the headline error ignores kinds: a house called a road still hides the same share', () => {
+  assert.equal(headlineError([{ kind: 'road', box: box(0, 0, 0.5, 1) }], [{ kind: 'neighbour', box: box(0, 0, 0.5, 1) }]), 0)
 })
