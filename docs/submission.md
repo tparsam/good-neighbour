@@ -33,6 +33,63 @@ Period ends", so the hosted copy and its Bedrock key must work until at least
 | Optional: feature requests with priority | "Feature requests" below | Paste |
 | Optional: friction log (up to 10% bonus) | "Friction log" below | Paste |
 
+## The form, field by field
+
+Every field, in the order Devpost asks, and where its answer is in this
+file.
+
+| Devpost field | Answer |
+|---|---|
+| Project name | Good Neighbour |
+| Elevator pitch | "Basics" below |
+| Thumbnail | `docs/devpost-thumbnail.png` |
+| About the project | "Description" below (Inspiration to What's next) |
+| Built with | "Basics" below |
+| "Try it out" links | the hosted copy and the GitHub repo, "Basics" below |
+| Image gallery | "Image gallery" below |
+| Video demo link | the YouTube link |
+| Code repository URL | https://github.com/tparsam/good-neighbour |
+| Primary track | Ring |
+| Mini challenges | AWS Builder and Open Source |
+| Testing instructions | "Testing instructions" below |
+| Product feedback (and the AWS services used) | "Product feedback" below |
+| Did the project exist before the hackathon? | "New or existing" below |
+| Open Source fields | "Open Source mini challenge" below |
+| Feature requests (optional) | "Feature requests" below |
+| Friction log (optional, up to 10% bonus) | "Friction log" below |
+
+If the form asks a question that is not listed here, its answer is probably
+in one of these sections; otherwise keep it short and factual.
+
+## New or existing
+
+New. Good Neighbour was started and built during the submission period,
+from 6 October 2026. Its live-stream code comes from Amazon's open-source
+`ring-api-helloworld` starter (MIT licence, credited in the README); the
+privacy check, the Bedrock integration and model benchmark, the zone
+geometry and suggestions, the encrypted-camera handling, the pasted-token
+hosting, the design and the tests were all written during the hackathon.
+The repository's commit history shows every step.
+
+## Image gallery
+
+In `docs/gallery/`, taken from the hosted copy on 18 October 2026 with the
+sample doorbell photo. Upload them in this order, with these captions:
+
+1. `1-result.png`: "One check: 5% of this Ring doorbell's view is not the
+   owner's and is still recorded."
+2. `2-findings.png`: "Findings in plain words: how much is not yours, how
+   much is hidden, how much would still be recorded."
+3. `3-zones.png`: "The survey: hatched is not yours; dashed outlines are the
+   two suggested privacy zones."
+4. `4-suggested-zones.png`: "Each suggested zone, cut from the picture, with
+   its corners and the steps to add it in the Ring app."
+5. `5-phone-dark.png`: "On a phone, in dark mode."
+
+Credit, in the gallery or the description: doorbell photo "Ring Video
+Doorbell 2 capture" by Amin, CC BY-SA 4.0, via Wikimedia Commons. Every
+screenshot shows that photo, so the credit is needed.
+
 ## Basics
 
 - **Project name:** Good Neighbour
