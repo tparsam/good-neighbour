@@ -228,8 +228,8 @@ Details worth knowing:
   reader searches the whole reply, so it finds the field there or anywhere
   else. Unusable zones are skipped.
 - **Cost and abuse limits.** The check route accepts only base64 under 2
-  million characters, refuses work when the Bedrock key is missing, times out
-  a Bedrock call after 15 seconds, and stops after `MAX_FRAMES_PER_RUN` checks
+  million characters, refuses work when the Bedrock key is missing, gives up on
+  a check after 90 seconds, and stops after `MAX_FRAMES_PER_RUN` checks
   until restarted. A bad value for that setting falls back to the default, so
   a typo cannot remove the cap.
 

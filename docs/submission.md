@@ -27,7 +27,7 @@ Period ends", so the hosted copy and its Bedrock key must work until at least
 | Product feedback for each tool, API and SDK (five questions) | "Product feedback" below; full detail in `FEEDBACK.md`, with a five-line summary at its top | Paste |
 | Primary track named | Ring | Pick on the form |
 | Mini challenges named | AWS Builder; Open Source if the contribution below is made | Pick on the form |
-| AWS Builder: AWS services and how they were used, in the feedback answer | "Amazon Bedrock" under Product feedback | Paste |
+| AWS Builder: AWS services and how they were used | "AWS Builder: which AWS services, and how" below (also summarised under Product feedback) | Paste |
 | Open Source: contribution URL, project repo URL, GitHub username, what, how, why | "Open Source mini challenge" below; pull request opened 18 October 2026 | Paste |
 | Judges can test it free until judging ends | Hosted copy, sample photos, token field; "Testing instructions" below | **Replace the Bedrock key:** the hosted key expires 16 November, the local one 17 November, judging ends 20 November |
 | Optional: feature requests with priority | "Feature requests" below | Paste |
@@ -51,6 +51,7 @@ file.
 | Code repository URL | https://github.com/tparsam/good-neighbour |
 | Primary track | Ring |
 | Mini challenges | AWS Builder and Open Source |
+| AWS Builder: which AWS services, and how | "AWS Builder: which AWS services, and how" below |
 | Testing instructions | "Testing instructions" below |
 | Product feedback (and the AWS services used) | "Product feedback" below |
 | Did the project exist before the hackathon? | "New or existing" below |
@@ -251,8 +252,8 @@ Full detail, with the request or page text behind each point, is in
   returns boxes for road, neighbour and vehicle as JSON at temperature 0. The
   same Converse call let us compare seven vision models by changing only the
   model ID, and our evaluation script (`lib/privacy/eval.ts`) and 93-photo
-  benchmark run through it too. Calls time out after 15 seconds, retry a slow
-  connect once, and stop at a per-run cap.
+  benchmark run through it too. A check gives up after 90 seconds, retries a
+  slow connect once, and stops at a per-run cap.
 - **Vercel:** hosting the public copy.
 
 ### What worked well?
@@ -298,6 +299,37 @@ had already issued the key.
 
 Yes, for a new idea. Good Neighbour itself is finished: it covers everything
 I set out to build.
+
+## AWS Builder: which AWS services, and how
+
+**Amazon Bedrock** does the core of Good Neighbour: deciding which parts of a
+camera's view are not the owner's.
+
+- **Converse API, called directly.** The Next.js server route
+  (`app/api/privacy/route.ts`) calls Bedrock's Converse endpoint in
+  `us-east-1` over HTTPS (`lib/journal/bedrock.ts`), authenticated with a
+  Bedrock API key (bearer token). No SDK is needed: one request per check.
+- **Model: Qwen3-VL 235B on Bedrock** (`qwen.qwen3-vl-235b-a22b`). Each check
+  sends one JPEG, at most 1024 px wide, with a system prompt
+  (`lib/privacy/bedrock.ts`) at temperature 0. The model answers with JSON
+  boxes for road, neighbour and vehicle on the 0 to 1000 scale AWS documents
+  for Nova object detection. `lib/privacy/regions.ts` reads the reply and
+  recovers regions from broken JSON; a reply with no readable region is
+  reported as "no usable answer", never as "nothing found".
+- **Model chosen by measurement.** Because Converse is the same for every
+  model, we scored seven Bedrock vision models (Nova Lite, Nova 2 Lite, Nova
+  Pro, Qwen3-VL, Llama 4 Maverick, Pixtral Large, Gemma 3) with our own
+  scorecard (`lib/privacy/eval.ts`), changing only the model ID. The winner
+  was then measured on 93 labelled photos: 89% of areas found (95% range 84
+  to 93%), 98% of roads, 96% of vehicles, 82% of houses; raw answers are in
+  `docs/benchmark/`. `ListFoundationModels` was used to find the vision
+  models.
+- **Safe to host publicly.** The route accepts only images under 2 million
+  base64 characters, gives up on a check after 90 seconds, retries a slow
+  connect once, stops after a per-run cap (`MAX_FRAMES_PER_RUN`) and allows
+  each visitor 10 checks an hour. The hosted copy has its own Bedrock key.
+- **Also:** the project's first app, the bird journal at `/birds`, names
+  birds with Amazon Nova Lite through the same helper.
 
 ## Feature requests
 
