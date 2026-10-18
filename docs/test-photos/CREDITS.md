@@ -110,3 +110,64 @@ project's MIT licence.
 | `bench/c153.jpg` | [Höckerlinie tank barrier blocks in someone's backyard, Göcklingen, 202](https://commons.wikimedia.org/wiki/File:H%C3%B6ckerlinie_tank_barrier_blocks_in_someone%27s_backyard,_G%C3%B6cklingen,_2025.jpg) by DimiTalen | CC0 |
 | `bench/c156.jpg` | [Back Garden (253499665).jpeg](https://commons.wikimedia.org/wiki/File:Back_Garden_(253499665).jpeg) by Ratto Muschiato | CC0 |
 | `bench/c158.jpg` | [Flowers by path to Hampton Court Palace.jpg](https://commons.wikimedia.org/wiki/File:Flowers_by_path_to_Hampton_Court_Palace.jpg) by APK | CC BY 4.0 |
+
+## Empty scenes added on 2026-10-18 (`bench/e01.jpg` to `bench/e51.jpg`)
+
+51 photos with nothing that belongs to someone else, chosen from Wikimedia
+Commons on 2026-10-18 to measure false alarms, resized to 1024 px wide. Each
+keeps its own licence, as listed; none is covered by this project's MIT
+licence.
+
+| File | Source | Licence |
+|---|---|---|
+| `bench/e01.jpg` | [Beitou Plum Garden, open veranda, Taipei City (Taiwan).jpg](https://commons.wikimedia.org/wiki/File:Beitou_Plum_Garden,_open_veranda,_Taipei_City_(Taiwan).jpg) by Mkoo2010 | CC BY-SA 4.0 |
+| `bench/e02.jpg` | [Emlékezés-Platz 2, Veranda, 2023 Martonvásár.jpg](https://commons.wikimedia.org/wiki/File:Eml%C3%A9kez%C3%A9s-Platz_2,_Veranda,_2023_Martonv%C3%A1s%C3%A1r.jpg) by Globetrotter19 | CC BY-SA 4.0 |
+| `bench/e03.jpg` | [Rafael-gonzales-veranda-2.jpg](https://commons.wikimedia.org/wiki/File:Rafael-gonzales-veranda-2.jpg) by DillyLynn | CC BY-SA 3.0 |
+| `bench/e04.jpg` | [A garden path and lawn Gibberd Garden Essex England.JPG](https://commons.wikimedia.org/wiki/File:A_garden_path_and_lawn_Gibberd_Garden_Essex_England.JPG) by Acabashi | CC BY-SA 4.0 |
+| `bench/e05.jpg` | [A path through shrub hedge Gibberd Garden Essex England.JPG](https://commons.wikimedia.org/wiki/File:A_path_through_shrub_hedge_Gibberd_Garden_Essex_England.JPG) by Acabashi | CC BY-SA 4.0 |
+| `bench/e06.jpg` | [Dead hedge Royal Fort Gardens, Bristol.jpg](https://commons.wikimedia.org/wiki/File:Dead_hedge_Royal_Fort_Gardens,_Bristol.jpg) by 14GTR | CC BY-SA 4.0 |
+| `bench/e07.jpg` | [Garden path Easton Lodge Gardens walled garden 01 cooler.jpg](https://commons.wikimedia.org/wiki/File:Garden_path_Easton_Lodge_Gardens_walled_garden_01_cooler.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e08.jpg` | [Garden path Easton Lodge Gardens walled garden 02.jpg](https://commons.wikimedia.org/wiki/File:Garden_path_Easton_Lodge_Gardens_walled_garden_02.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e09.jpg` | [Garden path Gibberd Garden Harlow Essex England 03.jpg](https://commons.wikimedia.org/wiki/File:Garden_path_Gibberd_Garden_Harlow_Essex_England_03.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e10.jpg` | [Garden path Harlow Museum & Walled Gardens, Essex 02.jpg](https://commons.wikimedia.org/wiki/File:Garden_path_Harlow_Museum_%26_Walled_Gardens,_Essex_02.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e11.jpg` | [Garden path Harlow Museum & Walled Gardens, Essex 03.jpg](https://commons.wikimedia.org/wiki/File:Garden_path_Harlow_Museum_%26_Walled_Gardens,_Essex_03.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e12.jpg` | [Garden path Harmony Gardens Broadwater Farm Estate Haringey London Eng](https://commons.wikimedia.org/wiki/File:Garden_path_Harmony_Gardens_Broadwater_Farm_Estate_Haringey_London_England_01.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e13.jpg` | [Garden path Waterperry Gardens Oxfordshire England.jpg](https://commons.wikimedia.org/wiki/File:Garden_path_Waterperry_Gardens_Oxfordshire_England.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e14.jpg` | [Garden path above The Italianate Garden at Easton Lodge Gardens, Littl](https://commons.wikimedia.org/wiki/File:Garden_path_above_The_Italianate_Garden_at_Easton_Lodge_Gardens,_Little_Easton,_Essex,_England.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e15.jpg` | [Garden path and hedges at Goodnestone Park Kent England.jpg](https://commons.wikimedia.org/wiki/File:Garden_path_and_hedges_at_Goodnestone_Park_Kent_England.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e16.jpg` | [Garden path box Buxus sempervirens hedges Easton Lodge Gardens walled ](https://commons.wikimedia.org/wiki/File:Garden_path_box_Buxus_sempervirens_hedges_Easton_Lodge_Gardens_walled_garden,_Little_Easton_Essex,_England.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e17.jpg` | [Grass garden path Copped Hall walled Kitchen Garden, Epping, Essex, En](https://commons.wikimedia.org/wiki/File:Grass_garden_path_Copped_Hall_walled_Kitchen_Garden,_Epping,_Essex,_England_from_north.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e18.jpg` | [Grass garden path Copped Hall walled Kitchen Garden, Epping, Essex, En](https://commons.wikimedia.org/wiki/File:Grass_garden_path_Copped_Hall_walled_Kitchen_Garden,_Epping,_Essex,_England_from_west.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e19.jpg` | [Hedge and shrub border Copped Hall walled Kitchen Garden, Epping, Esse](https://commons.wikimedia.org/wiki/File:Hedge_and_shrub_border_Copped_Hall_walled_Kitchen_Garden,_Epping,_Essex,_England_01.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e20.jpg` | [Pergola path Copped Hall walled Kitchen Garden, Epping, Essex, England](https://commons.wikimedia.org/wiki/File:Pergola_path_Copped_Hall_walled_Kitchen_Garden,_Epping,_Essex,_England_01.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e21.jpg` | [Yew hedge Formal Garden Harlow Museum & Walled Gardens, Essex 1.jpg](https://commons.wikimedia.org/wiki/File:Yew_hedge_Formal_Garden_Harlow_Museum_%26_Walled_Gardens,_Essex_1.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e22.jpg` | [Yew hedge arch Easton Lodge Gardens, Little Easton, Essex, England 04.](https://commons.wikimedia.org/wiki/File:Yew_hedge_arch_Easton_Lodge_Gardens,_Little_Easton,_Essex,_England_04.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e23.jpg` | [Café patio Capel Manor College Gardens Enfield London England 01.jpg](https://commons.wikimedia.org/wiki/File:Caf%C3%A9_patio_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e24.jpg` | [Café patio Capel Manor College Gardens Enfield London England 02.jpg](https://commons.wikimedia.org/wiki/File:Caf%C3%A9_patio_Capel_Manor_College_Gardens_Enfield_London_England_02.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e25.jpg` | [Café patio Capel Manor College Gardens Enfield London England 03.jpg](https://commons.wikimedia.org/wiki/File:Caf%C3%A9_patio_Capel_Manor_College_Gardens_Enfield_London_England_03.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e26.jpg` | [Garden furniture at Nuthurst West Sussex England.jpg](https://commons.wikimedia.org/wiki/File:Garden_furniture_at_Nuthurst_West_Sussex_England.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e27.jpg` | [Garden patio and furniture Capel Manor College Gardens Enfield London ](https://commons.wikimedia.org/wiki/File:Garden_patio_and_furniture_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e28.jpg` | [Gibberd Rooms Gallery patio garden Gibberd Garden Harlow Essex England](https://commons.wikimedia.org/wiki/File:Gibberd_Rooms_Gallery_patio_garden_Gibberd_Garden_Harlow_Essex_England.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e29.jpg` | [Patio garden Gibberd Garden Essex Harlow England 01 lighter.jpg](https://commons.wikimedia.org/wiki/File:Patio_garden_Gibberd_Garden_Essex_Harlow_England_01_lighter.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e30.jpg` | [Archway at the Walled Garden, Culzean - geograph.org.uk - 4814819.jpg](https://commons.wikimedia.org/wiki/File:Archway_at_the_Walled_Garden,_Culzean_-_geograph.org.uk_-_4814819.jpg) by Billy McCrorie | CC BY-SA 2.0 |
+| `bench/e31.jpg` | [Archway at the Walled Garden, Culzean - geograph.org.uk - 6151816.jpg](https://commons.wikimedia.org/wiki/File:Archway_at_the_Walled_Garden,_Culzean_-_geograph.org.uk_-_6151816.jpg) by Billy McCrorie | CC BY-SA 2.0 |
+| `bench/e32.jpg` | [Archway in Southover Grange Gardens 2026-07-03.jpg](https://commons.wikimedia.org/wiki/File:Archway_in_Southover_Grange_Gardens_2026-07-03.jpg) by Andy Li | CC0 |
+| `bench/e33.jpg` | [Archway in the Garden, Alloway - geograph.org.uk - 6862457.jpg](https://commons.wikimedia.org/wiki/File:Archway_in_the_Garden,_Alloway_-_geograph.org.uk_-_6862457.jpg) by Billy McCrorie | CC BY-SA 2.0 |
+| `bench/e34.jpg` | [Archway in the Garden - geograph.org.uk - 7442206.jpg](https://commons.wikimedia.org/wiki/File:Archway_in_the_Garden_-_geograph.org.uk_-_7442206.jpg) by Billy McCrorie | CC BY-SA 2.0 |
+| `bench/e35.jpg` | [Archway in the Garden - geograph.org.uk - 8308089.jpg](https://commons.wikimedia.org/wiki/File:Archway_in_the_Garden_-_geograph.org.uk_-_8308089.jpg) by Billy McCrorie | CC BY-SA 2.0 |
+| `bench/e36.jpg` | [Garden archway - geograph.org.uk - 8084307.jpg](https://commons.wikimedia.org/wiki/File:Garden_archway_-_geograph.org.uk_-_8084307.jpg) by Oscar Taylor | CC BY-SA 2.0 |
+| `bench/e37.jpg` | [Nymans wall garden archway 2026-07-31.jpg](https://commons.wikimedia.org/wiki/File:Nymans_wall_garden_archway_2026-07-31.jpg) by Andy Li | CC0 |
+| `bench/e38.jpg` | [Stone Archway, Walled Garden Culzean - geograph.org.uk - 4814878.jpg](https://commons.wikimedia.org/wiki/File:Stone_Archway,_Walled_Garden_Culzean_-_geograph.org.uk_-_4814878.jpg) by Billy McCrorie | CC BY-SA 2.0 |
+| `bench/e39.jpg` | [Tyler Texas Rose Garden Archway 2019.jpg](https://commons.wikimedia.org/wiki/File:Tyler_Texas_Rose_Garden_Archway_2019.jpg) by Larry D. Moore | CC BY 4.0 |
+| `bench/e40.jpg` | [View through an archway at Sissinghurst Castle Garden - geograph.org.u](https://commons.wikimedia.org/wiki/File:View_through_an_archway_at_Sissinghurst_Castle_Garden_-_geograph.org.uk_-_2464895.jpg) by Marathon | CC BY-SA 2.0 |
+| `bench/e41.jpg` | [Easton Lodge Gardens walled garden rendered north-west wall and foxglo](https://commons.wikimedia.org/wiki/File:Easton_Lodge_Gardens_walled_garden_rendered_north-west_wall_and_foxglove_02.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e42.jpg` | [Flowers in the walled garden, Woodstock - geograph.org.uk - 4453136.jp](https://commons.wikimedia.org/wiki/File:Flowers_in_the_walled_garden,_Woodstock_-_geograph.org.uk_-_4453136.jpg) by Humphrey Bolton | CC BY-SA 2.0 |
+| `bench/e43.jpg` | [Formal garden Harlow Museum & Walled Gardens, Essex 02.jpg](https://commons.wikimedia.org/wiki/File:Formal_garden_Harlow_Museum_%26_Walled_Gardens,_Essex_02.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e44.jpg` | [Formal garden Harlow Museum & Walled Gardens, Essex 03.jpg](https://commons.wikimedia.org/wiki/File:Formal_garden_Harlow_Museum_%26_Walled_Gardens,_Essex_03.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e45.jpg` | [Garden plant flower border Easton Lodge Gardens walled garden, Little ](https://commons.wikimedia.org/wiki/File:Garden_plant_flower_border_Easton_Lodge_Gardens_walled_garden,_Little_Easton_Essex,_England.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e46.jpg` | [Pink rose on brick wall Easton Lodge Walled Garden, Essex 1.jpg](https://commons.wikimedia.org/wiki/File:Pink_rose_on_brick_wall_Easton_Lodge_Walled_Garden,_Essex_1.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e47.jpg` | [Trained rose and shrub rose against brick wall in Boreham, Essex, Engl](https://commons.wikimedia.org/wiki/File:Trained_rose_and_shrub_rose_against_brick_wall_in_Boreham,_Essex,_England.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e48.jpg` | [17- 18th-century Catsford Cottage garden, Newgate Street Hatfield Hert](https://commons.wikimedia.org/wiki/File:17-_18th-century_Catsford_Cottage_garden,_Newgate_Street_Hatfield_Hertfordshire_England.jpg) by Acabashi | CC BY-SA 4.0 |
+| `bench/e49.jpg` | [Flower beds in front of a cottage by the Walled garden - geograph.org.](https://commons.wikimedia.org/wiki/File:Flower_beds_in_front_of_a_cottage_by_the_Walled_garden_-_geograph.org.uk_-_7063892.jpg) by Eric Marsh | CC BY-SA 2.0 |
+| `bench/e50.jpg` | [Path past Avenue Cottage Gardens - geograph.org.uk - 4852523.jpg](https://commons.wikimedia.org/wiki/File:Path_past_Avenue_Cottage_Gardens_-_geograph.org.uk_-_4852523.jpg) by Derek Harper | CC BY-SA 2.0 |
+| `bench/e51.jpg` | [Path to the garden of Creek Cottage - geograph.org.uk - 8151577.jpg](https://commons.wikimedia.org/wiki/File:Path_to_the_garden_of_Creek_Cottage_-_geograph.org.uk_-_8151577.jpg) by David Medcalf | CC BY-SA 2.0 |

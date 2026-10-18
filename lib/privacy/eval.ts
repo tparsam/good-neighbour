@@ -2,6 +2,7 @@
 // Bedrock call, so a full run uploads about 18 MB.
 //
 //   node --env-file=.env.local lib/privacy/eval.ts [prompt.txt] [runs] [answers.json]
+//   EVAL_FILES=list.txt node ...   (only the photos named in list.txt)
 //
 // With no prompt file it scores the app's own prompt on the app's model; set BEDROCK_MODEL_ID to
 // score another model. Every answer is saved to answers.json (if given) so the scoring can be
@@ -16,13 +17,15 @@ import type { Region, RegionKind } from './types.ts'
 const dir = new URL('../../docs/test-photos/', import.meta.url)
 type Label = { file: string; areas: { kind: RegionKind; box: [number, number, number, number] }[] }
 const toRegion = (a: Label['areas'][number]): Region => ({ kind: a.kind, box: { x1: a.box[0], y1: a.box[1], x2: a.box[2], y2: a.box[3] } })
-const labels: Label[] = JSON.parse(readFileSync(new URL('labels.json', dir), 'utf8'))
+// EVAL_FILES names a file listing the photos to use, one per line (for example a tuning set); all by default.
+const only = process.env.EVAL_FILES ? new Set(readFileSync(process.env.EVAL_FILES, 'utf8').split('\n').map(l => l.trim()).filter(Boolean)) : null
+const labels: Label[] = JSON.parse(readFileSync(new URL('labels.json', dir), 'utf8')).filter((l: Label) => !only || only.has(l.file))
 
 type Answer = { file: string; run: number; regions: Region[] | null; error?: string }
 let answers: Answer[]
 
 if (process.argv[2] === '--rescore') {
-  answers = JSON.parse(readFileSync(process.argv[3], 'utf8'))
+  answers = JSON.parse(readFileSync(process.argv[3], 'utf8')).filter((a: Answer) => !only || only.has(a.file))
 } else {
   const prompt = process.argv[2] ? readFileSync(process.argv[2], 'utf8') : PROMPT
   const runs = Number(process.argv[3] || 1)
