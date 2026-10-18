@@ -23,18 +23,18 @@ and suggests two zones). Everything on screen is real; nothing is mocked.
 
 | Time | On screen | Say |
 |---|---|---|
-| 0:00 | The page at rest: "Good Neighbour" arched over the oval, the drawn sample inside | A Ring doorbell sees more than your home. It sees the street, and the house across the road. |
+| 0:00 | The page at rest: "34% NOT YOURS" over the drawn sample print, captioned "Sample: a drawn scene" | A Ring doorbell sees more than your home. It sees the street, and the house across the road. |
 | 0:10 | Scroll slowly down to **Zones** on the sample, then back up | Ring lets you hide those parts with privacy zones, but you have to notice the problem and draw every zone yourself. This is a drawn example of what Good Neighbour does instead. |
-| 0:25 | Press **Start live stream**; the oval fills with the porch clip | This is Ring's own sandbox camera, live through the Ring API. |
-| 0:32 | Within 10 s, press **Check this view**; a note says the picture is being sent | One frame goes to Qwen3-VL on Amazon Bedrock, which marks what is not yours: the road, neighbours' houses, cars on the street. At the same time the app reads this camera's existing privacy zones from the Ring API. |
+| 0:25 | Press **Start live stream**; the print fills with the porch clip | This is Ring's own sandbox camera, live through the Ring API. |
+| 0:32 | Within 10 s, press **Check this view**; the headline reads "CHECKING" and the line under the picture says it is being sent | One frame goes to Qwen3-VL on Amazon Bedrock, which marks what is not yours: the road, neighbours' houses, cars on the street. At the same time the app reads this camera's existing privacy zones from the Ring API. |
 | 0:45 | *(while it checks)* Keep the page in view | We tested seven vision models on Bedrock and picked this one. On 93 labelled photos it finds 89% of what is not yours, and 98% of roads. |
 | 0:55 | The result: "Nothing outside your property was found in this view" | This porch is all the owner's, and it says so. It does not invent a problem. |
 | 1:05 | Scroll to the top; press **Check a photo** and choose `ring-doorbell-frame.jpg` | Now a real Ring doorbell view of a street. A photo works too, and that matters: Ring's new encryption hides camera video from apps, so an owner can check a screenshot instead. |
 | 1:20 | *(while it checks)* | The picture goes to Bedrock and nowhere else, and nothing is stored. |
-| 1:30 | The curved line: "5% of this view is not yours and is still recorded" | Five percent of this view is the neighbours' homes and the street. |
-| 1:38 | Scroll to **Findings** | How much is not yours, how much is already hidden, and how much would still be recorded with its suggestions. |
+| 1:30 | The headline: "5% NOT YOURS", and under the picture "5% of this view is not yours and is still recorded" | Five percent of this view is the neighbours' homes and the street. |
+| 1:38 | Scroll to **Findings**, the dark band with the photo blurred behind it | In plain words: how much is not yours, how much is already hidden, and how much would still be recorded once the suggested zones are added. |
 | 1:48 | Scroll to **Zones**; pause on the marked photo and the legend | Hatched is not yours. A dashed outline is a suggested zone: one over the houses, one over the road and its cars. |
-| 2:02 | Press **Show what would be recorded**, then **Show the survey** | And this is what the camera would record with them in place. |
+| 2:02 | Press **Show what would be recorded**, then **Show the survey**; scroll to the zone prints cut from the photo | And this is what the camera would record with them in place. |
 | 2:12 | Scroll to the zone list and **To apply a zone** | Ring allows two privacy zones per camera, so it never suggests more than you have left. Ring does not let apps change zones, so you add them yourself, and it never claims to know where your property ends. These are suggestions, not verdicts. |
 | 2:32 | Switch the Mac to dark mode, then narrow the window to phone width | Light and dark, desktop and phone. |
 | 2:38 | Back to the top of the page | Good Neighbour. Open source, on GitHub. Is your camera being a good neighbour? |
