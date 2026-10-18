@@ -54,10 +54,11 @@ Period ends", so the hosted copy and its Bedrock key must work until at least
 A Ring doorbell sees more than its owner's home. It sees the pavement, the
 street, and the house across the road. Ring lets owners hide those parts with
 privacy zones, but they have to notice the problem and draw every zone by
-hand, and most never do. In the UK and the EU, a home camera that films
-beyond the owner's property can also bring data protection duties. We wanted
-a tool that respects the neighbours as much as the owner: a non-security use
-of a security camera.
+hand, and most never do. It matters: in 2021 a UK court ([*Fairhurst v
+Woodard*](https://inforrm.org/2021/10/20/case-law-fairhurst-v-woodard-neighbour-cctv-harassment-and-data-protection-claim-succeeds-percy-preston/), Oxford County Court) found that a homeowner whose Ring doorbell and
+cameras recorded his neighbour's home had breached UK data protection law,
+and treated him as a data controller. We wanted a tool that respects the
+neighbours as much as the owner: a non-security use of a security camera.
 
 ### What it does
 
