@@ -26,9 +26,8 @@ inference, it says so. The measurements behind the Bedrock points are in
 - **Onboarding:** Ring was quick; AWS was slower (Builder ID versus root user,
   and a new account's first call refused while it was being verified).
   Part 1.
-- **Would we build with them again?** No, not for now. Good Neighbour already
-  covers everything I set out to build with Ring and Bedrock, and I have made
-  it the best version I can for now.
+- **Would we build with them again?** Yes, for a new idea. Good Neighbour
+  itself is finished: it covers everything I set out to build.
 - **What we would ask for:** part 4.
 
 ---

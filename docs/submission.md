@@ -232,8 +232,8 @@ had already issued the key.
 
 ### Would you build with these devices and services again?
 
-No, not for now. Good Neighbour already covers everything I set out to build
-with Ring and Bedrock, and I have made it the best version I can for now.
+Yes, for a new idea. Good Neighbour itself is finished: it covers everything
+I set out to build.
 
 ## Feature requests
 
