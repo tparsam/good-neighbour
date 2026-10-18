@@ -57,7 +57,7 @@ file.
 | Did the project exist before the hackathon? | "New or existing" below |
 | Open Source fields | "Open Source mini challenge" below |
 | Feature requests (optional) | "Feature requests" below |
-| Friction log (optional, up to 10% bonus) | "Friction log" below |
+| Friction log (optional, up to 10% bonus) | The form asks for a link: https://github.com/tparsam/good-neighbour/blob/main/docs/friction-log.md (the same entries as "Friction log" below) |
 
 If the form asks a question that is not listed here, its answer is probably
 in one of these sections; otherwise keep it short and factual.
