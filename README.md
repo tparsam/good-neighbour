@@ -9,6 +9,10 @@ looks at what the camera actually sees, finds the parts that are not the
 owner's, checks them against the zones already set, and suggests the ones that
 are missing.
 
+**Try it:** https://good-neighbour-delta.vercel.app (press a sample photo, or
+check your own; the live Ring camera needs your own Ring account, so it runs
+only locally, see below).
+
 Built for the Ring track of the Build, Ship, Shape: Amazon Developer Hackathon
 2026, with the AWS Builder and Open Source mini challenges.
 
@@ -72,6 +76,13 @@ example to try the app on any front-door photo.
   that too, rather than treating the camera as having none.
 - **It stores nothing.** The checked frame lives in the browser tab and is sent
   only to Bedrock.
+
+## The hosted copy
+
+https://good-neighbour-delta.vercel.app runs on Vercel with no Ring account, so
+it offers photo checks and three sample photos, and says plainly that the live
+camera is off. It uses its own Bedrock key, which expires after judging, and
+allows each visitor 10 checks an hour (`CHECKS_PER_VISITOR_PER_HOUR`).
 
 ## Run it
 
