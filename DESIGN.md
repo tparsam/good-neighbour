@@ -60,9 +60,6 @@ read, and the camera's picture cut into prints for each suggested zone. The
 subject is privacy, so nothing shouts and nothing accuses; the page surveys,
 explains and suggests.
 
-The bird journal at `/birds`, the first app in this repository, keeps the
-earlier museum look described in git history; it does not load `look.css`.
-
 ## Colors
 
 ### Primary

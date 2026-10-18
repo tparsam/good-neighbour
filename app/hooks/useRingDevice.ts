@@ -18,7 +18,7 @@ const refused = (error: string) => /\b40[13]\b|not configured/i.test(error)
 export const explain = (error: string, pasted = false) =>
   refused(error) ? (pasted ? PASTED_TOKEN_HELP : TOKEN_HELP) : error
 
-/** The header (RING_TOKEN_HEADER in lib/journal/ring-session) that sends a pasted Ring token to this app's Ring routes. */
+/** The header (RING_TOKEN_HEADER in lib/ring/ring-session) that sends a pasted Ring token to this app's Ring routes. */
 export const ringHeaders = (token?: string): Record<string, string> => (token ? { 'x-ring-token': token } : {})
 
 /** Finds the first Ring camera on the account: the app's own, or the one a pasted `token` signs in to. */

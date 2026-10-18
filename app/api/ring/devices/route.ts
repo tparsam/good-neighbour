@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAccessToken } from '@/lib/auth'
-import { RING_TOKEN_HEADER, visitorToken } from '@/lib/journal/ring-session'
+import { RING_TOKEN_HEADER, visitorToken } from '@/lib/ring/ring-session'
 
 const DEVICE_ID = process.env.NEXT_PUBLIC_RING_DEVICE_ID
 const DEVICE_NAME = process.env.NEXT_PUBLIC_RING_DEVICE_NAME || 'Camera'

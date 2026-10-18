@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { RING_TOKEN_HEADER } from '../../lib/journal/ring-session.ts'
+import { RING_TOKEN_HEADER } from '../../lib/ring/ring-session.ts'
 import { explain, ringHeaders } from './useRingDevice.ts'
 
 test('a refused sign-in from the app’s own token says how to renew it in .env.local', () => {

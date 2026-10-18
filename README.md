@@ -186,10 +186,10 @@ demo script only name files, scripts and settings that exist.
 |---|---|
 | Live stream (WebRTC, WHEP) | `app/hooks/useWebRTCStream.ts`, `app/api/ring/stream/` |
 | Finds the camera | `app/hooks/useRingDevice.ts`, `app/api/ring/devices/` |
-| A pasted Ring token | `app/privacy/page.tsx`, `lib/journal/ring-session.ts`, `lib/auth.ts` |
+| A pasted Ring token | `app/privacy/page.tsx`, `lib/ring/ring-session.ts`, `lib/auth.ts` |
 | Frame or photo to a JPEG at most 1024 px wide | `app/privacy/page.tsx` |
 | Input checks, Bedrock key check, cost cap | `app/api/privacy/route.ts` |
-| Prompt and Bedrock call (Converse API, temperature 0) | `lib/privacy/bedrock.ts`, `lib/journal/bedrock.ts` |
+| Prompt and Bedrock call (Converse API, temperature 0) | `lib/privacy/bedrock.ts` |
 | Reading the model's reply | `lib/privacy/regions.ts` |
 | Reading the camera's zones and encryption flag | `app/api/ring/zones/route.ts`, `lib/privacy/zones.ts` |
 | Coverage and suggestions | `lib/privacy/geometry.ts` |
@@ -253,7 +253,7 @@ Details worth knowing:
 
 ## What uses what
 
-- **Ring API**: device discovery, device location, live stream (WHEP), device
+- **Ring API**: device discovery, live stream (WHEP), device
   configurations (privacy zones and the encryption flag).
 - **Amazon Bedrock**: Qwen3-VL through the Converse API, with API-key
   authentication. It was chosen over Amazon Nova Lite, Nova 2 Lite and Nova
@@ -262,23 +262,17 @@ Details worth knowing:
 
 Product feedback on all of these, as the hackathon asks, is in `FEEDBACK.md`.
 
-## Also in this repository
-
-The project began as **Ring Bird Journal**, which names the birds that visit a
-feeder and keeps a life list. It still runs at http://127.0.0.1:3000/birds and its
-code is in `lib/journal/`. It was set aside because a bird app for Ring
-cameras already exists. Good Neighbour reuses its live stream, its Bedrock
-call, its cost cap and its visual design.
-
 ## Credits
 
 Based on [ring-api-helloworld](https://github.com/AmazonAppDev/ring-api-helloworld)
 by Amazon, used under the MIT licence. The live-stream code is theirs.
 
-The visual design is modelled on the Thyssen-Bornemisza museum's
+The visual design is modelled on PARCO's 2026 AW campaign page
+([parco.jp/style](https://parco.jp/style)), over base styles first modelled on
+the Thyssen-Bornemisza museum's
 [Return to Nature](https://www.museothyssen.org/webdocs/conectathyssen/volver-naturaleza/en/)
-webdoc. Only its layout and style were followed; none of its images, text or
-font files are used. See `DESIGN.md`.
+webdoc. Only their layout and style were followed; none of their images, text
+or font files are used. See `DESIGN.md`.
 
 ## Licence
 

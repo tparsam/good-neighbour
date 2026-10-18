@@ -197,20 +197,6 @@ h3 {
   white-space: nowrap;
 }
 
-/* On phones the curved line is hidden, so the bird at the feeder is set in plain type here. */
-.bird {
-  margin-top: 0.5rem;
-  text-transform: uppercase;
-}
-
-.bird-name {
-  display: block;
-  margin-top: 0.15rem;
-  font-family: var(--font-display);
-  font-size: 1.75rem;
-  line-height: 1;
-}
-
 .live-stage {
   position: relative;
   width: min(74vw, 1050px);
@@ -322,12 +308,12 @@ h3 {
 
 /* Today: the day's figures set like one of the reference's oversized quotes */
 
-.today,
-.lifelist {
+.findings-section,
+.zones-section {
   padding: 0 1.875rem;
 }
 
-.today {
+.findings-section {
   margin-top: clamp(5rem, 11vw, 9rem);
   scroll-margin-top: 6rem;
 }
@@ -359,41 +345,22 @@ h3 {
   content: '\00bb';
 }
 
-.figures,
-.figure,
-.figure dt,
-.figure dd {
+.figures {
   display: inline;
 }
 
-/* Number first, then its label: "2 species, 5 visits, 9:00 busiest hour". */
-.figure {
-  display: inline-flex;
-  flex-direction: row-reverse;
-  gap: 0.22em;
-  margin-right: 0.22em;
-}
+/* Zones: an oversized title, then picture blocks staggered across the sheet */
 
-.figure:not(:last-child) dt::after {
-  content: ',';
-}
-
-.figure:last-child {
-  margin-right: 0;
-}
-
-/* Life list: an oversized title, then picture blocks staggered across the sheet */
-
-.lifelist {
+.zones-section {
   margin-top: 1rem;
   scroll-margin-top: 6rem;
 }
 
-.lifelist .section-head {
+.zones-section .section-head {
   text-align: center;
 }
 
-.lifelist .section-head h2 {
+.zones-section .section-head h2 {
   font-family: var(--font-display);
   font-size: clamp(4rem, 10.4vw, 9.375rem);
   line-height: 0.9;
@@ -404,25 +371,25 @@ h3 {
   margin-top: 0.75rem;
 }
 
-.lifelist .section-body {
+.zones-section .section-body {
   margin-top: clamp(3rem, 7vw, 6rem);
 }
 
-.species {
+.zone-list {
   display: grid;
   gap: 4rem 0;
 }
 
-.specimen {
+.zone-item {
   display: flex;
   flex-direction: column;
 }
 
-.specimen .meta {
+.zone-item .meta {
   order: 1;
 }
 
-.specimen h3 {
+.zone-item h3 {
   order: 2;
   margin: 0.2rem 0 0.9rem;
   font-family: var(--font-display);
@@ -432,7 +399,7 @@ h3 {
   text-transform: uppercase;
 }
 
-.specimen .shot {
+.zone-item .shot {
   order: 3;
 }
 
@@ -443,10 +410,9 @@ h3 {
 }
 
 @media (min-width: 768px) {
-  /* On wide screens the arc carries the state and the bird, so the plain copies are kept for screen readers only. */
+  /* On wide screens the arc carries the state, so the plain copies are kept for screen readers only. */
   .state-line,
-  .state-reason.in-arc,
-  .bird {
+  .state-reason.in-arc {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -457,26 +423,26 @@ h3 {
   .state-reason {
     margin-top: 0;
   }
-  .species {
+  .zone-list {
     grid-template-columns: repeat(12, 1fr);
     gap: 0 2rem;
   }
   /* A repeating stagger of three: left, right and lower, then centre. */
-  .specimen:nth-child(3n + 1) {
+  .zone-item:nth-child(3n + 1) {
     grid-column: 1 / span 5;
   }
-  .specimen:nth-child(3n + 2) {
+  .zone-item:nth-child(3n + 2) {
     grid-column: 7 / span 6;
     margin-top: 16rem;
   }
-  .specimen:nth-child(3n) {
+  .zone-item:nth-child(3n) {
     grid-column: 4 / span 6;
     margin-top: 6rem;
   }
-  .specimen:nth-child(n + 4) {
+  .zone-item:nth-child(n + 4) {
     margin-top: 8rem;
   }
-  .specimen:nth-child(3n + 2):nth-child(n + 4) {
+  .zone-item:nth-child(3n + 2):nth-child(n + 4) {
     margin-top: 20rem;
   }
 }
@@ -499,8 +465,8 @@ h3 {
   .live-panel {
     margin-top: 1.5rem;
   }
-  .today,
-  .lifelist {
+  .findings-section,
+  .zones-section {
     padding-inline: 1.25rem;
   }
 }
@@ -678,12 +644,12 @@ h3 {
   font-size: 1.25rem;
 }
 
-.survey + .species,
+.survey + .zone-list,
 .survey + .empty {
   margin-top: clamp(3rem, 7vw, 6rem);
 }
 
-.specimen .coords {
+.zone-item .coords {
   order: 3;
   border-top: 1px solid var(--ink);
   padding-top: 0.75rem;

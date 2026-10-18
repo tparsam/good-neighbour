@@ -33,9 +33,6 @@ dist/
 *.log
 *.tsbuildinfo
 
-# Bird journal data (visits and snapshots)
-data/
-
 # Build workspace
 .superpowers/
 

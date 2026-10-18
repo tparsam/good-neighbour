@@ -1,8 +1,5 @@
 # Good Neighbour
 
-Rewritten on 2026-10-17 for Good Neighbour, the app this project became. The
-first app built here, Ring Bird Journal, still runs at `/birds`.
-
 ## What it is
 
 A web app that answers one question for the owner of a Ring camera: is your

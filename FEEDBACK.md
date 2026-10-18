@@ -64,7 +64,7 @@ regional block.
 - The WHEP route and `useWebRTCStream` hook were a sound base, but the hook
   never marks the stream inactive when the connection fails, so a dead stream
   looks alive. We added connection tracking
-  (`lib/journal/connection.ts`).
+  (`lib/ring/connection.ts`).
 - The starter ships a video-processor plug-in system, MediaPipe and ONNX
   dependencies and a hand-tracking game. An app that only needs the stream
   must remove these first. A minimal "stream only" variant would save that.

@@ -1,3 +1,11 @@
+/** Frames that may be sent to Bedrock per server run. A value that is not a plain
+ *  non-negative number falls back to the default, so a typo can never remove the cap. */
+export function frameCap(value: string | undefined, fallback = 2000): number {
+  if (value === undefined || value.trim() === '') return fallback
+  const n = Number(value)
+  return Number.isFinite(n) && n >= 0 ? Math.floor(n) : fallback
+}
+
 /** Allows each visitor `max` checks per `windowMs`. Returns a function: allow(visitor, now).
  *  ponytail: counts live in this server's memory, so a hosted app with several instances, or
  *  one that restarts, can allow a little more. The hard cost stops are the demo key's expiry

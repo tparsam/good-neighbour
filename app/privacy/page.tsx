@@ -344,7 +344,7 @@ export default function PrivacyCheck() {
 
       </section>
 
-      <section id="findings" aria-labelledby="findings-heading" className="section today">
+      <section id="findings" aria-labelledby="findings-heading" className="section findings-section">
         <div
           className="findings-bg"
           style={result ? { backgroundImage: `url(${result.image})` } : undefined}
@@ -363,7 +363,7 @@ export default function PrivacyCheck() {
       </section>
 
 
-      <section id="zones" aria-labelledby="zones-heading" className="section lifelist">
+      <section id="zones" aria-labelledby="zones-heading" className="section zones-section">
         <div className="section-head">
           <h2 id="zones-heading">Zones</h2>
           <p className="count">
@@ -439,9 +439,9 @@ export default function PrivacyCheck() {
                   : 'Nothing to suggest. Everything outside your property is already hidden.'}
             </p>
           ) : (
-            <ul className="species">
+            <ul className="zone-list">
               {suggestions.map((s, i) => (
-                <li key={i} className="specimen">
+                <li key={i} className="zone-item">
                   {result && <div className="print" style={crop(result.image, result.ratio, s.zone)} aria-hidden="true" />}
                   <p className="meta">
                     {list(s.kinds.map(k => KIND[k].label))}. {percent(share(s.zone))} of the frame.

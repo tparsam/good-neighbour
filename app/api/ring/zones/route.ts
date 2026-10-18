@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAccessToken } from '@/lib/auth'
-import { RING_TOKEN_HEADER, RING_API, visitorToken } from '@/lib/journal/ring-session'
+import { RING_TOKEN_HEADER, RING_API, visitorToken } from '@/lib/ring/ring-session'
 import { findPrivacyZones, isVideoEncrypted } from '@/lib/privacy/zones'
 
 // The camera's existing privacy zones, and whether its video is encrypted (Ring's TAKE), in which

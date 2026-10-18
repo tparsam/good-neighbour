@@ -7,8 +7,7 @@
 // score another model. Every answer is saved to answers.json (if given) so the scoring can be
 // re-run without calling Bedrock again: node lib/privacy/eval.ts --rescore answers.json
 import { readFileSync, writeFileSync } from 'node:fs'
-import { askAboutImage } from '../journal/bedrock.ts'
-import { MODEL, PROMPT } from './bedrock.ts'
+import { MODEL, PROMPT, askAboutImage } from './bedrock.ts'
 import { parseRegions } from './regions.ts'
 import { matches, wilson } from './score.ts'
 import type { Region, RegionKind } from './types.ts'

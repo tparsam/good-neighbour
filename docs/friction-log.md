@@ -18,7 +18,7 @@ time or needs a workaround in code), **Low** (an annoyance).
   body names, so any page or script that can reach the route can collect it.
 - Severity: High (credential leak).
 - Workaround: accept only `https://api.amazonvision.com` URLs with no user
-  info (`ringSessionUrl` in `lib/journal/ring-session.ts`, with tests).
+  info (`ringSessionUrl` in `lib/ring/ring-session.ts`, with tests).
 - Suggestion: validate the session URL in the starter; done in
   https://github.com/AmazonAppDev/ring-api-helloworld/pull/40.
 
@@ -29,7 +29,7 @@ time or needs a workaround in code), **Low** (an annoyance).
 - Actual: the video freezes and the hook still says the stream is active.
 - Severity: Medium.
 - Workaround: watch `connectionState`, allow 5 s to recover, then tear down
-  (`lib/journal/connection.ts`).
+  (`lib/ring/connection.ts`).
 - Suggestion: handle `disconnected` and `failed` in the starter's hook.
 
 ## 3. Ring: where are the privacy zones?

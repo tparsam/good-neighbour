@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAccessToken } from '@/lib/auth'
-import { RING_TOKEN_HEADER, ringSessionUrl, visitorToken } from '@/lib/journal/ring-session'
+import { RING_TOKEN_HEADER, ringSessionUrl, visitorToken } from '@/lib/ring/ring-session'
 
 const API_BASE = 'https://api.amazonvision.com'
 

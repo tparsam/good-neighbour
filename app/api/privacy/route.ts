@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { frameCap } from '@/lib/journal/limits'
 import { findRegions } from '@/lib/privacy/bedrock'
 import { describeFailure } from '@/lib/privacy/failure'
-import { visitorLimit } from '@/lib/privacy/limit'
+import { frameCap, visitorLimit } from '@/lib/privacy/limit'
 
 // On a host such as Vercel, how long this route may run: a check usually takes a few seconds.
 export const maxDuration = 60

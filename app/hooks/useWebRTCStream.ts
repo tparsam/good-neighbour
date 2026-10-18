@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback, RefObject } from 'react'
-import { watchConnection } from '@/lib/journal/connection'
+import { watchConnection } from '@/lib/ring/connection'
 import { ringHeaders } from './useRingDevice'
 
 interface UseWebRTCStreamOptions {

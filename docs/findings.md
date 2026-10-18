@@ -24,10 +24,6 @@ some tens of seconds.
 
 Not yet checked.
 
-## Device location response
-
-Not yet checked.
-
 ## First live run with the app (2026-10-17, from the UAE)
 
 - **Devices:** the token's account has one camera, "Playground Device",
@@ -96,8 +92,7 @@ front-door photos before recording the demo.
 
 ### Doorbell-style photos (second round, same day)
 
-Photos from Wikimedia Commons (credits in `ring-bird-journal-samples/web-photos/CREDITS.txt`
-outside this repository), each 1024 px wide, three runs each unless stated:
+Photos from Wikimedia Commons (a working set kept outside this repository), each 1024 px wide, three runs each unless stated:
 
 | Photo | What Nova Lite marked | Consistency |
 |---|---|---|
@@ -121,7 +116,7 @@ From a home connection in the UAE, a 1024 px check took 7 to 58 seconds.
 Bedrock's own `metrics.latencyMs` was about 1.1 seconds; the rest was the
 upload. The connection was sending 13 to 21 KB per second to Bedrock and to an
 unrelated test server alike, so the slowness is the connection, not AWS. The
-old 15 second limit (set for the bird watcher) failed 2 of 3 checks on the
+old 15 second limit failed 2 of 3 checks on the
 street view. The privacy check now waits up to 90 seconds and says on screen
 that it can take up to a minute.
 
@@ -175,7 +170,7 @@ Times depend mostly on the slow upload measured above, not the model.
 **Chosen: Qwen3-VL**, the most accurate with no false alarms anywhere. It
 runs on Amazon Bedrock like the others. Nova 2 Lite was the runner-up: also
 no false alarms, but it often missed cars and the house straight across the
-road. The bird journal keeps Nova Lite. `BEDROCK_MODEL_ID` still overrides the
+road. `BEDROCK_MODEL_ID` still overrides the
 model, so any of these can be tried again.
 
 ## The 93-photo benchmark (2026-10-17)

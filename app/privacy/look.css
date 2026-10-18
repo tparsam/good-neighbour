@@ -1,6 +1,5 @@
 /* Good Neighbour's look, modelled on parco.jp/style (PARCO 2026 AW). Only its layout and style are
-   followed; none of its images, text or font files are used. It applies to this page only; the
-   bird journal at /birds keeps the earlier museum look from globals.css. */
+   followed; none of its images, text or font files are used. It is layered over the base styles in globals.css. */
 
 /* Warm paper and ink. One accent, a muted deep red, used once (the Zones heading). */
 :root:has(main.page-gn) {
@@ -227,7 +226,7 @@
 }
 
 /* Findings: one dark section, the checked picture blurred behind it; heading left, words right. */
-.page-gn .today {
+.page-gn .findings-section {
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -251,13 +250,13 @@
   opacity: 0.55;
 }
 
-.page-gn .today .section-head h2 {
+.page-gn .findings-section .section-head h2 {
   font-family: var(--font-display);
   font-size: clamp(2.4rem, 4vw, 3.5rem);
   line-height: 1;
 }
 
-.page-gn .today .figures {
+.page-gn .findings-section .figures {
   max-width: 30ch;
   margin-top: 0;
   font-family: var(--font-body);
@@ -267,13 +266,13 @@
   text-transform: none;
 }
 
-.page-gn .today .figures::before,
-.page-gn .today .figures::after {
+.page-gn .findings-section .figures::before,
+.page-gn .findings-section .figures::after {
   content: none;
 }
 
 @media (prefers-color-scheme: dark) {
-  .page-gn .today {
+  .page-gn .findings-section {
     background: #e4dfd8;
     color: #1d1c1b;
   }
@@ -282,7 +281,7 @@
     opacity: 0.3;
   }
 
-  .page-gn .today .bigtype {
+  .page-gn .findings-section .bigtype {
     color: rgb(29 28 27 / 0.14);
   }
 }
@@ -302,15 +301,15 @@
 }
 
 /* Zones: the heading in the one accent; the survey as a slightly turned print. */
-.page-gn .lifelist {
+.page-gn .zones-section {
   margin-top: clamp(6rem, 12vw, 9rem);
 }
 
-.page-gn .lifelist .section-head {
+.page-gn .zones-section .section-head {
   text-align: left;
 }
 
-.page-gn .lifelist .section-head h2 {
+.page-gn .zones-section .section-head h2 {
   font-size: clamp(2.8rem, 5vw, 4.5rem);
   color: var(--gn-accent);
 }
@@ -357,7 +356,7 @@
 }
 
 /* Each suggested zone as its own print, cut from the photo, set at staggered angles. */
-.page-gn .specimen .print {
+.page-gn .zone-item .print {
   order: 0;
   position: relative;
   width: 100%;
@@ -366,16 +365,16 @@
   box-shadow: 0 14px 30px -12px var(--gn-shadow);
 }
 
-.page-gn .specimen:nth-child(odd) .print {
+.page-gn .zone-item:nth-child(odd) .print {
   rotate: 1.4deg;
 }
 
-.page-gn .specimen:nth-child(even) .print {
+.page-gn .zone-item:nth-child(even) .print {
   rotate: -1.1deg;
 }
 
 /* Small "+" marks at a print's corner, as on PARCO's photos. */
-.page-gn .specimen .print::after {
+.page-gn .zone-item .print::after {
   content: '+';
   position: absolute;
   right: -1.1rem;
@@ -385,8 +384,8 @@
   color: var(--muted);
 }
 
-.page-gn .specimen .meta,
-.page-gn .specimen .coords {
+.page-gn .zone-item .meta,
+.page-gn .zone-item .coords {
   font-family: var(--f-grot), sans-serif;
   font-size: 0.75rem;
   letter-spacing: 0.04em;
@@ -455,11 +454,11 @@
 .page-gn .state-line,
 .page-gn .count,
 .page-gn .legend,
-.page-gn .specimen .meta {
+.page-gn .zone-item .meta {
   text-transform: none;
 }
 
-.page-gn .specimen h3 {
+.page-gn .zone-item h3 {
   line-height: 1.1;
 }
 
@@ -477,14 +476,14 @@
     content: none;
   }
 
-  .page-gn .today {
+  .page-gn .findings-section {
     grid-template-columns: 1fr;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .page-gn .survey-frame,
-  .page-gn .specimen .print {
+  .page-gn .zone-item .print {
     rotate: none;
   }
 }

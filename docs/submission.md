@@ -307,7 +307,7 @@ camera's view are not the owner's.
 
 - **Converse API, called directly.** The Next.js server route
   (`app/api/privacy/route.ts`) calls Bedrock's Converse endpoint in
-  `us-east-1` over HTTPS (`lib/journal/bedrock.ts`), authenticated with a
+  `us-east-1` over HTTPS (`lib/privacy/bedrock.ts`), authenticated with a
   Bedrock API key (bearer token). No SDK is needed: one request per check.
 - **Model: Qwen3-VL 235B on Bedrock** (`qwen.qwen3-vl-235b-a22b`). Each check
   sends one JPEG, at most 1024 px wide, with a system prompt
@@ -328,8 +328,6 @@ camera's view are not the owner's.
   base64 characters, gives up on a check after 90 seconds, retries a slow
   connect once, stops after a per-run cap (`MAX_FRAMES_PER_RUN`) and allows
   each visitor 10 checks an hour. The hosted copy has its own Bedrock key.
-- **Also:** the project's first app, the bird journal at `/birds`, names
-  birds with Amazon Nova Lite through the same helper.
 
 ## Feature requests
 
@@ -355,7 +353,7 @@ camera's view are not the owner's.
   body names, so any page or script that can reach the route can collect it.
 - Severity: High (credential leak).
 - Workaround: accept only `https://api.amazonvision.com` URLs with no user
-  info (`ringSessionUrl` in `lib/journal/ring-session.ts`, with tests).
+  info (`ringSessionUrl` in `lib/ring/ring-session.ts`, with tests).
 - Suggestion: validate the session URL in the starter; done in
   https://github.com/AmazonAppDev/ring-api-helloworld/pull/40.
 
@@ -366,7 +364,7 @@ camera's view are not the owner's.
 - Actual: the video freezes and the hook still says the stream is active.
 - Severity: Medium.
 - Workaround: watch `connectionState`, allow 5 s to recover, then tear down
-  (`lib/journal/connection.ts`).
+  (`lib/ring/connection.ts`).
 - Suggestion: handle `disconnected` and `failed` in the starter's hook.
 
 **3. Ring: where are the privacy zones?**
