@@ -234,3 +234,34 @@ compares the share the model marks with the labelled share, and
   while the model draws one tight box per house, so even a correct answer
   can mark less. This measure therefore overstates the error somewhat.
 
+
+## A prompt line for close-up houses (2026-10-18): not adopted
+
+One line was added after the three kinds (`docs/benchmark/prompt-closeup-line.txt`):
+"The camera is fixed to the owner's own house, so it never sees that house
+from outside: a house it looks at, even one that fills most of the picture,
+belongs to another household." One run on the 93 photos, against one run of
+the app's prompt. The rule, set before the run: adopt it only if houses go
+up, roads and vehicles do not drop, empty scenes marked stay at 1 or fewer,
+and the headline's median error goes down.
+
+| | App's prompt | With the line |
+|---|---|---|
+| Areas found | 190 of 213, 89% | 203 of 213, **95%** |
+| Houses / vehicles / roads | 82% / 96% / 98% | **93%** / 98% / 98% |
+| Photos with every area found | 72% | **88%** |
+| Empty scenes marked anyway | 1 of 15 | **2 of 15** |
+| Headline median error | 15.5 points (both runs) | **5.6 points** |
+
+- It passed every test but one: a new false alarm on
+  `churchyard-porch-control.jpg`, a view out through a church porch with no
+  house in it, now marked as a neighbour's house over 30% of the frame. The
+  back-garden photo that was already a false alarm (`bench/c153.jpg`) also
+  gained a "neighbour" mark.
+- So the app's prompt is unchanged. The line trades a calm page for more
+  houses found, and "it never accuses" is one of the product's rules.
+- 15 empty scenes are too few to say whether 2 of 15 is really worse than
+  1 of 15 (the ranges overlap almost entirely), and wording written to fix the
+  churchyard photo would be fitted to the test. More empty scenes are the
+  honest next step before trying this line again.
+- Raw answers: `docs/benchmark/qwen3-vl-closeup-line-answers.json`.
