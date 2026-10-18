@@ -28,8 +28,8 @@ Period ends", so the hosted copy and its Bedrock key must work until at least
 | Primary track named | Ring | Pick on the form |
 | Mini challenges named | AWS Builder; Open Source if the contribution below is made | Pick on the form |
 | AWS Builder: AWS services and how they were used, in the feedback answer | "Amazon Bedrock" under Product feedback | Paste |
-| Open Source: contribution URL, project repo URL, GitHub username, what, how, why | "Open Source mini challenge" below | **Needs the contribution** |
-| Judges can test it free until judging ends | Hosted copy, sample photos, token field; "Testing instructions" below | **Check the Bedrock key's expiry** |
+| Open Source: contribution URL, project repo URL, GitHub username, what, how, why | "Open Source mini challenge" below; pull request opened 18 October 2026 | Paste |
+| Judges can test it free until judging ends | Hosted copy, sample photos, token field; "Testing instructions" below | **Replace the Bedrock key:** the hosted key expires 16 November, the local one 17 November, judging ends 20 November |
 | Optional: feature requests with priority | "Feature requests" below | Paste |
 | Optional: friction log (up to 10% bonus) | "Friction log" below | Paste |
 
@@ -215,7 +215,8 @@ Full detail, with the request or page text behind each point, is in
   encryption blocks partner video with no date for access.
 - **Starter:** the stream hook never marks a failed connection as inactive,
   and the DELETE route sends the server's Ring token to any session URL the
-  browser supplies (see the friction log and the Open Source contribution).
+  browser supplies (see the friction log, and the fix in
+  https://github.com/AmazonAppDev/ring-api-helloworld/pull/40).
 - **Bedrock:** the `byInputModality=IMAGE` filter is ignored; models listed
   as `ACTIVE` with image input can answer "not available for this account"
   with no reason; plain Converse replies cannot enforce a JSON schema (Nova
@@ -265,8 +266,8 @@ TAKE-encrypted cameras.
 - Severity: High (credential leak).
 - Workaround: accept only `https://api.amazonvision.com` URLs with no user
   info (`ringSessionUrl` in `lib/journal/ring-session.ts`, with tests).
-- Suggestion: validate the session URL in the starter; offered upstream as
-  our Open Source contribution.
+- Suggestion: validate the session URL in the starter; done in
+  https://github.com/AmazonAppDev/ring-api-helloworld/pull/40.
 
 **2. Starter: a dead stream looks alive.**
 - Task: show the owner when the live view has stopped.
@@ -356,13 +357,24 @@ an existing public repository during the hackathon window", with the
 contribution URL, the project repository URL, the GitHub username, and what
 was done, how it works and why it matters.
 
-Proposed contribution: a pull request to Amazon's
-[`ring-api-helloworld`](https://github.com/AmazonAppDev/ring-api-helloworld)
-that stops the stream route's DELETE handler sending the Ring token to any
-URL (friction log entry 1), with tests. No open pull request covers it
-(checked 18 October 2026).
-
-- **Contribution URL:** (the pull request link)
+- **Contribution URL:** https://github.com/AmazonAppDev/ring-api-helloworld/pull/40
+  (from the fork https://github.com/tparsam/ring-api-helloworld, branch
+  `fix/session-url-token-leak`)
 - **Project repository URL:** https://github.com/tparsam/good-neighbour
 - **GitHub username:** tparsam
-- **What I did:** (fill in from the pull request once it is open)
+- **What I did:** fixed a credential leak in Amazon's `ring-api-helloworld`
+  starter, the base most Ring track apps begin from. Its
+  `DELETE /api/ring/stream` route closed a live-view session by fetching
+  whatever `sessionUrl` the request named, with the server's Ring access
+  token attached, so anything that could reach the route could send the
+  token to its own server.
+- **How it works:** a new `ringSessionUrl()` helper accepts only addresses on
+  `https://api.amazonvision.com` with no user info (relative paths resolve
+  against it), and the route answers 400 for anything else. The device ID in
+  the WHEP URL is now encoded so it cannot change the path. Tests use Node's
+  built-in runner (`npm test`, no new dependencies) and cover look-alike
+  hosts, `http:`, user-info tricks, `javascript:` and bad input.
+- **Why it matters:** every app built on the starter inherits the route, and
+  hosted copies expose it to the internet. The fix runs in Good Neighbour,
+  which found the problem while building on the starter (friction log entry
+  1).
