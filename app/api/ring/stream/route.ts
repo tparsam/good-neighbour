@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAccessToken } from '@/lib/auth'
-import { ringSessionUrl } from '@/lib/journal/ring-session'
+import { RING_TOKEN_HEADER, ringSessionUrl, visitorToken } from '@/lib/journal/ring-session'
 
 const API_BASE = 'https://api.amazonvision.com'
 
@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const token = await getAccessToken()
-    const whepUrl = `${API_BASE}/v1/devices/${resolvedDeviceId}/media/streaming/whep/sessions`
+    const token = await getAccessToken(visitorToken(request.headers.get(RING_TOKEN_HEADER)))
+    const whepUrl = `${API_BASE}/v1/devices/${encodeURIComponent(resolvedDeviceId)}/media/streaming/whep/sessions`
 
     const response = await fetch(whepUrl, {
       method: 'POST',
@@ -63,7 +63,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'sessionUrl must be a Ring API address' }, { status: 400 })
     }
 
-    const token = await getAccessToken()
+    const token = await getAccessToken(visitorToken(request.headers.get(RING_TOKEN_HEADER)))
     await fetch(url, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },

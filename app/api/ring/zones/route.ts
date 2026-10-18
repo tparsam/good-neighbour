@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAccessToken } from '@/lib/auth'
-import { RING_API } from '@/lib/journal/ring-session'
+import { RING_TOKEN_HEADER, RING_API, visitorToken } from '@/lib/journal/ring-session'
 import { findPrivacyZones, isVideoEncrypted } from '@/lib/privacy/zones'
 
 // The camera's existing privacy zones, and whether its video is encrypted (Ring's TAKE), in which
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   const deviceId = request.nextUrl.searchParams.get('deviceId')
   if (!deviceId) return NextResponse.json({ zones: null })
   try {
-    const token = await getAccessToken()
+    const token = await getAccessToken(visitorToken(request.headers.get(RING_TOKEN_HEADER)))
     const res = await fetch(`${RING_API}/v1/devices/${encodeURIComponent(deviceId)}/configurations`, {
       headers: { Authorization: `Bearer ${token}` },
       signal: AbortSignal.timeout(10_000),

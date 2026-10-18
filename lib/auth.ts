@@ -15,7 +15,11 @@ export function getAuthMode(): AuthMode | null {
   return null
 }
 
-export async function getAccessToken(): Promise<string> {
+// A token the visitor pasted into the page (see visitorToken) wins over both, so a copy with no
+// Ring account of its own can still reach the visitor's camera.
+export async function getAccessToken(visitor?: string | null): Promise<string> {
+  if (visitor) return visitor
+
   // Conflict check
   if (process.env.RING_ACCESS_TOKEN && process.env.RING_REFRESH_TOKEN) {
     throw new Error(

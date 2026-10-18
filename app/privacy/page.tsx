@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { explain, useRingDevice } from '../hooks/useRingDevice'
+import { explain, ringHeaders, useRingDevice } from '../hooks/useRingDevice'
 import { useWebRTCStream } from '../hooks/useWebRTCStream'
 import { MAX_ZONES, coverage, suggestZones } from '@/lib/privacy/geometry'
 import type { Region, RegionKind, Zone } from '@/lib/privacy/types'
@@ -84,15 +84,20 @@ async function fromFile(file: Blob) {
   return toJpeg(bitmap, bitmap.width, bitmap.height)
 }
 
-const readZones = (deviceId: string | undefined) =>
-  fetch(`/api/ring/zones?deviceId=${encodeURIComponent(deviceId ?? '')}`)
+const readZones = (deviceId: string | undefined, token: string | undefined) =>
+  fetch(`/api/ring/zones?deviceId=${encodeURIComponent(deviceId ?? '')}`, { headers: ringHeaders(token) })
     .then(res => res.json())
     .catch(() => ({ zones: null }))
 
+// Where a pasted Ring token is kept: this tab only, gone when it closes.
+const TOKEN_KEY = 'ring-token'
+
 export default function PrivacyCheck() {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const { deviceId, error: setupError, notConfigured } = useRingDevice()
-  const { streamActive, streamError, startStream, stopStream } = useWebRTCStream({ videoRef, deviceId })
+  // A Ring access token pasted into the page, for a copy of the app with no Ring account of its own.
+  const [ringToken, setRingToken] = useState<string>()
+  const { deviceId, error: setupError, notConfigured, signInRefused } = useRingDevice(ringToken)
+  const { streamActive, streamError, startStream, stopStream } = useWebRTCStream({ videoRef, deviceId, token: ringToken })
   const [result, setResult] = useState<Result | null>(null)
   const [checking, setChecking] = useState(false)
   const [checkError, setCheckError] = useState<string | null>(null)
@@ -101,8 +106,31 @@ export default function PrivacyCheck() {
   const [encrypted, setEncrypted] = useState(false)
 
   useEffect(() => {
-    if (deviceId) readZones(deviceId).then(data => setEncrypted(data.encrypted === true))
-  }, [deviceId])
+    try {
+      setRingToken(sessionStorage.getItem(TOKEN_KEY) || undefined)
+    } catch {}
+  }, [])
+
+  // Uses a pasted token (or forgets it, with none) for every request to Ring from this tab.
+  function chooseToken(token: string | undefined) {
+    if (streamActive) void stopStream()
+    try {
+      if (token) sessionStorage.setItem(TOKEN_KEY, token)
+      else sessionStorage.removeItem(TOKEN_KEY)
+    } catch {}
+    setRingToken(token)
+  }
+
+  function pasteToken(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const token = String(new FormData(event.currentTarget).get('token') ?? '').trim()
+    if (token) chooseToken(token)
+  }
+
+  useEffect(() => {
+    setEncrypted(false)
+    if (deviceId) readZones(deviceId, ringToken).then(data => setEncrypted(data.encrypted === true))
+  }, [deviceId, ringToken])
 
   // Takes the frame on screen and checks it.
   function checkLive() {
@@ -135,7 +163,7 @@ export default function PrivacyCheck() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ image: image.split(',')[1] }),
         }).then(async res => ({ ok: res.ok, data: await res.json() })),
-        readZones(deviceId),
+        readZones(deviceId, ringToken),
       ])
       if (!found.ok) throw new Error(found.data.error ?? 'The check failed.')
       // No usable answer is not the same as "nothing found", so it is reported, never shown as a clean result.
@@ -190,7 +218,7 @@ export default function PrivacyCheck() {
   // The camera's problem and the check's problem can both happen (a stream often ends while a
   // check is still running), so each is shown.
   // Once a photo has been checked, a Ring sign-in problem no longer matters to what is on screen.
-  const ringProblem = setupError || (streamError && explain(streamError))
+  const ringProblem = setupError || (streamError && explain(streamError, !!ringToken))
   const problems = [result && !streamActive ? null : ringProblem, checkError].filter(Boolean)
   // Survey labels that would print on top of an earlier one are left out.
   const labelAt = regions.map(r => ({ x: r.box.x1 * 1600 + 30, y: r.box.y1 * height + 46 }))
@@ -264,8 +292,34 @@ export default function PrivacyCheck() {
         ))}
         {notConfigured && (
           <p className="note live-note">
-            This copy of Good Neighbour is not connected to a Ring account, so the live camera is off. Check a photo
-            of your own, or try one of the sample photos.
+            This copy of Good Neighbour has no Ring account of its own, so the live camera is off. To use your camera,
+            paste a Ring access token below. Or check a photo of your own, or try one of the sample photos.
+          </p>
+        )}
+        {(notConfigured || signInRefused) && !streamActive && (
+          <form className="note live-note token" onSubmit={pasteToken}>
+            <label htmlFor="ring-token">Ring access token</label>
+            <div className="token-row">
+              <input id="ring-token" name="token" type="password" autoComplete="off" spellCheck={false} required />
+              <button className="btn" type="submit">
+                Connect camera
+              </button>
+            </div>
+            <p className="token-help">
+              Get one from the{' '}
+              <a href="https://developer.amazon.com/ring/console/playground" target="_blank" rel="noreferrer">
+                Ring Developer Playground
+              </a>
+              . It lasts 30 minutes, is kept in this tab only, and is used only to reach Ring.
+            </p>
+          </form>
+        )}
+        {ringToken && !signInRefused && (
+          <p className="note live-note">
+            Using your Ring token in this tab.{' '}
+            <button type="button" className="link" onClick={() => chooseToken(undefined)}>
+              Forget it
+            </button>
           </p>
         )}
         {encrypted && (

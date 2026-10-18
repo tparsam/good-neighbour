@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAccessToken } from '@/lib/auth'
+import { RING_TOKEN_HEADER, visitorToken } from '@/lib/journal/ring-session'
 
 const API_BASE = 'https://api.amazonvision.com'
 
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
   const deviceId = request.nextUrl.searchParams.get('deviceId')
   if (!deviceId) return NextResponse.json({ region: null })
   try {
-    const token = await getAccessToken()
+    const token = await getAccessToken(visitorToken(request.headers.get(RING_TOKEN_HEADER)))
     const res = await fetch(`${API_BASE}/v1/devices/${encodeURIComponent(deviceId)}/location`, {
       headers: { Authorization: `Bearer ${token}` },
     })

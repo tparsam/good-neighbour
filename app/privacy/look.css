@@ -158,6 +158,74 @@
   line-height: 1.75;
 }
 
+/* The Ring token form sits in the notes' column: a label, an underlined field and a word to press. */
+.page-gn .token {
+  width: 100%;
+}
+
+.page-gn .token-row {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  margin-top: 0.25rem;
+}
+
+.page-gn .token input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 0 0.25rem;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+}
+
+/* Set like the action words above it. */
+.page-gn .token .btn {
+  min-width: 0;
+  min-height: 44px;
+  margin-top: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: none;
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.page-gn .token .btn:hover {
+  background: none;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.page-gn .live-note .link {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+}
+
+.page-gn .token-help {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+.page-gn .token-help a {
+  color: var(--ink);
+  text-underline-offset: 0.2em;
+}
+
 /* Findings: one dark section, the checked picture blurred behind it; heading left, words right. */
 .page-gn .today {
   position: relative;

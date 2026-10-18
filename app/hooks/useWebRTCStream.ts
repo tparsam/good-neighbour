@@ -2,10 +2,13 @@
 
 import { useState, useRef, useCallback, RefObject } from 'react'
 import { watchConnection } from '@/lib/journal/connection'
+import { ringHeaders } from './useRingDevice'
 
 interface UseWebRTCStreamOptions {
   videoRef: RefObject<HTMLVideoElement>
   deviceId?: string
+  /** A Ring token pasted into the page, sent with each request to the stream route. */
+  token?: string
 }
 
 interface UseWebRTCStreamReturn {
@@ -19,7 +22,7 @@ interface UseWebRTCStreamReturn {
  * Manages WebRTC connection to Ring camera stream.
  * Handles ICE gathering, SDP negotiation, and cleanup.
  */
-export function useWebRTCStream({ videoRef, deviceId }: UseWebRTCStreamOptions): UseWebRTCStreamReturn {
+export function useWebRTCStream({ videoRef, deviceId, token }: UseWebRTCStreamOptions): UseWebRTCStreamReturn {
   const [streamActive, setStreamActive] = useState(false)
   const [streamError, setStreamError] = useState<string | null>(null)
   const pcRef = useRef<RTCPeerConnection | null>(null)
@@ -34,13 +37,13 @@ export function useWebRTCStream({ videoRef, deviceId }: UseWebRTCStreamOptions):
       sessionUrlRef.current = null
       await fetch('/api/ring/stream', {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...ringHeaders(token) },
         body: JSON.stringify({ sessionUrl }),
       }).catch(() => {})
     }
     if (videoRef.current) videoRef.current.srcObject = null
     setStreamActive(false)
-  }, [videoRef])
+  }, [videoRef, token])
 
   const startStream = useCallback(async () => {
     if (pcRef.current) return // Already starting or running: a second press must not open a second session.
@@ -85,7 +88,7 @@ export function useWebRTCStream({ videoRef, deviceId }: UseWebRTCStreamOptions):
 
       const res = await fetch('/api/ring/stream', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...ringHeaders(token) },
         body: JSON.stringify({ sdpOffer: pc.localDescription!.sdp, deviceId }),
       })
 
@@ -103,7 +106,7 @@ export function useWebRTCStream({ videoRef, deviceId }: UseWebRTCStreamOptions):
       await teardown()
       setStreamError(message)
     }
-  }, [videoRef, deviceId, teardown])
+  }, [videoRef, deviceId, token, teardown])
 
   const stopStream = useCallback(async () => {
     await teardown()

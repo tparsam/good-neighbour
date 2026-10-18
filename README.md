@@ -9,9 +9,8 @@ looks at what the camera actually sees, finds the parts that are not the
 owner's, checks them against the zones already set, and suggests the ones that
 are missing.
 
-**Try it:** https://good-neighbour-delta.vercel.app (press a sample photo, or
-check your own; the live Ring camera needs your own Ring account, so it runs
-only locally, see below).
+**Try it:** https://good-neighbour-delta.vercel.app (press a sample photo,
+check your own, or paste a Ring access token to use your camera's live view).
 
 Built for the Ring track of the Build, Ship, Shape: Amazon Developer Hackathon
 2026, with the AWS Builder and Open Source mini challenges.
@@ -75,13 +74,30 @@ example to try the app on any front-door photo.
   actually found nothing. If the camera's zones cannot be read, the page says
   that too, rather than treating the camera as having none.
 - **It stores nothing.** The checked frame lives in the browser tab and is sent
-  only to Bedrock.
+  only to Bedrock. A pasted Ring token is kept in that tab only (session
+  storage, gone when the tab closes) and is sent only to Ring.
 
 ## The hosted copy
 
-https://good-neighbour-delta.vercel.app runs on Vercel with no Ring account, so
-it offers photo checks and three sample photos, and says plainly that the live
-camera is off. It uses its own Bedrock key, which expires after judging, and
+https://good-neighbour-delta.vercel.app runs on Vercel with no Ring account of
+its own. It offers photo checks and three sample photos, and a field for a Ring
+access token:
+
+1. Sign in to the
+   [Ring Developer Playground](https://developer.amazon.com/ring/console/playground)
+   and copy an access token (it lasts 30 minutes).
+2. Paste it into **Ring access token** under the actions and press **Connect
+   camera**.
+3. Press **Start live stream**, then **Check this view**.
+
+The token goes with each request to the app's Ring routes in an
+`X-Ring-Token` header, is checked to look like a token, and is used only to
+call the Ring API; the server never saves or logs it. The live view works for
+the Playground's sandbox camera and for cameras without Ring's encryption; for
+an encrypted camera the page asks for a screenshot instead, as above. **Forget
+it** removes the token from the tab.
+
+The hosted copy uses its own Bedrock key, which expires after judging, and
 allows each visitor 10 checks an hour (`CHECKS_PER_VISITOR_PER_HOUR`).
 
 ## Run it
@@ -159,7 +175,7 @@ A second run gave the same totals.
     npm test
     npm run typecheck
 
-The tests cover the zone geometry, the reader for the model's reply
+The tests cover the zone geometry, the check on a pasted Ring token, the reader for the model's reply
 (including the broken replies some models send), the reader for
 Ring's zones and its encryption flag, and a check that this README and the
 demo script only name files, scripts and settings that exist.
@@ -170,6 +186,7 @@ demo script only name files, scripts and settings that exist.
 |---|---|
 | Live stream (WebRTC, WHEP) | `app/hooks/useWebRTCStream.ts`, `app/api/ring/stream/` |
 | Finds the camera | `app/hooks/useRingDevice.ts`, `app/api/ring/devices/` |
+| A pasted Ring token | `app/privacy/page.tsx`, `lib/journal/ring-session.ts`, `lib/auth.ts` |
 | Frame or photo to a JPEG at most 1024 px wide | `app/privacy/page.tsx` |
 | Input checks, Bedrock key check, cost cap | `app/api/privacy/route.ts` |
 | Prompt and Bedrock call (Converse API, temperature 0) | `lib/privacy/bedrock.ts`, `lib/journal/bedrock.ts` |
@@ -232,7 +249,7 @@ Details worth knowing:
   sandbox camera, whose video is not encrypted. The encrypted-camera path is
   built from Ring's documentation and covered by tests, but has not been seen
   on a real TAKE camera.
-- One camera, one user, one laptop. Nothing is hosted.
+- One camera at a time: the first one on the Ring account.
 
 ## What uses what
 

@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { ringSessionUrl } from './ring-session.ts'
+import { ringSessionUrl, visitorToken } from './ring-session.ts'
 
 test('a Ring session URL is accepted', () => {
   const url = ringSessionUrl('https://api.amazonvision.com/v1/devices/d1/media/streaming/whep/sessions/s1')
@@ -23,5 +23,23 @@ test('any other address is refused, so the Ring token is never sent elsewhere', 
     42,
   ]) {
     assert.equal(ringSessionUrl(bad), null, String(bad))
+  }
+})
+
+test('a token pasted by the visitor is used as sent, without spaces or a Bearer prefix', () => {
+  const token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaW5nIn0.c2lnbmF0dXJl'
+  assert.equal(visitorToken(token), token)
+  assert.equal(visitorToken(`  Bearer ${token}\n`), token)
+})
+
+test('no pasted token means the app falls back to its own sign-in', () => {
+  assert.equal(visitorToken(null), null)
+  assert.equal(visitorToken(''), null)
+  assert.equal(visitorToken('   '), null)
+})
+
+test('something that cannot be a token is refused before it is sent to Ring', () => {
+  for (const bad of ['short', 'has a space in the middle of it', 'line\r\nbreak-0123456789abcdef', 'x'.repeat(5000), 'é'.repeat(30)]) {
+    assert.throws(() => visitorToken(bad), /not a Ring access token/, bad.slice(0, 20))
   }
 })
