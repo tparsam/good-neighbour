@@ -9,6 +9,28 @@ request, reply or page text that showed it. Where something is our own
 inference, it says so. The measurements behind the Bedrock points are in
 `docs/findings.md`, and the code that works around each problem is linked.
 
+## In short
+
+- **What we used, and for what:** the Ring Partner API (find the camera, read
+  its privacy zones and encryption flag, open the live stream), the Ring
+  Developer Playground (tokens and the sandbox camera), the
+  `ring-api-helloworld` starter (the live-stream base) and Amazon Bedrock's
+  Converse API (Qwen3-VL marks what is not the owner's). Details in part 2.
+- **What worked well:** a live sandbox frame from the starter almost
+  unchanged; one Ring call with everything a privacy tool needs; one Bedrock
+  API for every model, so seven could be compared fairly. Parts 1 and 2.
+- **What needs work:** read-only privacy zones, an undocumented zone field, a
+  30-minute token, TAKE blocking partner video; Bedrock's ignored image
+  filter, models listed but unavailable, no JSON schema on Converse. Parts 2
+  and 3.
+- **Onboarding:** Ring was quick; AWS was slower (Builder ID versus root user,
+  and a new account's first call refused while it was being verified).
+  Part 1.
+- **Would we build with them again?** No, not for now. Good Neighbour already
+  covers everything I set out to build with Ring and Bedrock, and I have made
+  it the best version I can for now.
+- **What we would ask for:** part 4.
+
 ---
 
 ## 1. Developer experience and onboarding

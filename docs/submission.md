@@ -24,7 +24,7 @@ Period ends", so the hosted copy and its Bedrock key must work until at least
 | Open source licence visible in the repo's About section | MIT, detected by GitHub | Done |
 | Demo video under 3 minutes, public on YouTube or Vimeo, English, showing it working on the device | `docs/demo-script.md` (about 2:45) | **To record** |
 | No third-party trademarks or copyrighted music without permission | Script has no music; the doorbell photo is CC BY-SA and credited | Keep it that way |
-| Product feedback for each tool, API and SDK (five questions) | "Product feedback" below; full detail in `FEEDBACK.md` | Paste |
+| Product feedback for each tool, API and SDK (five questions) | "Product feedback" below; full detail in `FEEDBACK.md`, with a five-line summary at its top | Paste |
 | Primary track named | Ring | Pick on the form |
 | Mini challenges named | AWS Builder; Open Source if the contribution below is made | Pick on the form |
 | AWS Builder: AWS services and how they were used, in the feedback answer | "Amazon Bedrock" under Product feedback | Paste |
@@ -32,9 +32,6 @@ Period ends", so the hosted copy and its Bedrock key must work until at least
 | Judges can test it free until judging ends | Hosted copy, sample photos, token field; "Testing instructions" below | **Replace the Bedrock key:** the hosted key expires 16 November, the local one 17 November, judging ends 20 November |
 | Optional: feature requests with priority | "Feature requests" below | Paste |
 | Optional: friction log (up to 10% bonus) | "Friction log" below | Paste |
-
-Lines marked **[your call]** are opinions only you can give; the draft
-answer is a suggestion based on what happened while building.
 
 ## Basics
 
@@ -235,11 +232,8 @@ had already issued the key.
 
 ### Would you build with these devices and services again?
 
-**[your call]** Suggested: **Yes.** The Ring API gave us real data that
-matters for privacy (zones, encryption, live video) with very little code,
-and Bedrock let us choose the best model by measurement instead of guessing.
-We would build more with Ring once apps can propose privacy zones and read
-TAKE-encrypted cameras.
+No, not for now. Good Neighbour already covers everything I set out to build
+with Ring and Bedrock, and I have made it the best version I can for now.
 
 ## Feature requests
 
