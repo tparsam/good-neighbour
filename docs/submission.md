@@ -158,7 +158,9 @@ stores nothing.
 - **Amazon Bedrock:** the Converse API with API-key authentication. We scored
   seven vision models (Amazon Nova Lite, Nova 2 Lite and Nova Pro, Qwen3-VL,
   Llama 4 Maverick, Pixtral Large and Gemma 3) with our own evaluation
-  script, then built a 93-photo labelled benchmark for the winner.
+  script, then built a 144-photo labelled benchmark for the winner and
+  tuned its prompt on part of it, checking the result on photos it had never
+  seen.
 - **Geometry in plain TypeScript:** model boxes (0 to 1000) and Ring polygons
   (0 to 1) are compared on a grid $G$ of $100 \times 100$ points, each tested
   against the zones with ray casting. With $N$ the areas that are not the
@@ -192,9 +194,11 @@ stores nothing.
 
 ### Accomplishments we're proud of
 
-- On 93 labelled photos it finds 89% of what is not the owner's (95% range
-  84 to 93%): 98% of roads, 96% of vehicles and 82% of houses, with the same
-  totals on a second run.
+- On 144 labelled photos it finds 96% of what is not the owner's (95% range
+  92 to 98%): 98% of roads, 98% of vehicles and 94% of houses, and marks
+  only 4 of 64 empty scenes. Two prompt lines raised houses found from 82%
+  to 94% without more false alarms, confirmed on scenes held out from
+  tuning.
 - The live check works end to end on the hosted copy, with any Ring
   developer's own camera.
 - A calm design that reports and suggests rather than accuses, in light and
@@ -203,9 +207,12 @@ stores nothing.
 ### What we learned
 
 Vision models are good at roads and cars and weaker at houses, especially a
-house that fills the frame, which may look like the owner's own. Saying "I
-don't know" clearly is part of the product: "no usable answer" and "nothing
-found" must never look the same.
+house that fills the frame, which can look like the owner's own. Telling the
+model where the camera is (on the owner's house, so any house it faces is
+someone else's) fixed most of that, but only measuring on scenes kept back
+from tuning showed it did not add false alarms. Saying "I don't know"
+clearly is part of the product: "no usable answer" and "nothing found" must
+never look the same.
 
 ### What's next for Good Neighbour
 
@@ -251,7 +258,7 @@ Full detail, with the request or page text behind each point, is in
   `us-east-1`. Qwen3-VL (`qwen.qwen3-vl-235b-a22b`) reads each frame and
   returns boxes for road, neighbour and vehicle as JSON at temperature 0. The
   same Converse call let us compare seven vision models by changing only the
-  model ID, and our evaluation script (`lib/privacy/eval.ts`) and 93-photo
+  model ID, and our evaluation script (`lib/privacy/eval.ts`) and 144-photo
   benchmark run through it too. A check gives up after 90 seconds, retries a
   slow connect once, and stops at a per-run cap.
 - **Vercel:** hosting the public copy.
@@ -320,9 +327,9 @@ camera's view are not the owner's.
   model, we scored seven Bedrock vision models (Nova Lite, Nova 2 Lite, Nova
   Pro, Qwen3-VL, Llama 4 Maverick, Pixtral Large, Gemma 3) with our own
   scorecard (`lib/privacy/eval.ts`), changing only the model ID. The winner
-  was then measured on 93 labelled photos: 89% of areas found (95% range 84
-  to 93%), 98% of roads, 96% of vehicles, 82% of houses; raw answers are in
-  `docs/benchmark/`. `ListFoundationModels` was used to find the vision
+  was then measured on 144 labelled photos: 96% of areas found (95% range 92
+  to 98%), 98% of roads and vehicles, 94% of houses, 4 of 64 empty scenes
+  marked; raw answers are in `docs/benchmark/`. `ListFoundationModels` was used to find the vision
   models.
 - **Safe to host publicly.** The route accepts only images under 2 million
   base64 characters, gives up on a check after 90 seconds, retries a slow

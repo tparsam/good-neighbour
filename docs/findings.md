@@ -265,3 +265,55 @@ and the headline's median error goes down.
   churchyard photo would be fitted to the test. More empty scenes are the
   honest next step before trying this line again.
 - Raw answers: `docs/benchmark/qwen3-vl-closeup-line-answers.json`.
+
+## More empty scenes, and the prompt adopted (2026-10-18)
+
+The 15 empty scenes could not tell 1 false alarm from 2, so 51 more were
+added (`bench/e01.jpg` to `bench/e51.jpg`): porches, covered walkways,
+verandas, a view out through an arch, the owner's own wall beside a lawn,
+walled gardens, fences and field paths, chosen because a model might mark
+them. Four close-up front doors seen from outside were left out, since whose
+house they show is unclear. The new scenes were split at random into 20 for
+tuning and 31 held out (`docs/test-photos/empty-split.json`); the held-out
+scenes were used once, at the end.
+
+A second line was tried on top of the close-up line (v2,
+`docs/benchmark/prompt-v2.txt`): "The walls, porch, archways, paths and
+garden right around the camera are the owner's own, and so is anything seen
+through them that is not another home, a road or a vehicle on it."
+
+On the 113 tuning photos (78 with areas, 35 empty), one run each:
+
+| | App's prompt | Close-up line | v2 |
+|---|---|---|---|
+| Houses found | 82% | 93% | **94%** |
+| Areas found | 89% | 95% | **96%** |
+| Empty scenes marked | 3 of 35 | 2 of 34 | **1 of 33** |
+
+On the 31 held-out empty scenes, v2 and the app's prompt each marked 2. v2
+marked two old garden walls (one with a door) as houses; the app's prompt
+marked one of the same walls and a farm track. So v2 adds no false alarms
+and finds far more houses, and it is now the app's prompt.
+
+Two full runs of v2 on all 144 photos (the first is the tuning and held-out
+runs together):
+
+| | v2, run 1 | v2, run 2 | App's old prompt |
+|---|---|---|---|
+| Areas found | 203 of 212, 96% | 204 of 213, 96% | 89% |
+| Houses / vehicles / roads | 94% / 98% / 98% | 94% / 98% / 98% | 82% / 96% / 98% |
+| Photos with every area found | 90% | 88% | 72% |
+| Empty scenes marked | 3 of 64 | 4 of 64 | 5 of 66 |
+| Headline median error, no close-up house | 6.6 points | 5.1 points | 7.7 points |
+| Headline median error, close-up house | 9.0 points | 9.1 points | 39.3 points |
+
+Run 1 had 3 calls fail and run 2 had 2 (slow upload), so their totals are a
+photo short. Raw answers: `docs/benchmark/qwen3-vl-v2-answers.json` and
+`qwen3-vl-v2-tuning-heldout-answers.json`.
+
+A correction to the section "How close the headline figure is": its split
+counted empty scenes, which mostly score a perfect 0 and flatter the median.
+On photos with something to find, the old prompt's headline was off by a
+median of 7.7 points where no house fills the photo and 39.3 where one does;
+`lib/privacy/eval.ts` now reports it that way.
+

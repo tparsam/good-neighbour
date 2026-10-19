@@ -32,7 +32,7 @@ and suggests two zones). Everything on screen is real; nothing is mocked.
 | 0:31 | Paste the Ring token into **Ring access token** and press **Connect camera**; the line under the actions reads "Using your Ring token in this tab" | This is the hosted copy anyone can open. Paste a Ring access token from the Developer Playground, and it connects to your own camera. |
 | 0:39 | Press **Start live stream**; the print fills with the porch clip | This is Ring's own sandbox camera, live through the Ring API. |
 | 0:46 | Within 10 s, press **Check this view**; the headline reads "CHECKING" and the line under the picture says it is being sent | One frame goes to Qwen3-VL on Amazon Bedrock, which marks what is not yours: the road, neighbours' houses, cars on the street. At the same time the app reads this camera's existing privacy zones from the Ring API. |
-| 0:59 | *(while it checks)* Keep the page in view | We tested seven vision models on Bedrock and picked this one. On 93 labelled photos it finds 89% of what is not yours, and 98% of roads. |
+| 0:59 | *(while it checks)* Keep the page in view | We tested seven vision models on Bedrock and picked this one. On 144 labelled photos it finds 96% of what is not yours, and 94% of houses. |
 | 1:09 | The result: "Nothing outside your property was found in this view" | This porch is all the owner's, and it says so. It does not invent a problem. |
 | 1:19 | Scroll to the top; press **Check a photo** and choose `ring-doorbell-frame.jpg` | Now a real Ring doorbell view of a street. A photo works too, and that matters: Ring's new encryption hides camera video from apps, so an owner can check a screenshot instead. |
 | 1:34 | *(while it checks)* | The picture goes to Bedrock and nowhere else, and nothing is stored. |

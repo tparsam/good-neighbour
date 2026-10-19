@@ -4,7 +4,9 @@ import type { Region } from './types.ts'
 // The box format and the 0 to 1000 scale follow the prompt AWS documents for Nova object detection.
 /** Chosen on 2026-10-17 by the scorecard (lib/privacy/eval.ts) and a live Ring frame: it found
  *  20 of 21 expected areas with no false alarms. Nova Lite found ~70% and called the owner's own
- *  porch a road. See docs/findings.md. */
+ *  porch a road. The two lines about the owner's house and its surroundings were added on
+ *  2026-10-18 after a tuning/held-out test: houses found 82% to 94%, no more false alarms.
+ *  See docs/findings.md. */
 export const MODEL = 'qwen.qwen3-vl-235b-a22b'
 
 export const PROMPT = `You look at one frame from a home security camera and mark what is NOT part of the camera owner's own property.
@@ -14,6 +16,8 @@ Kinds:
 - "road": public road, street or pavement.
 - "neighbour": another household's building, window, door, garden or driveway.
 - "vehicle": a vehicle on the public road.
+The camera is fixed to the owner's own house, so it never sees that house from outside: a house it looks at, even one that fills most of the picture, belongs to another household.
+The walls, porch, archways, paths and garden right around the camera are the owner's own, and so is anything seen through them that is not another home, a road or a vehicle on it.
 Represent each box as [x1, y1, x2, y2], where the coordinates are scaled between 0 and 1000 to the image width and height, respectively, and [0, 0] is the top-left corner.
 Mark only what you can clearly see. If you cannot tell whether an area belongs to the owner, leave it out.
 If nothing qualifies, reply {"regions":[]}.

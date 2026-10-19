@@ -11,7 +11,6 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { MODEL, PROMPT, askAboutImage } from './bedrock.ts'
 import { parseRegions } from './regions.ts'
 import { headlineError, matches, wilson } from './score.ts'
-import { coverage } from './geometry.ts'
 import type { Region, RegionKind } from './types.ts'
 
 const dir = new URL('../../docs/test-photos/', import.meta.url)
@@ -54,10 +53,10 @@ const pct = (k: number, n: number) => {
   const [lo, hi] = wilson(k, n)
   return `${k} of ${n} = ${n ? Math.round((100 * k) / n) : 0}% (95% range ${Math.round(lo * 100)} to ${Math.round(hi * 100)}%)`
 }
-const errors: number[] = []
-// The same, for photos where no labelled house fills over 40% of the picture (closer to a doorbell's view).
+// The headline's error on photos with something to find (empty scenes would flatter it, since most
+// score a perfect 0), split by whether a labelled house fills over 40% of the photo.
 const usualErrors: number[] = []
-let over = 0
+const closeErrors: number[] = []
 let found = 0, expected = 0, posPhotos = 0, allFound = 0, negPhotos = 0, negWithMarks = 0, marks = 0, strayMarks = 0, failed = 0
 const kinds: Record<string, [number, number]> = {}
 for (const a of answers) {
@@ -66,9 +65,10 @@ for (const a of answers) {
     failed++
     continue
   }
-  errors.push(headlineError(a.regions, want))
-  if (!want.some(w => w.kind === 'neighbour' && (w.box.x2 - w.box.x1) * (w.box.y2 - w.box.y1) > 0.4)) usualErrors.push(headlineError(a.regions, want))
-  if (coverage(a.regions, []).outside > coverage(want, []).outside) over++
+  if (want.length) {
+    const close = want.some(w => w.kind === 'neighbour' && (w.box.x2 - w.box.x1) * (w.box.y2 - w.box.y1) > 0.4)
+    ;(close ? closeErrors : usualErrors).push(headlineError(a.regions, want))
+  }
   if (want.length === 0) {
     negPhotos++
     if (a.regions.length > 0) negWithMarks++
@@ -108,6 +108,5 @@ const report = (title: string, errs: number[]) => {
   console.log(`  Within 5 points:             ${pct(within(0.05), sorted.length)}`)
   console.log(`  Within 10 points:            ${pct(within(0.1), sorted.length)}`)
 }
-report('Headline "% not yours", model against labels', errors)
-console.log(`  Model higher than labels:    ${over} of ${errors.length}`)
-report('The same, where no labelled house fills over 40% of the photo', usualErrors)
+report('Headline "% not yours" against the labels, photos where no house fills over 40%', usualErrors)
+report('The same, photos where one house fills over 40%', closeErrors)

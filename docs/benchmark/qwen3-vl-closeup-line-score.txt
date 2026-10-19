@@ -10,15 +10,14 @@ Photos with every area found: 69 of 78 = 88% (95% range 80 to 94%)
 Empty scenes marked anyway:  2 of 15 = 13% (95% range 4 to 38%)
 Marks matching no labelled area: 58 of 466
 
-Headline "% not yours", model against labels (93 answers):
-  Average error:               13.4 points
-  Median error:                5.6 points
-  Within 5 points:             44 of 93 = 47% (95% range 37 to 57%)
-  Within 10 points:            62 of 93 = 67% (95% range 57 to 75%)
-  Model higher than labels:    39 of 93
+Headline "% not yours" against the labels, photos where no house fills over 40% (41 answers):
+  Average error:               10.2 points
+  Median error:                4.8 points
+  Within 5 points:             21 of 41 = 51% (95% range 36 to 66%)
+  Within 10 points:            29 of 41 = 71% (95% range 56 to 82%)
 
-The same, where no labelled house fills over 40% of the photo (56 answers):
-  Average error:               8.3 points
-  Median error:                3.5 points
-  Within 5 points:             34 of 56 = 61% (95% range 48 to 72%)
-  Within 10 points:            42 of 56 = 75% (95% range 62 to 84%)
+The same, photos where one house fills over 40% (37 answers):
+  Average error:               21.1 points
+  Median error:                9.0 points
+  Within 5 points:             10 of 37 = 27% (95% range 15 to 43%)
+  Within 10 points:            20 of 37 = 54% (95% range 38 to 69%)

@@ -150,36 +150,38 @@ and the number of zones it would suggest.
     node --env-file=.env.local lib/privacy/eval.ts [prompt.txt] [runs] [answers.json]
     node lib/privacy/eval.ts --rescore answers.json
 
-Scores the app's prompt (or another prompt file) on 93 labelled photos in
-`docs/test-photos`: 78 with 213 expected houses, vehicles and roads, and 15
+Scores the app's prompt (or another prompt file) on 144 labelled photos in
+`docs/test-photos`: 78 with 213 expected houses, vehicles and roads, and 66
 where nothing should be marked. The labelling rules are in
 `docs/test-photos/LABELLING.md` and the photo credits in
 `docs/test-photos/CREDITS.md`. Every figure comes with a 95% range. Saved
-answers can be re-scored without calling Bedrock again. A full run uploads
-about 18 MB.
+answers can be re-scored without calling Bedrock again, and `EVAL_FILES`
+limits a run to a list of photos. A full run uploads about 31 MB.
 
 Latest results, with Qwen3-VL (details in `docs/findings.md`, raw answers in
 `docs/benchmark/`):
 
 | | One run | 95% range |
 |---|---|---|
-| Areas found | 89% (190 of 213) | 84 to 93% |
-| Roads / vehicles / houses | 98% / 96% / 82% | |
-| Photos with every area found | 72% (56 of 78) | 61 to 81% |
-| Empty scenes marked anyway | 7% (1 of 15) | 1 to 30% |
+| Areas found | 96% (204 of 213) | 92 to 98% |
+| Roads / vehicles / houses | 98% / 98% / 94% | |
+| Photos with every area found | 88% (69 of 78) | 80 to 94% |
+| Empty scenes marked anyway | 6% (4 of 64) | 2 to 15% |
 
-A second run gave the same totals.
+A second run (the tuning and held-out runs together) gave 96%, 94% of houses
+and 3 of 64 empty scenes marked.
 
 How close the page's headline ("x% of this view is not yours") comes to the
-labels, from the same answers (both runs), in points of the frame:
+labels, on the 78 photos with something to find, in points of the frame:
 
 | | Median error | Within 10 points |
 |---|---|---|
-| Photos where no house fills over 40% of the picture (112) | 3.8 | 66% |
-| Photos where one house fills most of the picture (74) | 39.3 | 14% |
+| No house fills over 40% of the picture (41) | 5.1 | 76% |
+| One house fills most of the picture (37) | 9.1 | 51% |
 
-The large misses are close-up houses the model leaves out, the weak spot
-below.
+The prompt gained two lines on 2026-10-18, chosen on a tuning set and checked
+on 31 empty scenes it had never seen: houses found rose from 82% to 94% with
+no more false alarms. See `docs/findings.md`.
 
 ## Tests
 
@@ -246,11 +248,10 @@ Details worth knowing:
 
 ## Limits
 
-- **Houses are the weak spot.** On the 93-photo benchmark it finds 98% of
-  roads and 96% of vehicles but 82% of houses; half the missed houses fill
-  most of the photo, perhaps because a house that close looks like the
-  owner's own. The labels were drawn by one person, and 15 empty scenes are
-  too few to pin the false-alarm rate down (1 to 30%).
+- **Houses are still the weak spot, and old walls fool it.** It finds 94% of
+  houses against 98% of roads and vehicles, and its false alarms on empty
+  scenes are mostly old garden walls taken for buildings. The labels were
+  drawn by one person, and most photos are not real doorbell frames.
 - Areas are rectangles, so a suggested zone can cover a little more than the
   area itself.
 - A check uploads a picture of about 200 KB. On a slow connection this takes

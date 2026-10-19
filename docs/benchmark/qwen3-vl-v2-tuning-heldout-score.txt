@@ -1,0 +1,23 @@
+
+Model: qwen.qwen3-vl-235b-a22b
+Answers scored: 141 of 144 (3 failed or unusable)
+
+Areas found:                 203 of 212 = 96% (95% range 92 to 98%)
+  neighbour                  102 of 109 = 94% (95% range 87 to 97%)
+  vehicle                    54 of 55 = 98% (95% range 90 to 100%)
+  road                       47 of 48 = 98% (95% range 89 to 100%)
+Photos with every area found: 69 of 77 = 90% (95% range 81 to 95%)
+Empty scenes marked anyway:  3 of 64 = 5% (95% range 2 to 13%)
+Marks matching no labelled area: 48 of 446
+
+Headline "% not yours" against the labels, photos where no house fills over 40% (41 answers):
+  Average error:               9.2 points
+  Median error:                6.6 points
+  Within 5 points:             19 of 41 = 46% (95% range 32 to 61%)
+  Within 10 points:            29 of 41 = 71% (95% range 56 to 82%)
+
+The same, photos where one house fills over 40% (36 answers):
+  Average error:               17.8 points
+  Median error:                9.0 points
+  Within 5 points:             11 of 36 = 31% (95% range 18 to 47%)
+  Within 10 points:            20 of 36 = 56% (95% range 40 to 70%)
