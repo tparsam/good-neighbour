@@ -40,3 +40,7 @@ dist/
 .playwright-cli/
 .impeccable/
 .vercel
+
+# Demo video recordings (too large for GitHub; the video is on YouTube)
+*.mov
+*.mp4
