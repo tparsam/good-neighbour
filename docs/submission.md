@@ -109,118 +109,66 @@ screenshot shows that photo, so the credit is needed.
 
 ### Inspiration
 
-A Ring doorbell sees more than its owner's home. It sees the pavement, the
-street, and the house across the road. Ring lets owners hide those parts with
-privacy zones, but they have to notice the problem and draw every zone by
-hand, and most never do. It matters: in 2021 a UK court ([*Fairhurst v
-Woodard*](https://inforrm.org/2021/10/20/case-law-fairhurst-v-woodard-neighbour-cctv-harassment-and-data-protection-claim-succeeds-percy-preston/), Oxford County Court) found that a homeowner whose Ring doorbell and
-cameras recorded his neighbour's home had breached UK data protection law,
-and treated him as a data controller. We wanted a tool that respects the
-neighbours as much as the owner: a non-security use of a security camera.
+A Ring doorbell sees more than its owner's home. It also sees the pavement, the street and the house across the road. Ring lets owners hide those parts with privacy zones, but they have to notice the problem and draw every zone by hand, and most never do.
+
+This matters. In 2021, in [Fairhurst v Woodard](https://inforrm.org/2021/10/20/case-law-fairhurst-v-woodard-neighbour-cctv-harassment-and-data-protection-claim-succeeds-percy-preston/), a UK court found that a homeowner whose Ring doorbell and cameras recorded his neighbour's home had broken data protection law, and treated him as a data controller.
+
+We wanted a tool that respects the neighbours as much as the owner: a non-security use of a security camera.
 
 ### What it does
 
-Good Neighbour looks at what the camera actually sees and answers one
-question: how much of this view is not yours, and is it still being recorded?
+Good Neighbour looks at what the camera actually sees and answers one question: how much of this view is not yours, and is it still being recorded?
 
-1. It plays the camera's live stream in the browser through the Ring API
-   (WHEP), or takes a photo or screenshot the owner chooses.
-2. On **Check this view**, one frame goes to Qwen3-VL on Amazon Bedrock, which
-   marks three kinds of area that are not the owner's: road (street or
-   pavement), neighbour (another household's building, door, window, garden
-   or driveway) and vehicle (on the public road).
-3. At the same time, it reads the camera's existing privacy zones and its
-   encryption setting from the Ring API.
-4. It measures how much of the view is not the owner's, how much of that is
-   already hidden, and how much is still recorded.
-5. It suggests at most the privacy zones the camera has left (Ring allows two
-   per camera), placed to hide as much as possible, with their corners, a
-   preview of what would still be recorded, and the steps to add them in the
-   Ring app.
+1. It plays the camera's live stream in the browser through the Ring API (WHEP), or checks a photo or screenshot the owner chooses.
+2. When the owner presses **Check this view**, one frame goes to Qwen3-VL on Amazon Bedrock, which marks three kinds of area that are not the owner's: **road** (street or pavement), **neighbour** (another household's building, door, window, garden or driveway) and **vehicle** (on the public road).
+3. At the same time, it reads the camera's existing privacy zones and its encryption setting from the Ring API.
+4. It works out how much of the view is not the owner's, how much of that is already hidden, and how much is still recorded.
+5. It suggests up to the number of privacy zones the camera has left (Ring allows two per camera), placed to hide as much as possible. Each comes with its corners, a preview of what would still be recorded, and the steps to add it in the Ring app.
 
-It is honest about its limits. It never claims to know where a property
-ends, so it calls its zones suggestions. A failed check is never shown as a
-clean result. Cameras with Ring's new TAKE encryption, whose video apps
-cannot see, are detected and the owner is asked for a screenshot instead. It
-stores nothing.
+It is honest about its limits. It never claims to know where a property ends, so it calls its zones suggestions. A failed check is never shown as a clean result. Cameras with Ring's new TAKE encryption, whose video apps cannot see, are detected, and the owner is asked for a screenshot instead. Nothing is stored.
 
 ### How we built it
 
-- **Next.js 15 and React**, with API routes as a thin server between the
-  browser, the Ring API and Bedrock. We started from Amazon's
-  `ring-api-helloworld` starter for the live stream (credited in the README)
-  and built everything else during the hackathon.
-- **Ring API:** device discovery, device configurations (privacy zones,
-  motion zones and the `e2e_encryption` flag) and the WHEP live stream.
-  The hosted copy has no Ring account of its own: a visitor pastes a Ring
-  access token, which stays in their browser tab and is used only to call
-  Ring.
-- **Amazon Bedrock:** the Converse API with API-key authentication. We scored
-  seven vision models (Amazon Nova Lite, Nova 2 Lite and Nova Pro, Qwen3-VL,
-  Llama 4 Maverick, Pixtral Large and Gemma 3) with our own evaluation
-  script, then built a 144-photo labelled benchmark for the winner and
-  tuned its prompt on part of it, checking the result on photos it had never
-  seen.
-- **Geometry in plain TypeScript:** model boxes (0 to 1000) and Ring polygons
-  (0 to 1) are compared on a grid $G$ of $100 \times 100$ points, each tested
-  against the zones with ray casting. With $N$ the areas that are not the
-  owner's and $Z$ the privacy zones, the headline figure is
+- **Next.js 15 and React**, with API routes as a thin server between the browser, the Ring API and Bedrock. The live stream started from Amazon's `ring-api-helloworld` starter (credited in the README); everything else was built during the hackathon.
+- **Ring API:** device discovery, device configurations (privacy zones, motion zones and the `e2e_encryption` flag) and the WHEP live stream. The hosted copy has no Ring account of its own: a visitor pastes a Ring access token, which stays in their browser tab and is used only to call Ring.
+- **Amazon Bedrock:** the Converse API with API-key authentication. We scored seven vision models (Amazon Nova Lite, Nova 2 Lite and Nova Pro, Qwen3-VL, Llama 4 Maverick, Pixtral Large and Gemma 3) with our own evaluation script and chose Qwen3-VL. We then built a 144-photo labelled benchmark, tuned the prompt on part of it, and checked the result on photos the tuning never saw.
+- **Geometry in plain TypeScript:** the model's boxes and Ring's zone polygons are compared on a grid of 100 × 100 points across the picture, each point tested against the zones with ray casting. The headline figure is
 
-  $$\text{still recorded} = \frac{|\{\, p \in G : p \in N,\ p \notin Z \,\}|}{|G|}$$
+$$\text{still recorded} = \frac{\text{points that are not yours and not inside a zone}}{\text{all points}}$$
 
-  A small search then picks the zones that hide the most within Ring's limit
-  of two.
-- **Tested:** 128 tests cover the geometry, the reader for the model's reply
-  (including broken JSON), the reader for Ring's zones and encryption flag,
-  the pasted-token checks, and that the docs only name files that exist.
-- **Hosted on Vercel**, with a per-visitor limit and a hard cap on Bedrock
-  calls so a public copy cannot run up costs.
+- **Zone suggestions:** a small search picks the zones that hide the most within Ring's limit of two.
+- **Tested:** 86 automated tests cover the geometry, the reader for the model's reply (including broken JSON), the reader for Ring's zones and encryption flag, the pasted-token checks, and that the documentation only names files that exist.
+- **Hosted on Vercel**, with a per-visitor limit and a hard cap on Bedrock calls, so a public copy cannot run up costs.
 
 ### Challenges we ran into
 
-- **Ring's privacy zones are read-only**, so the app cannot fix the problem it
-  finds. We turned that into a design choice: the owner stays in charge and
-  draws each zone, guided by the app.
-- **Where the zones live was undocumented.** The guide names `privacy_zones`
-  but not its place in the reply; we found it at
-  `data.attributes.image_enhancements.privacy_zones` on a live camera.
-- **Model accuracy varied hugely.** On Ring's own sandbox porch, Nova Lite
-  marked 77% of the owner's steps and parcel as "road"; Qwen3-VL correctly
-  marked nothing. Measuring before choosing mattered more than the prompt.
-- **TAKE encryption** became Ring's default during the hackathon and hides
-  live video from apps, so we added the screenshot path.
-- **The sandbox stream ends after about 20 seconds** and looks exactly like a
-  network fault; we learned to tell them apart from the connection log.
+- **Ring's privacy zones are read-only**, so the app cannot fix the problem it finds. We turned that into a design choice: the owner stays in charge and draws each zone, guided by the app.
+- **The location of the zones was undocumented.** The guide names `privacy_zones` but not where it sits in the reply. We found it at `data.attributes.image_enhancements.privacy_zones` on a live camera.
+- **Model accuracy varied hugely.** On Ring's own sandbox porch, Nova Lite marked 77% of the owner's steps and parcel as "road", while Qwen3-VL correctly marked nothing. Measuring every option before choosing was essential.
+- **Close-up houses were missed.** A house that fills the picture can look like the owner's own. Two prompt lines that tell the model where the camera is fixed most of these, but proving they added no false alarms took 51 more test photos.
+- **TAKE encryption** became Ring's default during the hackathon and hides live video from apps, so we added the screenshot path.
+- **The sandbox stream ends after about 20 seconds**, which looks exactly like a network fault. We learned to tell the two apart from the connection log.
 
-### Accomplishments we're proud of
+### Accomplishments that we're proud of
 
-- On 144 labelled photos it finds 96% of what is not the owner's (95% range
-  92 to 98%): 98% of roads, 98% of vehicles and 94% of houses, and marks
-  only 4 of 64 empty scenes. Two prompt lines raised houses found from 82%
-  to 94% without more false alarms, confirmed on scenes held out from
-  tuning.
-- The live check works end to end on the hosted copy, with any Ring
-  developer's own camera.
-- A calm design that reports and suggests rather than accuses, in light and
-  dark, on desktop and phone.
+- On 144 labelled photos, it finds 96% of what is not the owner's (95% range: 92 to 98%): 98% of roads, 98% of vehicles and 94% of houses. It wrongly marks only 4 of 64 empty scenes.
+- Two prompt lines raised the share of houses found from 82% to 94% without adding false alarms, confirmed on scenes held back from tuning.
+- The live check works end to end on the hosted copy, with any Ring developer's own camera.
+- A calm design that reports and suggests rather than accuses, in light and dark mode, on desktop and phone.
 
 ### What we learned
 
-Vision models are good at roads and cars and weaker at houses, especially a
-house that fills the frame, which can look like the owner's own. Telling the
-model where the camera is (on the owner's house, so any house it faces is
-someone else's) fixed most of that, but only measuring on scenes kept back
-from tuning showed it did not add false alarms. Saying "I don't know"
-clearly is part of the product: "no usable answer" and "nothing found" must
-never look the same.
+Vision models are good at spotting roads and cars, but weaker at houses, especially a house that fills the frame and can look like the owner's own. Telling the model where the camera is (on the owner's house, so any house it faces belongs to someone else) fixed most of that. Only testing on scenes kept back from tuning showed that the fix did not add false alarms.
+
+Saying "I don't know" clearly is part of the product: "no usable answer" and "nothing found" must never look the same.
 
 ### What's next for Good Neighbour
 
-- A Ring "propose a privacy zone" endpoint, so the owner could approve a
-  suggestion with one tap instead of drawing it.
-- Checking every camera on an account, and re-checking when a camera is moved.
-- Reading encrypted cameras once Ring gives partner apps access to them.
-- Better house detection, tested on more real doorbell frames.
+- **One-tap zones:** a Ring endpoint to propose a privacy zone, so the owner could approve a suggestion instead of drawing it.
+- **Owner corrections:** tap an area to mark it "mine" or "not mine", and the zones update instantly.
+- **Re-checking when a camera moves**, and checking every camera on an account.
+- **Encrypted cameras:** reading them once Ring gives partner apps access.
+- **Fewer false alarms on old garden walls**, tested on more real doorbell frames.
 
 ## Testing instructions
 
